@@ -15,7 +15,7 @@
                 <Insets top="25.0" left="10.0" />
             </GridPane.margin>
         </Label>
-        <Button fx:id="myPlaylistBtn" mnemonicParsing="false" text="..." onAction="#selectedMyPlaylistBtn" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+        <Button fx:id="myPlaylistBtn" mnemonicParsing="false" text="..." onAction="#setUpContextMenu" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
             <GridPane.margin>
                 <Insets top="20.0" right="10.0" />
             </GridPane.margin>

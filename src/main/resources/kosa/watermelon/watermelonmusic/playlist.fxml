@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane prefHeight="464.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosa.watermelon.watermelonmusic.PlaylistController">
+    <children>
+        <Label layoutX="25.0" layoutY="26.0" text="My Playlist">
+            <font>
+                <Font name="D2Coding" size="18.0" />
+            </font>
+            <GridPane.margin>
+                <Insets top="25.0" />
+            </GridPane.margin>
+            <padding>
+                <Insets left="10.0" />
+            </padding>
+        </Label>
+        <TableView layoutY="77.0" prefHeight="397.0" prefWidth="601.0" GridPane.rowIndex="1">
+            <columns>
+                <TableColumn fx:id="checkBox" prefWidth="39.0" resizable="false" />
+                <TableColumn fx:id="content" editable="false" minWidth="0.0" prefWidth="514.6666564941406" resizable="false" sortable="false" />
+            </columns>
+            <GridPane.margin>
+                <Insets top="40.0" />
+            </GridPane.margin>
+        </TableView>
+    </children>
+    <columnConstraints>
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+        <RowConstraints />
+    </rowConstraints>
+</GridPane>
