@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane prefHeight="464.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosa.watermelon.watermelonmusic.SongChartController" onContextMenuRequested="#setUpContextMenu">
+    <children>
+        <Label text="인기차트" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2">
+            <font>
+                <Font name="D2Coding" size="18.0" />
+            </font>
+            <GridPane.margin>
+                <Insets top="25.0" left="10.0" />
+            </GridPane.margin>
+        </Label>
+        <Button fx:id="myPlaylistBtn" mnemonicParsing="false" text="..." onAction="#selectedMyPlaylistBtn" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+            <GridPane.margin>
+                <Insets top="20.0" right="10.0" />
+            </GridPane.margin>
+            <font>
+                <Font name="D2Coding" size="12.0" />
+            </font>
+        </Button>
+        <TableView fx:id="tableView" prefHeight="377.0" prefWidth="643.0" GridPane.rowIndex="2" GridPane.columnSpan="3" GridPane.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="ranking" prefWidth="42.333343505859375" text="순위" />
+                <TableColumn fx:id="songName" prefWidth="194.0" text="곡 정보" />
+                <TableColumn fx:id="artistName" prefWidth="186.0" text="아티스트" />
+                <TableColumn fx:id="playBtn" prefWidth="57.33331298828125" text="듣기" />
+                <TableColumn fx:id="addBtn" prefWidth="58.0" text="담기" />
+                <TableColumn fx:id="likebtn" prefWidth="61.33331298828125" text="좋아요" />
+            </columns>
+            <GridPane.margin>
+                <Insets top="40.0" />
+            </GridPane.margin>
+        </TableView>
+    </children>
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" />
+        <ColumnConstraints hgrow="ALWAYS" />
+        <ColumnConstraints halignment="RIGHT" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="ALWAYS" />
+    </rowConstraints>
+</GridPane>

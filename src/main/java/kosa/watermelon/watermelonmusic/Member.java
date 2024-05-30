@@ -1,4 +1,4 @@
-package kosa.watermelon.watermelonmusic.entity;
+package kosa.watermelon.watermelonmusic;
 
 public class Member {
 
