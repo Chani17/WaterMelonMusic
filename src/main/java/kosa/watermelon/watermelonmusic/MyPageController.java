@@ -17,7 +17,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.TilePane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -43,18 +45,29 @@ public class MyPageController implements Initializable {
 
 	@FXML
 	private TextField userEMAIL_TextField;
+	
+	@FXML
+	private TextField userGender_TextField;
+	
+	@FXML
+	private TextField userBirth_TextField;
 
 	@FXML
-	private TableView<Song> tableView;
-
-	@FXML
-	private TableColumn<Song, Integer> ranking;
-
-	@FXML
-	private TableColumn<Song, String> songName;
-
-	@FXML
-	private TableColumn<Song, String> artistName;
+	private TilePane playlistImage_TilePane;
+	
+	private String[] playlist_ImageUrls = {
+			"https://i.pinimg.com/564x/35/23/86/352386ce038dd4de00f3fb832785dbb4.jpg",
+			"https://i.pinimg.com/564x/0a/9e/69/0a9e69096943ed19407cf02991957cd1.jpg",
+			"https://i.pinimg.com/564x/9b/11/6c/9b116c0ec240443e5937bf782fa117aa.jpg",
+			"https://i.pinimg.com/564x/46/e5/8a/46e58af50c57bda8bc9ce3cf15746628.jpg",
+			"https://i.pinimg.com/564x/a3/17/d9/a317d91b9e10272dbae7c07180a8bdcd.jpg",
+			"https://i.pinimg.com/564x/65/d5/71/65d5718995458b549eacae3c40153168.jpg",
+			"https://i.pinimg.com/564x/19/00/4d/19004df230620eada6d5b0726ac035ca.jpg",
+			"https://i.pinimg.com/564x/a5/da/a6/a5daa6a5133355111ecdee0c7e67b729.jpg",
+			"https://i.pinimg.com/564x/11/48/9b/11489b8f2ac4e1dc98e876b445af93d6.jpg",
+			"https://i.pinimg.com/564x/bb/37/b8/bb37b8da81fadf1f14637d9e475198cc.jpg"
+			// 추가 URL을 여기에 넣기
+	};
 
 	private TemporaryDB temporaryDB;
 
@@ -63,9 +76,8 @@ public class MyPageController implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		temporaryDB = TemporaryDB.getInstance();
-		setListView();
 
-		// 임시로 선택된 사용자 (abcd)
+		// 임시로 선택된 사용자 ("abcd")
 		currentMember = temporaryDB.getMemberById("abcd");
 		String[] albums = temporaryDB.getSongs().stream().map(song -> song.getName() + " - " + song.getArtist())
 				.toArray(String[]::new);
@@ -79,19 +91,29 @@ public class MyPageController implements Initializable {
 		userNAME_TextField.setEditable(false);
 		userID_TextField.setEditable(false);
 		userEMAIL_TextField.setEditable(false);
-
+		userGender_TextField.setEditable(false);
+		userBirth_TextField.setEditable(false);
+		
+		loadPlaylistImage();
 	}
 
-	// 만든 플레이리스트 항목을 넣고 싶은데 아직 구현하지 못하여 인기차트를 대신 넣음
-	// 내가 플레이리스트 모아보는 화면 구현 구상 중....
+	
+	// 만든 플레이리스트 항목을 넣고 싶은데 일단 임시로 외부 이미지 파일을 연결
+	private void loadPlaylistImage() {
+		for (String playlist_ImageUrl : playlist_ImageUrls) {
+			try {
+				Image playlist_Image = new Image(playlist_ImageUrl);
+                ImageView playlist_ImageView = new ImageView(playlist_Image);
+                playlist_ImageView.setFitWidth(110); // 필요한 크기로 조정
+                playlist_ImageView.setFitHeight(110); // 필요한 크기로 조정
+                playlist_ImageView.setPreserveRatio(true);
 
-	// 임시 인기차트
-	private void setListView() {
-		ObservableList<Song> songList = FXCollections.observableArrayList(temporaryDB.getSongs());
-		ranking.setCellValueFactory(new PropertyValueFactory<Song, Integer>("id"));
-		songName.setCellValueFactory(new PropertyValueFactory<Song, String>("name"));
-		artistName.setCellValueFactory(new PropertyValueFactory<Song, String>("artist"));
-		tableView.setItems(songList);
+                playlistImage_TilePane.getChildren().add(playlist_ImageView);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println("Failed to load image from URL : " + playlist_ImageUrl);
+			}
+		}
 	}
 
 	@FXML
