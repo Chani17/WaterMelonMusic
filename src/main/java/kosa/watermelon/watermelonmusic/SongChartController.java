@@ -20,6 +20,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -57,7 +59,19 @@ public class SongChartController implements Initializable {
         temporaryDB = TemporaryDB.getInstance();
         setListView();
         setUpContextMenu();
+        setupMyPlaylistButton();
     }
+
+    private void setupMyPlaylistButton() {
+        myPlaylistBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                contextMenu.show(myPlaylistBtn,
+                        myPlaylistBtn.localToScreen(myPlaylistBtn.getBoundsInLocal()).getMinX(),
+                                myPlaylistBtn.localToScreen(myPlaylistBtn.getBoundsInLocal()).getMinY()+myPlaylistBtn.getHeight());
+            }
+        });
+    }
+
     @FXML
     private void setUpContextMenu() {
         contextMenu = new ContextMenu();
@@ -68,27 +82,11 @@ public class SongChartController implements Initializable {
         myPlaylistItem.setOnAction(event -> moveToMyPlaylistPage(event));
 
         contextMenu.getItems().addAll(myPlaylistItem, myPageItem);
-        myPlaylistBtn.setContextMenu(contextMenu);
+//        myPlaylistBtn.setContextMenu(contextMenu);
 
     }
 
     private void moveToMyPlaylistPage(ActionEvent event) {
-        try {
-            Stage newStage = new Stage();
-            Parent playlist = FXMLLoader.load(getClass().getResource("playlist.fxml"));
-
-            Scene scene = new Scene(playlist);
-
-            newStage.setTitle("My Playlist");
-            newStage.setScene(scene);
-            newStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    void selectedMyPlaylistBtn(ActionEvent event) {
         try {
             Stage newStage = new Stage();
             Stage stage = (Stage)myPlaylistBtn.getScene().getWindow();
