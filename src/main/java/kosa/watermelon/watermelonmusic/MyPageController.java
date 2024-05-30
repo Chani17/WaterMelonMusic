@@ -77,7 +77,7 @@ public class MyPageController implements Initializable {
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		temporaryDB = TemporaryDB.getInstance();
 
-		// 임시로 선택된 사용자 (abcd)
+		// 임시로 선택된 사용자 ("abcd")
 		currentMember = temporaryDB.getMemberById("abcd");
 		String[] albums = temporaryDB.getSongs().stream().map(song -> song.getName() + " - " + song.getArtist())
 				.toArray(String[]::new);
