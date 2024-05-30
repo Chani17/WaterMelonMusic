@@ -56,6 +56,10 @@ public class TemporaryDB {
     public void setMyPlaylist(Song song) {
         if(!myPlaylist.contains(song)) this.myPlaylist.add(song);
     }
+
+    public List<Song> getMyPlaylist() {
+        return myPlaylist;
+    }
     
     public Member getMemberById(String id) {
 		for (Member member : members) {
