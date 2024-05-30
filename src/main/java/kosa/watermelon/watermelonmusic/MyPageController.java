@@ -111,7 +111,7 @@ public class MyPageController implements Initializable {
 
 			newStage.initModality(Modality.APPLICATION_MODAL); // 새로운 Stage를 모달로 설정
 			newStage.setTitle("프로필 편집");
-			newStage.setScene(new Scene(parent, 600, 410));
+			newStage.setScene(new Scene(parent, 600, 464));
 			newStage.show();
 			currentStage.close();
 
@@ -132,8 +132,8 @@ public class MyPageController implements Initializable {
 			Stage currentStage = (Stage) goToChart_BTN.getScene().getWindow();
 
 			newStage.initModality(Modality.APPLICATION_MODAL);
-			newStage.setTitle("프로필 편집");
-			newStage.setScene(new Scene(parent, 600, 410));
+			newStage.setTitle("인기 차트!");
+			newStage.setScene(new Scene(parent, 600, 464));
 			newStage.show();
 			currentStage.close();
 		} catch (IOException e) {

@@ -48,7 +48,7 @@ public class SongChartController implements Initializable {
     private TableColumn<Song, Void> likebtn;
 
     @FXML
-    private Button myPlaylistBtn;
+    private Button detailButton;
 
     private TemporaryDB temporaryDB;
 
@@ -63,11 +63,11 @@ public class SongChartController implements Initializable {
     }
 
     private void setupMyPlaylistButton() {
-        myPlaylistBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        detailButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                contextMenu.show(myPlaylistBtn,
-                        myPlaylistBtn.localToScreen(myPlaylistBtn.getBoundsInLocal()).getMinX(),
-                                myPlaylistBtn.localToScreen(myPlaylistBtn.getBoundsInLocal()).getMinY()+myPlaylistBtn.getHeight());
+                contextMenu.show(detailButton,
+                        detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinX(),
+                                detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinY()+ detailButton.getHeight());
             }
         });
     }
@@ -80,16 +80,36 @@ public class SongChartController implements Initializable {
         MenuItem myPageItem = new MenuItem("My Page");
 
         myPlaylistItem.setOnAction(event -> moveToMyPlaylistPage(event));
+        myPageItem.setOnAction(event -> moveToMyPage(event));
 
         contextMenu.getItems().addAll(myPlaylistItem, myPageItem);
 //        myPlaylistBtn.setContextMenu(contextMenu);
 
     }
 
+    private void moveToMyPage(ActionEvent event) {
+        try {
+            Stage newStage = new Stage();
+            Stage stage = (Stage) detailButton.getScene().getWindow();
+
+            Parent myPage = FXMLLoader.load(getClass().getResource("mypage.fxml"));
+
+            Scene scene = new Scene(myPage);
+
+            newStage.setTitle("My Page");
+            newStage.setScene(scene);
+            newStage.show();
+
+            stage.hide();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void moveToMyPlaylistPage(ActionEvent event) {
         try {
             Stage newStage = new Stage();
-            Stage stage = (Stage)myPlaylistBtn.getScene().getWindow();
+            Stage stage = (Stage) detailButton.getScene().getWindow();
 
             Parent playlist = FXMLLoader.load(getClass().getResource("playlist.fxml"));
 

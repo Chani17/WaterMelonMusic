@@ -55,8 +55,8 @@ public class ProfileEditController {
 			Stage currentStage = (Stage) save_BTN.getScene().getWindow();
 			
 			newStage.initModality(Modality.APPLICATION_MODAL);
-			newStage.setTitle("마이페이지");
-			newStage.setScene(new Scene(parent, 600, 410));
+			newStage.setTitle("My Page");
+			newStage.setScene(new Scene(parent, 600, 464));
 			newStage.show();
 			currentStage.close();
 		} catch (Exception e) {
@@ -75,8 +75,8 @@ public class ProfileEditController {
 			Stage newStage = new Stage();
 			Stage currentStage = (Stage) goToMypage_BTN.getScene().getWindow();
 			newStage.initModality(Modality.APPLICATION_MODAL);
-			newStage.setTitle("마이페이지");
-			newStage.setScene(new Scene(parent, 600, 410));
+			newStage.setTitle("My Page");
+			newStage.setScene(new Scene(parent, 600, 464));
 			newStage.show();
 			currentStage.close();
 		} catch (Exception e) {

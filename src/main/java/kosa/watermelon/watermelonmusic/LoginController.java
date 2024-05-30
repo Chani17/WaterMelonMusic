@@ -46,7 +46,7 @@ public class LoginController implements Initializable {
 
             Scene scene = new Scene(songChart);
 
-            newStage.setTitle("Music!");
+            newStage.setTitle("인기 차트!");
             newStage.setScene(scene);
             newStage.show();
 
