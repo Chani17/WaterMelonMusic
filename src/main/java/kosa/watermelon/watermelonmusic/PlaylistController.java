@@ -8,11 +8,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.net.URL;
@@ -32,6 +37,7 @@ public class PlaylistController implements Initializable {
     @FXML private TableColumn<Song, Void> playBtn;
     @FXML private Button delete;
     @FXML private Button deleteAll;
+    @FXML private Button back;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -159,5 +165,23 @@ public class PlaylistController implements Initializable {
         ObservableList<Song> songs = playlistView.getItems();
         songs.clear();
         selectedSong.clear();
+    }
+
+    // 페이지 되돌아가기(My playlist -> 인기 차트)
+    @FXML
+    private void backToPage(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("songChart.fxml"));
+            Parent parent = loader.load();
+
+            Stage newStage = new Stage();
+            Stage currentStage = (Stage) back.getScene().getWindow();
+            newStage.setTitle("인기 차트!");
+            newStage.setScene(new Scene(parent, 600, 464));
+            newStage.show();
+            currentStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

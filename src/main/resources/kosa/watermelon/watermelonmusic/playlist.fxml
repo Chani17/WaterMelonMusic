@@ -13,7 +13,7 @@
                 <Font name="D2Coding" size="18.0" />
             </font>
             <GridPane.margin>
-                <Insets left="10.0" top="25.0" />
+                <Insets left="10.0" top="40.0" />
             </GridPane.margin>
         </Label>
         <TableView fx:id="playlistView" GridPane.rowIndex="2">
@@ -49,6 +49,14 @@
          <GridPane.margin>
             <Insets bottom="340.0" left="50.0" />
          </GridPane.margin>
+      </Button>
+      <Button fx:id="back" mnemonicParsing="false" text="  ↩  " textAlignment="CENTER" onAction="#backToPage">
+         <GridPane.margin>
+            <Insets bottom="35.0" left="5.0" />
+         </GridPane.margin>
+         <font>
+            <Font name="D2Coding" size="14.0" />
+         </font>
       </Button>
     </children>
     <columnConstraints>
