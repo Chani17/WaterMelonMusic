@@ -43,9 +43,6 @@ public class MyPageController implements Initializable {
 	private TextField userID_TextField;
 
 	@FXML
-	private TextField userPW_TextField;
-
-	@FXML
 	private TextField userEMAIL_TextField;
 	
 	@FXML
@@ -90,7 +87,7 @@ public class MyPageController implements Initializable {
 		// 가져온 데이터를 UI에 설정
 		userNAME_TextField.setText(currentMember.getNickname());
 		userID_TextField.setText(currentMember.getId());
-		userEMAIL_TextField.setText(currentMember.getEMAIL());
+		userEMAIL_TextField.setText(currentMember.getEmail());
 
 		// TextField를 수정 불가능하게 설정
 		userNAME_TextField.setEditable(false);
