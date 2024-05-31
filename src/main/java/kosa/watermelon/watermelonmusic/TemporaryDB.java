@@ -79,4 +79,12 @@ public class TemporaryDB {
 		}
 		throw new IllegalArgumentException("Member not found");
 	}
+
+    public void updateMyPlaylist(List<Song> playlist) {
+        this.myPlaylist = playlist;
+    }
+
+    public void clearMyPlaylist() {
+        this.myPlaylist.clear();
+    }
 }

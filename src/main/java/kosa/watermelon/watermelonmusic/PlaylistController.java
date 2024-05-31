@@ -157,7 +157,9 @@ public class PlaylistController implements Initializable {
     private void handleDeleteAction(ActionEvent event) {
         ObservableList<Song> songs = playlistView.getItems();
         songs.removeIf(song -> selectedSong.get(song));
+        temporaryDB.getMyPlaylist().removeIf(song -> !songs.contains(song));
         selectedSong.keySet().removeIf(song -> !songs.contains(song));
+        temporaryDB.updateMyPlaylist(songs);
     }
 
     @FXML
@@ -165,6 +167,7 @@ public class PlaylistController implements Initializable {
         ObservableList<Song> songs = playlistView.getItems();
         songs.clear();
         selectedSong.clear();
+        temporaryDB.clearMyPlaylist();
     }
 
     // 페이지 되돌아가기(My playlist -> 인기 차트)
