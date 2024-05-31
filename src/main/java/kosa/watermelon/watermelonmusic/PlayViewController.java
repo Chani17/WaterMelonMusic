@@ -24,6 +24,7 @@ public class PlayViewController implements Initializable {
     @FXML private Button playButton;
     @FXML private Button stopButton;
     @FXML private Button pauseButton;
+    private MediaPlayer mediaPlayer;
     private int songId;
 
     @Override
