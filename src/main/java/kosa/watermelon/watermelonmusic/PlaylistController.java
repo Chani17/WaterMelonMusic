@@ -6,6 +6,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -29,12 +30,17 @@ public class PlaylistController implements Initializable {
     @FXML private TableColumn<Song, String> songName;
     @FXML private TableColumn<Song, String> artist;
     @FXML private TableColumn<Song, Void> playBtn;
+    @FXML private Button delete;
+    @FXML private Button deleteAll;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         temporaryDB = TemporaryDB.getInstance();
         selectedSong = new HashMap<>();
         setListView();
+
+        delete.setOnAction(this::handleDeleteAction);
+        deleteAll.setOnAction(this::handDeleteAllAction);
     }
 
     private void setListView() {
@@ -50,11 +56,13 @@ public class PlaylistController implements Initializable {
                 @Override
                 public void addListener(ChangeListener<? super Boolean> changeListener) {
                     selectedSong.put(song, !selectedSong.get(song));
+                    System.out.println(selectedSong.get(song));
                 }
 
                 @Override
                 public void removeListener(ChangeListener<? super Boolean> changeListener) {
                     selectedSong.put(song, !selectedSong.get(song));
+                    System.out.println(selectedSong.get(song));
                 }
 
                 @Override
@@ -137,5 +145,19 @@ public class PlaylistController implements Initializable {
         });
 
         playlistView.setItems(songList);
+    }
+
+    @FXML
+    private void handleDeleteAction(ActionEvent event) {
+        ObservableList<Song> songs = playlistView.getItems();
+        songs.removeIf(song -> selectedSong.get(song));
+        selectedSong.keySet().removeIf(song -> !songs.contains(song));
+    }
+
+    @FXML
+    private void handDeleteAllAction(ActionEvent event) {
+        ObservableList<Song> songs = playlistView.getItems();
+        songs.clear();
+        selectedSong.clear();
     }
 }
