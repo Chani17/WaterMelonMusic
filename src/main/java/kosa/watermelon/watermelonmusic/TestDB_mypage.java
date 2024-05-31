@@ -54,12 +54,22 @@ public class TestDB_mypage {
     }
     
 	public void updateMember(Member updatedMember) {
-		for (int i = 0; i < members.size(); i++) {
-			if (members.get(i).getId().equals(updatedMember.getId())) {
-				members.set(i, updatedMember);
-				return;
-			}
-		}
-		throw new IllegalArgumentException("Member not found");
+		String query = "UPDATE Member SET member_pw=?, email=?, nickname=?, gender=?, birth=? WHERE member_id=?";
+	    try (Connection connection = getConnection();
+	         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+	        preparedStatement.setString(1, updatedMember.getPw());
+	        preparedStatement.setString(2, updatedMember.getEmail());
+	        preparedStatement.setString(3, updatedMember.getNickname());
+	        preparedStatement.setString(4, updatedMember.getGender());
+	        preparedStatement.setDate(5, java.sql.Date.valueOf(updatedMember.getBirth()));
+	        preparedStatement.setString(6, updatedMember.getId());
+	        
+	        int rowsAffected = preparedStatement.executeUpdate();
+	        if (rowsAffected == 0) {
+	            throw new IllegalArgumentException("Member not found");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 	}
 }
