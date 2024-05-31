@@ -10,9 +10,9 @@ import java.util.List;
 
 public class TestDB_mypage {
 	// git에 올릴 때 URL, USER, PASSSWORD 삭제하고 주석처리해서 올리기!!!
-	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
-    private static final String USER = "admin";
-    private static final String PASSWORD = "1234";
+	//private static final String URL = "";
+    //private static final String USER = "";
+    //private static final String PASSWORD = "";
     
     private static TestDB_mypage instance;
     private List<Member> members;
