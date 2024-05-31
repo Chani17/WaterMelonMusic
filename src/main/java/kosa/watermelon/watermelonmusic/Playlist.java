@@ -12,4 +12,16 @@ public class Playlist {
         this.playlistName = playlistName;
         this.songList = songList;
     }
+    
+    public int getPlaylistID() {
+    	return playlistId;
+    }
+    
+    public String getPlaylistName() {
+        return playlistName;
+    }
+
+    public List<String> getSongList() {
+        return songList;
+    }
 }

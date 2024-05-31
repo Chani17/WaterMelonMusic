@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -55,6 +57,9 @@ public class MyPageController implements Initializable {
 	@FXML
 	private TilePane playlistImage_TilePane;
 	
+	@FXML
+	private Label focusLabel; // 마이페이지 텍스트필드에 커서 깜빡이지 않도록 수정
+	
 	private String[] playlist_ImageUrls = {
 			"https://i.pinimg.com/564x/35/23/86/352386ce038dd4de00f3fb832785dbb4.jpg",
 			"https://i.pinimg.com/564x/0a/9e/69/0a9e69096943ed19407cf02991957cd1.jpg",
@@ -95,6 +100,10 @@ public class MyPageController implements Initializable {
 		userBirth_TextField.setEditable(false);
 		
 		loadPlaylistImage();
+		
+		// 이 메서드는 FXML이 로드된 후 호출됩니다.
+        // 여기서 TextField에 포커스를 제거하고 다른 곳으로 포커스를 설정합니다.
+		Platform.runLater(() -> focusLabel.requestFocus());
 	}
 
 	
@@ -133,9 +142,9 @@ public class MyPageController implements Initializable {
 
 			newStage.initModality(Modality.APPLICATION_MODAL); // 새로운 Stage를 모달로 설정
 			newStage.setTitle("프로필 편집");
-			newStage.setScene(new Scene(parent, 600, 464));
-			newStage.show();
-			currentStage.close();
+			newStage.setScene(new Scene(parent, 300, 200));
+			newStage.showAndWait();
+			//currentStage.close();
 
 			// 프로필 수정 후 업데이트
 			userNAME_TextField.setText(currentMember.getNickname());

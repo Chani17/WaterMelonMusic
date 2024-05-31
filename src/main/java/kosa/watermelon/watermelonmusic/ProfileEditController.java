@@ -50,14 +50,7 @@ public class ProfileEditController {
 
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("mypage.fxml"));
 			Parent parent = loader.load();
-
-			Stage newStage = new Stage();
 			Stage currentStage = (Stage) save_BTN.getScene().getWindow();
-			
-			newStage.initModality(Modality.APPLICATION_MODAL);
-			newStage.setTitle("My Page");
-			newStage.setScene(new Scene(parent, 600, 464));
-			newStage.show();
 			currentStage.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -71,13 +64,7 @@ public class ProfileEditController {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("mypage.fxml"));
 			Parent parent = loader.load();
-			
-			Stage newStage = new Stage();
 			Stage currentStage = (Stage) goToMypage_BTN.getScene().getWindow();
-			newStage.initModality(Modality.APPLICATION_MODAL);
-			newStage.setTitle("My Page");
-			newStage.setScene(new Scene(parent, 600, 464));
-			newStage.show();
 			currentStage.close();
 		} catch (Exception e) {
 			e.printStackTrace();
