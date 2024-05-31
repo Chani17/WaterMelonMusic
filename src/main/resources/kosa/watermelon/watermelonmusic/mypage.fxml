@@ -15,6 +15,8 @@
 	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="kosa.watermelon.watermelonmusic.MyPageController">
 	<!-- TODO Add Nodes -->
+	<Label fx:id="focusLabel" layoutX="19.0" layoutY="1.0"
+		prefHeight="0.0" prefWidth="0.0" />
 	<Label layoutX="19.0" layoutY="21.0" prefHeight="22.0"
 		prefWidth="150.0" text="▶ 마이페이지">
 		<font>
@@ -22,57 +24,57 @@
 		</font>
 	</Label>
 	<ImageView fx:id="profile_Image" fitHeight="157.0"
-		fitWidth="158.0" layoutX="19.0" layoutY="72.0" pickOnBounds="true"
+		fitWidth="158.0" layoutX="15.0" layoutY="81.0" pickOnBounds="true"
 		preserveRatio="true">
 		<image>
 			<Image url="@profile.jpg" />
 		</image>
 	</ImageView>
 
-	<Label layoutX="19.0" layoutY="271.0" prefHeight="22.0"
+	<Label layoutX="15.0" layoutY="280.0" prefHeight="22.0"
 		prefWidth="50.0" text="닉네임">
 		<font>
 			<Font name="D2Coding Bold" size="12.0" />
 		</font>
 	</Label>
-	<TextField fx:id="userNAME_TextField" layoutX="69.0"
-		layoutY="271.0" prefHeight="22.0" prefWidth="107.0" />
+	<TextField fx:id="userNAME_TextField" layoutX="65.0"
+		layoutY="280.0" prefHeight="22.0" prefWidth="107.0" />
 
-	<Label layoutX="19.0" layoutY="304.0" prefHeight="22.0"
+	<Label layoutX="15.0" layoutY="313.0" prefHeight="22.0"
 		prefWidth="50.0" text="아이디">
 		<font>
 			<Font name="D2Coding Bold" size="12.0" />
 		</font>
 	</Label>
-	<TextField fx:id="userID_TextField" layoutX="69.0"
-		layoutY="304.0" prefHeight="22.0" prefWidth="107.0" />
+	<TextField fx:id="userID_TextField" layoutX="65.0"
+		layoutY="313.0" prefHeight="22.0" prefWidth="107.0" />
 
-	<Label layoutX="19.0" layoutY="336.0" prefHeight="22.0"
+	<Label layoutX="15.0" layoutY="345.0" prefHeight="22.0"
 		prefWidth="50.0" text="이메일">
 		<font>
 			<Font name="D2Coding Bold" size="12.0" />
 		</font>
 	</Label>
-	<TextField fx:id="userEMAIL_TextField" layoutX="69.0"
-		layoutY="336.0" prefHeight="22.0" prefWidth="107.0" />
+	<TextField fx:id="userEMAIL_TextField" layoutX="65.0"
+		layoutY="345.0" prefHeight="22.0" prefWidth="107.0" />
 
-	<Label alignment="CENTER" layoutX="19.0" layoutY="368.0"
+	<Label alignment="CENTER" layoutX="15.0" layoutY="377.0"
 		prefHeight="22.0" prefWidth="50.0" text="생일" textAlignment="RIGHT">
 		<font>
 			<Font name="D2Coding Bold" size="12.0" />
 		</font>
 	</Label>
-	<TextField fx:id="userBirth_TextField" layoutX="69.0"
-		layoutY="368.0" prefHeight="22.0" prefWidth="107.0" />
+	<TextField fx:id="userBirth_TextField" layoutX="65.0"
+		layoutY="377.0" prefHeight="22.0" prefWidth="107.0" />
 
-	<Label alignment="CENTER" layoutX="18.0" layoutY="401.0"
+	<Label alignment="CENTER" layoutX="14.0" layoutY="410.0"
 		prefHeight="22.0" prefWidth="50.0" text="성별" textAlignment="RIGHT">
 		<font>
 			<Font name="D2Coding Bold" size="12.0" />
 		</font>
 	</Label>
-	<TextField fx:id="userGender_TextField" layoutX="69.0"
-		layoutY="401.0" prefHeight="22.0" prefWidth="107.0" />
+	<TextField fx:id="userGender_TextField" layoutX="65.0"
+		layoutY="410.0" prefHeight="22.0" prefWidth="107.0" />
 
 	<Button fx:id="profileEdit_BTN" layoutX="345.0" layoutY="22.0"
 		onAction="#profileEdit_Action" prefHeight="22.0" prefWidth="79.0"

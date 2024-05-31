@@ -13,6 +13,7 @@ public class MainApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 600, 464);
         stage.setTitle("WaterMelon Music!");
         stage.setScene(scene);
+        //stage.setResizable(false); // 창 크기 조절 비활성화
         stage.show();
     }
 
