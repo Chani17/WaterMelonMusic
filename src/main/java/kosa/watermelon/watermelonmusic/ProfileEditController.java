@@ -46,7 +46,8 @@ public class ProfileEditController {
 			member.setPw(newPW);
 
 			// Update the member in the TemporaryDB
-			TemporaryDB.getInstance().updateMember(member);
+			TestDB_mypage.getInstance().updateMember(member);
+			//TemporaryDB.getInstance().updateMember(member);
 
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("mypage.fxml"));
 			Parent parent = loader.load();

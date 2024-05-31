@@ -5,8 +5,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,10 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
@@ -71,23 +66,35 @@ public class MyPageController implements Initializable {
 			// 추가 URL을 여기에 넣기
 	};
 
-	private TemporaryDB temporaryDB;
+	//private TemporaryDB temporaryDB;
 
 	private Member currentMember;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		temporaryDB = TemporaryDB.getInstance();
-
+		//temporaryDB = TemporaryDB.getInstance();
 		// 임시로 선택된 사용자 ("abcd")
-		currentMember = temporaryDB.getMemberById("abcd");
-		String[] albums = temporaryDB.getSongs().stream().map(song -> song.getName() + " - " + song.getArtist())
-				.toArray(String[]::new);
-
-		// 가져온 데이터를 UI에 설정
-		userNAME_TextField.setText(currentMember.getNickname());
-		userID_TextField.setText(currentMember.getId());
-		userEMAIL_TextField.setText(currentMember.getEmail());
+		//currentMember = temporaryDB.getMemberById("abcd");
+		//String[] albums = temporaryDB.getSongs().stream().map(song -> song.getName() + " - " + song.getArtist())
+		//		.toArray(String[]::new);
+		
+		// 오류 발생 시 삭제
+		currentMember = TestDB_mypage.getMemberById("test");
+		
+		if (currentMember != null) {
+			userNAME_TextField.setText(currentMember.getNickname());
+			userID_TextField.setText(currentMember.getId());
+			userEMAIL_TextField.setText(currentMember.getEmail());
+			userGender_TextField.setText(currentMember.getGender());
+			userBirth_TextField.setText(currentMember.getBirth().toString());
+		}
+		
+		
+		
+		//// 가져온 데이터를 UI에 설정
+		//userNAME_TextField.setText(currentMember.getNickname());
+		//userID_TextField.setText(currentMember.getId());
+		//userEMAIL_TextField.setText(currentMember.getEmail());
 
 		// TextField를 수정 불가능하게 설정
 		userNAME_TextField.setEditable(false);
@@ -98,8 +105,7 @@ public class MyPageController implements Initializable {
 		
 		loadPlaylistImage();
 		
-		// 이 메서드는 FXML이 로드된 후 호출됩니다.
-        // 여기서 TextField에 포커스를 제거하고 다른 곳으로 포커스를 설정합니다.
+        // TextField에 포커스를 제거하고 다른 곳으로 포커스를 설정
 		Platform.runLater(() -> focusLabel.requestFocus());
 	}
 
