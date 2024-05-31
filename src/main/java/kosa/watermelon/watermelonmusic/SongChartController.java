@@ -27,9 +27,9 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class SongChartController implements Initializable {
-    private final static String id = "";
-    private final static String pw = "";
-    private final static String url = "";
+    private final static String id = "admin";
+    private final static String pw = "1234";
+    private final static String url = "jdbc:oracle:thin:@localhost:1521:xe";
 
     @FXML private TableView<Song> tableView;
 
@@ -80,7 +80,6 @@ public class SongChartController implements Initializable {
         myPageItem.setOnAction(event -> moveToMyPage(event));
 
         contextMenu.getItems().addAll(myPlaylistItem, myPageItem);
-//        myPlaylistBtn.setContextMenu(contextMenu);
 
     }
 
@@ -139,19 +138,25 @@ public class SongChartController implements Initializable {
                         playButton.setOnAction(event -> {
                             Song selectedSong = getTableView().getItems().get(getIndex());
                             selectedSong.setClickCnt();
-                            Connection conn = DBConnection();
 
-                            try(PreparedStatement pstmt = conn.prepareStatement("SELECT song_file FROM Song WHERE song_id=?")) {
-                                pstmt.setLong(1, selectedSong.getId());
-                                try(ResultSet res = pstmt.executeQuery()) {
-                                    if(res.next()) {
-                                        System.out.println("selectedSong.getName() = " + res.getString("song_file"));
-                                    }
-                                }
-                            } catch (SQLException e) {
+                            try {
+                                Stage newStage = new Stage();
+                                Stage stage = (Stage) playButton.getScene().getWindow();
+
+                                FXMLLoader loader = new FXMLLoader(getClass().getResource("playview.fxml"));
+                                Parent playView = loader.load();
+                                PlayViewController controller = loader.getController();
+                                controller.setSongId(selectedSong.getId());
+
+                                Scene scene = new Scene(playView);
+
+                                newStage.setTitle("Play Music!");
+                                newStage.setScene(scene);
+                                newStage.show();
+//                                stage.hide();
+
+                            } catch (IOException e) {
                                 e.printStackTrace();
-                            } finally {
-                                DBClose(conn);
                             }
                         });
                     }
