@@ -2,6 +2,7 @@ package kosa.watermelon.watermelonmusic;
 	
 import java.io.IOException;
 import java.net.URL;
+import java.sql.*;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -26,29 +27,25 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class SongChartController implements Initializable {
-    @FXML
-    private TableView<Song> tableView;
+    private final static String id = "";
+    private final static String pw = "";
+    private final static String url = "";
 
-    @FXML
-    private TableColumn<Song, Integer> ranking;
+    @FXML private TableView<Song> tableView;
 
-    @FXML
-    private TableColumn<Song, String> songName;
+    @FXML private TableColumn<Song, Integer> ranking;
 
-    @FXML
-    private TableColumn<Song, String> artistName;
+    @FXML private TableColumn<Song, String> songName;
 
-    @FXML
-    private TableColumn<Song, Void> playBtn;
+    @FXML private TableColumn<Song, String> artistName;
 
-    @FXML
-    private TableColumn<Song, Void> addBtn;
+    @FXML private TableColumn<Song, Void> playBtn;
 
-    @FXML
-    private TableColumn<Song, Void> likebtn;
+    @FXML private TableColumn<Song, Void> addBtn;
 
-    @FXML
-    private Button detailButton;
+    @FXML private TableColumn<Song, Void> likebtn;
+
+    @FXML private Button detailButton;
 
     private TemporaryDB temporaryDB;
 
@@ -142,8 +139,20 @@ public class SongChartController implements Initializable {
                         playButton.setOnAction(event -> {
                             Song selectedSong = getTableView().getItems().get(getIndex());
                             selectedSong.setClickCnt();
-                            System.out.println("selectedSong.getName() = " + selectedSong.getName());
-                            System.out.println("selectedSong.getClickCnt() = " + selectedSong.getClickCnt());
+                            Connection conn = DBConnection();
+
+                            try(PreparedStatement pstmt = conn.prepareStatement("SELECT song_file FROM Song WHERE song_id=?")) {
+                                pstmt.setLong(1, selectedSong.getId());
+                                try(ResultSet res = pstmt.executeQuery()) {
+                                    if(res.next()) {
+                                        System.out.println("selectedSong.getName() = " + res.getString("song_file"));
+                                    }
+                                }
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            } finally {
+                                DBClose(conn);
+                            }
                         });
                     }
 
@@ -216,5 +225,38 @@ public class SongChartController implements Initializable {
                 };
             }
         });
+    }
+
+    private Connection DBConnection() {
+        //드라이버 검색 (db와 연동 준비)
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            System.out.println("Driver search success");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Driver search fail");
+            System.exit(0);
+        }
+
+        //데이터베이스 연결 - 커넥션 만들기
+        Connection conn = null;
+
+        try {
+            conn = DriverManager.getConnection(url, id, pw);
+            System.out.println("Sucess");
+        } catch (SQLException e) {
+            System.err.println("Fail");
+            System.exit(0);
+        }
+        return conn;
+    }
+
+    private void DBClose(Connection conn) {
+        try {
+            if(conn != null) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
