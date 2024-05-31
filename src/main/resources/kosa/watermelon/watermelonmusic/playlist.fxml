@@ -18,7 +18,7 @@
         </Label>
         <TableView fx:id="playlistView" GridPane.rowIndex="2">
             <columns>
-                <TableColumn fx:id="checkBox" prefWidth="39.0" resizable="false" />
+                <TableColumn fx:id="check" prefWidth="39.0" resizable="false" />
                 <TableColumn fx:id="songName" editable="false" prefWidth="379.0000305175781" resizable="false" sortable="false" text="제목" />
                 <TableColumn fx:id="artist" prefWidth="126.33331298828125" text="아티스트" />
                 <TableColumn fx:id="playBtn" prefWidth="53.33331298828125" />
