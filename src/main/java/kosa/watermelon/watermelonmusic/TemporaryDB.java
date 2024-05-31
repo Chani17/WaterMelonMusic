@@ -56,6 +56,10 @@ public class TemporaryDB {
     public void setMyPlaylist(Song song) {
         if(!myPlaylist.contains(song)) this.myPlaylist.add(song);
     }
+
+    public List<Song> getMyPlaylist() {
+        return myPlaylist;
+    }
     
     public Member getMemberById(String id) {
 		for (Member member : members) {
@@ -75,4 +79,12 @@ public class TemporaryDB {
 		}
 		throw new IllegalArgumentException("Member not found");
 	}
+
+    public void updateMyPlaylist(List<Song> playlist) {
+        this.myPlaylist = playlist;
+    }
+
+    public void clearMyPlaylist() {
+        this.myPlaylist.clear();
+    }
 }

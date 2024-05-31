@@ -2,37 +2,69 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <GridPane prefHeight="464.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosa.watermelon.watermelonmusic.PlaylistController">
     <children>
-        <Label layoutX="25.0" layoutY="26.0" text="My Playlist">
+        <Label text="My Playlist" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="0">
             <font>
                 <Font name="D2Coding" size="18.0" />
             </font>
             <GridPane.margin>
-                <Insets top="25.0" />
+                <Insets left="10.0" top="40.0" />
             </GridPane.margin>
-            <padding>
-                <Insets left="10.0" />
-            </padding>
         </Label>
-        <TableView layoutY="77.0" prefHeight="397.0" prefWidth="601.0" GridPane.rowIndex="1">
+        <TableView fx:id="playlistView" GridPane.rowIndex="2">
             <columns>
-                <TableColumn fx:id="checkBox" prefWidth="39.0" resizable="false" />
-                <TableColumn fx:id="content" editable="false" minWidth="0.0" prefWidth="514.6666564941406" resizable="false" sortable="false" />
+                <TableColumn fx:id="check" prefWidth="39.0" resizable="false" />
+                <TableColumn fx:id="songName" editable="false" prefWidth="379.0000305175781" resizable="false" sortable="false" text="제목" />
+                <TableColumn fx:id="artist" prefWidth="126.33331298828125" text="아티스트" />
+                <TableColumn fx:id="playBtn" prefWidth="53.33331298828125" />
             </columns>
             <GridPane.margin>
                 <Insets top="40.0" />
             </GridPane.margin>
         </TableView>
+      <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+         <GridPane.margin>
+            <Insets left="540.0" top="20.0" />
+         </GridPane.margin>
+         <image>
+            <Image url="@playButton.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="delete" mnemonicParsing="false" prefHeight="22.0" prefWidth="42.0" text="삭제" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets bottom="340.0" left="5.0" />
+         </GridPane.margin>
+         <font>
+            <Font name="D2Coding" size="12.0" />
+         </font></Button>
+      <Button fx:id="deleteAll" mnemonicParsing="false" prefHeight="22.0" prefWidth="70.0" text="전체 삭제" GridPane.rowIndex="2">
+         <font>
+            <Font name="D2Coding" size="12.0" />
+         </font>
+         <GridPane.margin>
+            <Insets bottom="340.0" left="50.0" />
+         </GridPane.margin>
+      </Button>
+      <Button fx:id="back" mnemonicParsing="false" text="  ↩  " textAlignment="CENTER" onAction="#backToPage">
+         <GridPane.margin>
+            <Insets bottom="35.0" left="5.0" />
+         </GridPane.margin>
+         <font>
+            <Font name="D2Coding" size="14.0" />
+         </font>
+      </Button>
     </children>
     <columnConstraints>
-        <ColumnConstraints />
+        <ColumnConstraints hgrow="ALWAYS" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints />
-        <RowConstraints />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+      <RowConstraints maxHeight="397.00000381469727" minHeight="259.99999237060547" prefHeight="363.0" vgrow="ALWAYS" />
     </rowConstraints>
 </GridPane>
