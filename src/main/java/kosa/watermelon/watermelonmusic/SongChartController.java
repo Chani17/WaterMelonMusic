@@ -20,6 +20,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -46,7 +47,11 @@ public class SongChartController implements Initializable {
     @FXML private TableColumn<Song, Void> likebtn;
 
     @FXML private Button detailButton;
+    
+    @FXML private Button search_BTN;
 
+    @FXML private TextField search_TextField;
+    
     private TemporaryDB temporaryDB;
 
     private ContextMenu contextMenu;
@@ -122,6 +127,13 @@ public class SongChartController implements Initializable {
         }
     }
 
+    // 검색어 서치 액션
+    void search_Action(ActionEvent event) {
+    	String searchSong = search_TextField.getText();
+    	// 검색 로직 작성 예정
+    	System.out.println("검색어 : " + searchSong);
+    }
+    
     private void setListView() {
         ObservableList<Song> songList = FXCollections.observableArrayList(temporaryDB.getSongs());
         ranking.setCellValueFactory(new PropertyValueFactory<Song, Integer>("id"));

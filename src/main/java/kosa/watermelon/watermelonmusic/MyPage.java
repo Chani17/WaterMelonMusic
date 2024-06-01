@@ -11,7 +11,7 @@ public class MyPage extends Application {
 	@Override
     public void start(Stage startstage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(MyPage.class.getResource("mypage.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 410);
+        Scene scene = new Scene(fxmlLoader.load(), 600, 464);
         startstage.setTitle("마이페이지");
         startstage.setScene(scene);
         startstage.show();
