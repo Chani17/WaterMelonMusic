@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+
+<AnchorPane prefHeight="464.0" prefWidth="600.0"
+	style="-fx-background-color: #FFFFFF;"
+	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="kosa.watermelon.watermelonmusic.postingPageController">
+	<Label layoutX="20.0" layoutY="20.0" text="포스팅 페이지" />
+	<Button fx:id="goToMyPage_BTN" layoutX="536.0" layoutY="21.0"
+		onAction="#goToMyPage_Action" prefHeight="24.0" prefWidth="50.0"
+		text="◀◀" />
+	<!-- TODO Add Nodes -->
+</AnchorPane>
+

@@ -25,6 +25,7 @@ public class MyPageController implements Initializable {
 	@FXML private ImageView profile_Image;
 	@FXML private Button profileEdit_BTN;
 	@FXML private Button goToChart_BTN;
+	@FXML private Button postingPage_BTN;
 	@FXML private TextField userNAME_TextField;
 	@FXML private TextField userID_TextField;
 	@FXML private TextField userEMAIL_TextField;
@@ -107,8 +108,8 @@ public class MyPageController implements Initializable {
 		}
 	}
 
-	@FXML
-	void profileEdit_Action(ActionEvent event) {
+	@FXML // 마이페이지 → 프로필 편집 페이지 이동 이벤트 처리
+	private void profileEdit_Action(ActionEvent event) {
 		try {
 			// FXML 파일 로드
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("profileEDIT.fxml"));
@@ -135,8 +136,8 @@ public class MyPageController implements Initializable {
 		}
 	}
 
-	@FXML
-	void goToChart_Action(ActionEvent event) {
+	@FXML // 마이페이지 → 인기차트 페이지 이동 이벤트 처리
+	private void goToChart_Action(ActionEvent event) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("songChart.fxml"));
 			Parent parent = loader.load();
@@ -153,4 +154,23 @@ public class MyPageController implements Initializable {
 			e.printStackTrace();
 		}
 	}
+	
+	@FXML // 마이페이지 → 포스팅 페이지 이동 이벤트 처리
+	private void postingPage_Action(ActionEvent event)  {
+		try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("postingPage.fxml"));
+            Parent parent = loader.load();
+            
+            Stage newStage = new Stage();
+			Stage currentStage = (Stage) postingPage_BTN.getScene().getWindow();
+			
+			newStage.initModality(Modality.APPLICATION_MODAL);
+			newStage.setTitle("플레이리스트 포스팅");
+			newStage.setScene(new Scene(parent, 600, 464));
+			newStage.show();
+			currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
