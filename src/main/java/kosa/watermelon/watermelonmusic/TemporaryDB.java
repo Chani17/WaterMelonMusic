@@ -91,7 +91,7 @@ public class TemporaryDB {
     public List<Song> searchSongs(String keyword) {
         List<Song> result = new ArrayList<>();
         for (Song song : songs) {
-            if (song.getName().toLowerCase().contains(keyword.toLowerCase())) {
+            if ((song.getName().toLowerCase().contains(keyword.toLowerCase())) || (song.getArtist().toLowerCase().contains(keyword.toLowerCase()))) {
                 result.add(song);
             }
         }

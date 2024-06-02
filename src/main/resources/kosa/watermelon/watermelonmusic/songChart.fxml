@@ -32,8 +32,9 @@
 			<!-- Search TextField and Button will be loaded here from search.fxml -->
 		</HBox>
 		<Button fx:id="detailButton" mnemonicParsing="false"
-			onAction="#setUpContextMenu" text="..." GridPane.columnIndex="2"
-			GridPane.halignment="RIGHT" GridPane.rowIndex="0">
+			onAction="#setUpContextMenu" text="..." prefHeight="30.0"
+			prefWidth="50.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT"
+			GridPane.rowIndex="0">
 			<GridPane.margin>
 				<Insets right="10.0" top="20.0" />
 			</GridPane.margin>
