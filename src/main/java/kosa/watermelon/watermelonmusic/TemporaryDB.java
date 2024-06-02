@@ -12,10 +12,10 @@ public class TemporaryDB {
 
     // 이메일 항목 추가
     public TemporaryDB() {
-    	this.members = new ArrayList<>();
-		members.add(new Member("abcd", "1234", "melon", "abcd@naver.com"));
-		members.add(new Member("qwer", "0101", "flo", "qwer@naver.com"));
-		members.add(new Member("zxcv", "5678", "genie", "zxcv@naver.com"));
+    	//this.members = new ArrayList<>();
+		//members.add(new Member("abcd", "1234", "melon", "abcd@naver.com"));
+		//members.add(new Member("qwer", "0101", "flo", "qwer@naver.com"));
+		//members.add(new Member("zxcv", "5678", "genie", "zxcv@naver.com"));
 
         this.songs = new ArrayList<>();
         songs.add(new Song(1, "Supernova", "aespa",0 ,0));
@@ -86,5 +86,15 @@ public class TemporaryDB {
 
     public void clearMyPlaylist() {
         this.myPlaylist.clear();
+    }
+    
+    public List<Song> searchSongs(String keyword) {
+        List<Song> result = new ArrayList<>();
+        for (Song song : songs) {
+            if (song.getName().toLowerCase().contains(keyword.toLowerCase())) {
+                result.add(song);
+            }
+        }
+        return result;
     }
 }

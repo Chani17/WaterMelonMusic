@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosa.watermelon.watermelonmusic.SearchController" spacing="10" alignment="CENTER_LEFT">
+    <children>
+        <TextField fx:id="search_TextField" promptText="곡 제목을 입력하세요" />
+        <Button fx:id="search_BTN" text="검색" onAction="#search_Action" />
+    </children>
+    <HBox.margin>
+        <Insets top="20.0" left="10.0" />
+    </HBox.margin>
+</HBox>

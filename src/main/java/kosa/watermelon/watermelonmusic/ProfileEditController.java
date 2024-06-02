@@ -6,10 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ProfileEditController {
@@ -47,7 +45,7 @@ public class ProfileEditController {
 
 			// Update the member in the TemporaryDB
 			TestDB_mypage.getInstance().updateMember(member);
-			//TemporaryDB.getInstance().updateMember(member);
+			// TemporaryDB.getInstance().updateMember(member);
 
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("mypage.fxml"));
 			Parent parent = loader.load();
@@ -58,7 +56,7 @@ public class ProfileEditController {
 			throw new RuntimeException("Failed to save changes", e);
 		}
 	}
-	
+
 	@FXML
 	// 이전 화면으로 뒤로가기 (profileEDIT 화면 → MyPage 화면)
 	void goToMypage_Action(ActionEvent event) {

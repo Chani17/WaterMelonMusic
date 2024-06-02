@@ -22,35 +22,16 @@ import javafx.stage.Stage;
 
 public class MyPageController implements Initializable {
 
-	@FXML
-	private ImageView profile_Image;
-
-	@FXML
-	private Button profileEdit_BTN;
-
-	@FXML
-	private Button goToChart_BTN;
-
-	@FXML
-	private TextField userNAME_TextField;
-
-	@FXML
-	private TextField userID_TextField;
-
-	@FXML
-	private TextField userEMAIL_TextField;
-	
-	@FXML
-	private TextField userGender_TextField;
-	
-	@FXML
-	private TextField userBirth_TextField;
-
-	@FXML
-	private TilePane playlistImage_TilePane;
-	
-	@FXML
-	private Label focusLabel; // 마이페이지 텍스트필드에 커서 깜빡이지 않도록 수정
+	@FXML private ImageView profile_Image;
+	@FXML private Button profileEdit_BTN;
+	@FXML private Button goToChart_BTN;
+	@FXML private TextField userNAME_TextField;
+	@FXML private TextField userID_TextField;
+	@FXML private TextField userEMAIL_TextField;
+	@FXML private TextField userGender_TextField;
+	@FXML private TextField userBirth_TextField;
+	@FXML private TilePane playlistImage_TilePane;
+	@FXML private Label focusLabel; // 마이페이지 텍스트필드에 커서 깜빡이지 않도록 수정
 	
 	private String[] playlist_ImageUrls = {
 			"https://i.pinimg.com/564x/35/23/86/352386ce038dd4de00f3fb832785dbb4.jpg",
@@ -73,12 +54,10 @@ public class MyPageController implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		//temporaryDB = TemporaryDB.getInstance();
-		// 임시로 선택된 사용자 ("abcd")
 		//currentMember = temporaryDB.getMemberById("abcd");
 		//String[] albums = temporaryDB.getSongs().stream().map(song -> song.getName() + " - " + song.getArtist())
 		//		.toArray(String[]::new);
 		
-		// 오류 발생 시 삭제
 		currentMember = TestDB_mypage.getMemberById("test");
 		
 		if (currentMember != null) {

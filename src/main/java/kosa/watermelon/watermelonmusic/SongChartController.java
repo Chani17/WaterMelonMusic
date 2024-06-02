@@ -20,10 +20,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -47,10 +48,10 @@ public class SongChartController implements Initializable {
     @FXML private TableColumn<Song, Void> likebtn;
 
     @FXML private Button detailButton;
-    
-    @FXML private Button search_BTN;
 
-    @FXML private TextField search_TextField;
+    @FXML private GridPane root;
+    
+    @FXML private HBox searchContainer;
     
     private TemporaryDB temporaryDB;
 
@@ -59,6 +60,25 @@ public class SongChartController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         temporaryDB = TemporaryDB.getInstance();
+        
+        ranking.setCellValueFactory(new PropertyValueFactory<>("id"));
+        songName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        artistName.setCellValueFactory(new PropertyValueFactory<>("artistName"));
+        
+        ObservableList<Song> allSongs = FXCollections.observableArrayList(temporaryDB.getSongs());
+        tableView.setItems(allSongs);
+        
+        // Load the search component
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("search.fxml"));
+            HBox searchBox = loader.load();
+            SearchController searchController = loader.getController();
+            searchController.setTableView(tableView);
+            searchContainer.getChildren().add(searchBox);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         setListView();
         setUpContextMenu();
         setupMyPlaylistButton();
@@ -127,13 +147,6 @@ public class SongChartController implements Initializable {
         }
     }
 
-    // 검색어 서치 액션
-    void search_Action(ActionEvent event) {
-    	String searchSong = search_TextField.getText();
-    	// 검색 로직 작성 예정
-    	System.out.println("검색어 : " + searchSong);
-    }
-    
     private void setListView() {
         ObservableList<Song> songList = FXCollections.observableArrayList(temporaryDB.getSongs());
         ranking.setCellValueFactory(new PropertyValueFactory<Song, Integer>("id"));

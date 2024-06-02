@@ -12,55 +12,70 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane onContextMenuRequested="#setUpContextMenu" prefHeight="464.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosa.watermelon.watermelonmusic.SongChartController">
-    <children>
-        <Label text="인기차트" GridPane.columnIndex="0" GridPane.rowIndex="0">
-            <font>
-                <Font name="D2Coding" size="18.0" />
-            </font>
-            <GridPane.margin>
-                <Insets left="10.0" top="25.0" />
-            </GridPane.margin>
-        </Label>
-        <HBox alignment="CENTER" prefWidth="392.0" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0">
-            <children>
-                <TextField fx:id="search_TextField" prefHeight="22.0" prefWidth="267.0" promptText="검색어를 입력하세요" />
-                <Button fx:id="search_BTN" onAction="#Search_Action" text="검색" />
-            </children>
-            <GridPane.margin>
-                <Insets top="20.0" />
-            </GridPane.margin>
-        </HBox>
-        <Button fx:id="detailButton" mnemonicParsing="false" onAction="#setUpContextMenu" text="..." GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="0">
-            <GridPane.margin>
-                <Insets right="10.0" top="20.0" />
-            </GridPane.margin>
-            <font>
-                <Font name="D2Coding" size="12.0" />
-            </font>
-        </Button>
-        <TableView fx:id="tableView" prefHeight="377.0" prefWidth="643.0" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="ranking" prefWidth="42.333343505859375" text="순위" />
-                <TableColumn fx:id="songName" prefWidth="194.0" text="곡 정보" />
-                <TableColumn fx:id="artistName" prefWidth="186.0" text="아티스트" />
-                <TableColumn fx:id="playBtn" prefWidth="57.33331298828125" text="듣기" />
-                <TableColumn fx:id="addBtn" prefWidth="58.0" text="담기" />
-                <TableColumn fx:id="likebtn" prefWidth="61.33331298828125" text="좋아요" />
-            </columns>
-            <GridPane.margin>
-                <Insets top="40.0" />
-            </GridPane.margin>
-        </TableView>
-    </children>
-    <columnConstraints>
-        <ColumnConstraints hgrow="ALWAYS" maxWidth="228.599951171875" minWidth="68.80000000000001" prefWidth="118.40003662109376" />
-        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="485.6000000000001" minWidth="324.800048828125" prefWidth="392.00000000000006" />
-        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="120.79999999999995" minWidth="49.599987792968705" prefWidth="88.79999999999995" />
-    </columnConstraints>
-    <rowConstraints>
-        <RowConstraints vgrow="NEVER" />
-        <RowConstraints vgrow="NEVER" />
-        <RowConstraints vgrow="ALWAYS" />
-    </rowConstraints>
+<GridPane onContextMenuRequested="#setUpContextMenu"
+	prefHeight="464.0" prefWidth="600.0"
+	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="kosa.watermelon.watermelonmusic.SongChartController">
+	<children>
+		<Label text="인기차트" GridPane.columnIndex="0"
+			GridPane.rowIndex="0">
+			<font>
+				<Font name="D2Coding" size="18.0" />
+			</font>
+			<GridPane.margin>
+				<Insets left="10.0" top="25.0" />
+			</GridPane.margin>
+		</Label>
+		<HBox fx:id="searchContainer" alignment="CENTER"
+			prefWidth="392.0" spacing="10" GridPane.columnIndex="1"
+			GridPane.rowIndex="0">
+			<!-- Search TextField and Button will be loaded here from search.fxml -->
+		</HBox>
+		<Button fx:id="detailButton" mnemonicParsing="false"
+			onAction="#setUpContextMenu" text="..." GridPane.columnIndex="2"
+			GridPane.halignment="RIGHT" GridPane.rowIndex="0">
+			<GridPane.margin>
+				<Insets right="10.0" top="20.0" />
+			</GridPane.margin>
+			<font>
+				<Font name="D2Coding" size="12.0" />
+			</font>
+		</Button>
+		<TableView fx:id="tableView" prefHeight="377.0"
+			prefWidth="643.0" GridPane.columnSpan="3" GridPane.rowIndex="2"
+			GridPane.vgrow="ALWAYS">
+			<columns>
+				<TableColumn fx:id="ranking"
+					prefWidth="42.333343505859375" text="순위" />
+				<TableColumn fx:id="songName" prefWidth="194.0"
+					text="곡 정보" />
+				<TableColumn fx:id="artistName" prefWidth="186.0"
+					text="아티스트" />
+				<TableColumn fx:id="playBtn"
+					prefWidth="57.33331298828125" text="듣기" />
+				<TableColumn fx:id="addBtn" prefWidth="58.0" text="담기" />
+				<TableColumn fx:id="likebtn"
+					prefWidth="61.33331298828125" text="좋아요" />
+			</columns>
+			<GridPane.margin>
+				<Insets top="40.0" />
+			</GridPane.margin>
+		</TableView>
+	</children>
+	<columnConstraints>
+		<ColumnConstraints hgrow="ALWAYS"
+			maxWidth="228.599951171875" minWidth="68.80000000000001"
+			prefWidth="118.40003662109376" />
+		<ColumnConstraints halignment="CENTER"
+			hgrow="ALWAYS" maxWidth="485.6000000000001"
+			minWidth="324.800048828125" prefWidth="392.00000000000006" />
+		<ColumnConstraints halignment="RIGHT" hgrow="NEVER"
+			maxWidth="120.79999999999995" minWidth="49.599987792968705"
+			prefWidth="88.79999999999995" />
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints vgrow="NEVER" />
+		<RowConstraints vgrow="NEVER" />
+		<RowConstraints vgrow="ALWAYS" />
+	</rowConstraints>
 </GridPane>
