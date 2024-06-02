@@ -48,26 +48,37 @@ public class MyPageController implements Initializable {
 			// 추가 URL을 여기에 넣기
 	};
 
-	//private TemporaryDB temporaryDB;
+	private TemporaryDB temporaryDB;
 
 	private Member currentMember;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		//temporaryDB = TemporaryDB.getInstance();
+		// Example of getting current user from a static context or a singleton
+        currentMember = SessionManager.getCurrentUser();
+        
+        if (currentMember != null) {
+            userNAME_TextField.setText(currentMember.getNickname());
+            userID_TextField.setText(currentMember.getId());
+            userEMAIL_TextField.setText(currentMember.getEmail());
+            userGender_TextField.setText(currentMember.getGender());
+            userBirth_TextField.setText(currentMember.getBirth().toString());
+        }
+        
+		temporaryDB = TemporaryDB.getInstance();
 		//currentMember = temporaryDB.getMemberById("abcd");
-		//String[] albums = temporaryDB.getSongs().stream().map(song -> song.getName() + " - " + song.getArtist())
-		//		.toArray(String[]::new);
-		
-		currentMember = TestDB_mypage.getMemberById("test");
-		
-		if (currentMember != null) {
-			userNAME_TextField.setText(currentMember.getNickname());
-			userID_TextField.setText(currentMember.getId());
-			userEMAIL_TextField.setText(currentMember.getEmail());
-			userGender_TextField.setText(currentMember.getGender());
-			userBirth_TextField.setText(currentMember.getBirth().toString());
-		}
+		String[] albums = temporaryDB.getSongs().stream().map(song -> song.getName() + " - " + song.getArtist())
+				.toArray(String[]::new);
+//		
+//		currentMember = TestDB_mypage.getMemberById("test");
+//		
+//		if (currentMember != null) {
+//			userNAME_TextField.setText(currentMember.getNickname());
+//			userID_TextField.setText(currentMember.getId());
+//			userEMAIL_TextField.setText(currentMember.getEmail());
+//			userGender_TextField.setText(currentMember.getGender());
+//			userBirth_TextField.setText(currentMember.getBirth().toString());
+//		}
 		
 		
 		

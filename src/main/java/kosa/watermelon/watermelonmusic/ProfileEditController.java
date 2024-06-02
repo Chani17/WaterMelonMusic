@@ -39,12 +39,37 @@ public class ProfileEditController {
 		try {
 			String newNAME = userNAME_TextField.getText();
 			String newPW = userPW_TextField.getText();
+			
+			// Check if nickname or password fields are empty
+	        if (newNAME.isEmpty()) {
+	            System.out.println("닉네임을 입력해야 합니다.");
+	            userNAME_TextField.setText(member.getNickname()); // 비어있는 경우 텍스트 필드를 초기화
+	            return;
+	        }
 
+	        if (newPW.isEmpty()) {
+	            System.out.println("비밀번호를 입력해야 합니다.");
+	            userPW_TextField.setText(member.getPw()); // 비어있는 경우 텍스트 필드를 초기화
+	            return;
+	        }
+			
+			if (newNAME.length() > 10) {
+	            System.out.println("닉네임이 최대 길이를 초과했습니다. 변경할 수 없습니다.");
+	            userNAME_TextField.setText(member.getNickname()); // 길이를 초과한 경우 텍스트 필드를 초기화
+	            return;
+	        }
+
+	        if (newPW.length() > 20) {
+	            System.out.println("비밀번호가 최대 길이를 초과했습니다. 변경할 수 없습니다.");
+	            userPW_TextField.setText(member.getPw()); // 길이를 초과한 경우 텍스트 필드를 초기화
+	            return;
+	        }
+	        
 			member.setNickname(newNAME);
 			member.setPw(newPW);
 
 			// Update the member in the TemporaryDB
-			TestDB_mypage.getInstance().updateMember(member);
+			SessionManager.getInstance().updateMember(member);
 			// TemporaryDB.getInstance().updateMember(member);
 
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("mypage.fxml"));
