@@ -15,9 +15,9 @@ import java.util.ResourceBundle;
 
 public class PlayViewController implements Initializable {
 
-    private final static String id = "";
-    private final static String pw = "";
-    private final static String url = "";
+    private final static String id = "admin";
+    private final static String pw = "1234";
+    private final static String url = "jdbc:oracle:thin:@localhost:1521:xe";
 
     @FXML private Label songTitle;
     @FXML private Label artist;
@@ -26,6 +26,7 @@ public class PlayViewController implements Initializable {
     @FXML private Button pauseButton;
     private MediaPlayer mediaPlayer;
     private int songId;
+    private boolean endOfMedia;             // 재생 완료를 확인하는 플래그 필드
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -55,10 +56,11 @@ public class PlayViewController implements Initializable {
 
                 String songFilePath = res.getString("song_file");
 
-                // JavaFX MediaPlayer를 사용하여 음악 재생
+                // 미디어 등록
                 Media media = new Media(new File(songFilePath).toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.play();
+                mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.setAutoPlay(true);
+
         } else {
             System.out.println("No song found with id = " + this.songId);
         }
