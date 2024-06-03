@@ -22,10 +22,7 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class PlaylistController implements Initializable {
 
@@ -33,10 +30,10 @@ public class PlaylistController implements Initializable {
     private static String PW = "1234";
     private static String URL = "jdbc:oracle:thin:@localhost:1521:xe";
 
-    @FXML private TableView<Song> playlistView;
+    @FXML private TableView<PlaylistSong> playlistView;
     @FXML private TableColumn<Song, Boolean> check;
-    @FXML private TableColumn<Song, String> songName;
-    @FXML private TableColumn<Song, String> artist;
+    @FXML private TableColumn<PlaylistSong, String> songName;
+    @FXML private TableColumn<PlaylistSong, String> artist;
     @FXML private TableColumn<Song, Void> playBtn;
     @FXML private Button delete;
     @FXML private Button deleteAll;
@@ -50,25 +47,34 @@ public class PlaylistController implements Initializable {
     }
 
     public void setMember(Member member) {
-        System.out.println("setMember = " + member.getId());
         this.currentMember = member;
-        System.out.println("after = " + currentMember.getId());
         setListView();
     }
 
     private void setListView() {
-//        ObservableList<Song> songList = FXCollections.observableArrayList(temporaryDB.getMyPlaylist());
-
         Connection conn = DBConnection();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+        List<PlaylistSong> playlistSongs = new ArrayList<>();
 
         try {
-            pstmt = conn.prepareStatement("SELECT * FROM Playlist WHERE member_id=?");
-            System.out.println("currentMember.getId() = " + currentMember.getId());
+            pstmt = conn.prepareStatement("SELECT s.song_name, a.artist_name \n" +
+                    "FROM Playlist p, TABLE(p.song) song \n" +
+                    "LEFT OUTER JOIN Song s ON song.COLUMN_VALUE = s.song_id \n" +
+                    "LEFT OUTER JOIN Artist a ON s.artist_id = a.artist_id \n" +
+                    "WHERE p.member_id=?");
             pstmt.setString(1, currentMember.getId());
             rs = pstmt.executeQuery();
-            System.out.println(rs.next());
+
+            while(rs.next()) {
+               String name = rs.getString("song_name");
+               String artist = rs.getString("artist_name");
+               System.out.println(name);
+               System.out.println(artist);
+               playlistSongs.add(new PlaylistSong(name, artist));
+           }
+            ObservableList<PlaylistSong> playlist = FXCollections.observableArrayList(playlistSongs);
+            playlistView.setItems(playlist);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,8 +140,8 @@ public class PlaylistController implements Initializable {
 //        });
 
 
-        songName.setCellValueFactory(new PropertyValueFactory<Song, String>("name"));
-        artist.setCellValueFactory(new PropertyValueFactory<Song, String>("artist"));
+        songName.setCellValueFactory(new PropertyValueFactory<PlaylistSong, String>("songName"));
+        artist.setCellValueFactory(new PropertyValueFactory<PlaylistSong, String>("artistName"));
 //        playlistView.setItems(songList);
 
         playBtn.setCellFactory(new Callback<>() {

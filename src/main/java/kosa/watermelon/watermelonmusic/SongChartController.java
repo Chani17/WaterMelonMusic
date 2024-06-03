@@ -27,6 +27,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
 
 public class SongChartController implements Initializable {
     private final static String ID = "admin";
@@ -115,8 +117,6 @@ public class SongChartController implements Initializable {
 
             // PlaylistController 인스턴스를 가져와서 멤버 설정
             PlaylistController controller = loader.getController();
-            System.out.println("before currentMember.getId() = "  + currentMember.getId());
-//            Member member = getMemberById(currentMember.getId());
             controller.setMember(currentMember);
 
             Scene scene = new Scene(playlist);
@@ -221,13 +221,18 @@ public class SongChartController implements Initializable {
                                 Playlist playlist = getCurrentMemberPlaylist(currentMember.getId(), conn);
                                 if(playlist != null) {
                                     // 재생 목록에 노래 추가
-                                    playlist.addSong(selectedSong);
+                                    playlist.addSong(selectedSong.getId());
 
                                     // 데이터베이스 update
                                     updatePlaylist(playlist, conn);
                                 } else {
                                     // 새로운 재생목록 생성
                                     playlist = new Playlist(generateNewPlaylistId(conn), "Default Playlist", currentMember.getId());
+                                    insertPlayList(playlist, conn);
+                                    playlist.addSong(selectedSong.getId());
+
+                                    // 데이터베이스 update
+                                    updatePlaylist(playlist, conn);
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -322,36 +327,46 @@ public class SongChartController implements Initializable {
 
         if(rs.next()) {
             // 재생 목록이 존재하면 Playlist 객체를 만들어서 반환
-            return new Playlist(rs.getInt("playlist_id"), rs.getString("playlist_name"), rs.getString("member_id"));
+            return new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), rs.getString("member_id"));
         } else {
             return null;
         }
     }
 
     // 새로운 재생목록 ID를 생성하는 메서드
-    private int generateNewPlaylistId(Connection conn) throws SQLException {
+    private Long generateNewPlaylistId(Connection conn) throws SQLException {
         // 데이터베이스에서 가장 큰 재생목록 ID를 찾아서 1을 더하여 새로운 ID 생성
         PreparedStatement pstmt = conn.prepareStatement("SELECT MAX(playlist_id) FROM Playlist");
+
         ResultSet rs = pstmt.executeQuery();
         if (rs.next()) {
-            return rs.getInt(1) + 1;
+            return rs.getLong(1) + 1;
         } else {
-            return 1;
+            return 1L;
         }
     }
 
     // 데이터베이스에 재생목록 update
     private void updatePlaylist(Playlist playlist, Connection conn) throws SQLException {
+        // Convert List<Long> to Long[]
+        Long[] songArray = playlist.getSongList().toArray(new Long[0]);
+
+        // Create Oracle ArrayDescriptor for SONG_ARRAY
+        ArrayDescriptor desc = ArrayDescriptor.createDescriptor("SONG_ARRAY", conn);
+
+        // Convert Long[] to oracle.sql.ARRAY
+        ARRAY oracleArray = new ARRAY(desc, conn, songArray);
+
         PreparedStatement pstmt = conn.prepareStatement("UPDATE Playlist SET song=? WHERE playlist_id=?");
-        pstmt.setArray(1, conn.createArrayOf("INTEGER", playlist.getSongList().toArray()));
-        pstmt.setInt(2, playlist.getPlaylistID());
-        pstmt.executeQuery();
+        pstmt.setArray(1, oracleArray);
+        pstmt.setLong(2, playlist.getPlaylistID());
+        pstmt.executeUpdate();
     }
 
     // 데이터베이스에 재생목록 insert
     private void insertPlayList(Playlist playlist, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Playlist(playlist_id, playlist_name, member_id) VALUES (?, ?, ?)");
-        pstmt.setInt(1, playlist.getPlaylistID());
+        pstmt.setLong(1, playlist.getPlaylistID());
         pstmt.setString(2, playlist.getPlaylistName());
         pstmt.setString(3, playlist.getMemberId());
         pstmt.executeQuery();
