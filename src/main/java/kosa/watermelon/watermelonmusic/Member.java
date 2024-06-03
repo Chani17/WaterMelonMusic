@@ -7,8 +7,8 @@ public class Member {
 	private String pw;
 	private String nickname;
 	private String email;
-	private String gender; // 성별 추가
-	private LocalDate birth; // 생일 추가 
+	private String gender;
+	private LocalDate birth;
 
 	public String getId() { return id; }
 	public void setId(String id) { this.id = id; }

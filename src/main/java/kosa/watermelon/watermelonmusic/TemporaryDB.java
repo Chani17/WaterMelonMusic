@@ -6,16 +6,14 @@ import java.util.List;
 public class TemporaryDB {
 
     private static TemporaryDB instance;
-    private List<Member> members;
+    //private List<Member> members;
     private List<Song> songs;
     private List<Song> myPlaylist;
 
     // 이메일 항목 추가
     public TemporaryDB() {
     	//this.members = new ArrayList<>();
-		//members.add(new Member("abcd", "1234", "melon", "abcd@naver.com"));
-		//members.add(new Member("qwer", "0101", "flo", "qwer@naver.com"));
-		//members.add(new Member("zxcv", "5678", "genie", "zxcv@naver.com"));
+		
 
         this.songs = new ArrayList<>();
         songs.add(new Song(1, "Supernova", "aespa",0 ,0));
@@ -37,12 +35,12 @@ public class TemporaryDB {
         this.myPlaylist = new ArrayList<>();
     }
 
-    public Member checkIdAndPw(String id, String pw) {
-        for(Member member : members) {
-            if(member.getId().equals(id) && member.getPw().equals(pw)) return member;
-        }
-        throw new IllegalArgumentException("Please check your id/pw");
-    }
+//    public Member checkIdAndPw(String id, String pw) {
+//        for(Member member : members) {
+//            if(member.getId().equals(id) && member.getPw().equals(pw)) return member;
+//        }
+//        throw new IllegalArgumentException("Please check your id/pw");
+//    }
 
     public static TemporaryDB getInstance() {
         if(instance == null) instance = new TemporaryDB();
@@ -61,24 +59,24 @@ public class TemporaryDB {
         return myPlaylist;
     }
     
-    public Member getMemberById(String id) {
-		for (Member member : members) {
-			if (member.getId().equals(id)) {
-				return member;
-			}
-		}
-		throw new IllegalArgumentException("Member not found");
-	}
+//    public Member getMemberById(String id) {
+//		for (Member member : members) {
+//			if (member.getId().equals(id)) {
+//				return member;
+//			}
+//		}
+//		throw new IllegalArgumentException("Member not found");
+//	}
 
-	public void updateMember(Member updatedMember) {
-		for (int i = 0; i < members.size(); i++) {
-			if (members.get(i).getId().equals(updatedMember.getId())) {
-				members.set(i, updatedMember);
-				return;
-			}
-		}
-		throw new IllegalArgumentException("Member not found");
-	}
+//	public void updateMember(Member updatedMember) {
+//		for (int i = 0; i < members.size(); i++) {
+//			if (members.get(i).getId().equals(updatedMember.getId())) {
+//				members.set(i, updatedMember);
+//				return;
+//			}
+//		}
+//		throw new IllegalArgumentException("Member not found");
+//	}
 
     public void updateMyPlaylist(List<Song> playlist) {
         this.myPlaylist = playlist;
