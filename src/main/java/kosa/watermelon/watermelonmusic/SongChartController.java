@@ -3,6 +3,8 @@ package kosa.watermelon.watermelonmusic;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -47,13 +49,13 @@ public class SongChartController implements Initializable {
 
     @FXML private Button detailButton;
 
-    private TemporaryDB temporaryDB;
+    private Member currentMember;
 
     private ContextMenu contextMenu;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        temporaryDB = TemporaryDB.getInstance();
+//        temporaryDB = TemporaryDB.getInstance();
         setListView();
         setUpContextMenu();
         setupMyPlaylistButton();
@@ -122,11 +124,32 @@ public class SongChartController implements Initializable {
     }
 
     private void setListView() {
-        ObservableList<Song> songList = FXCollections.observableArrayList(temporaryDB.getSongs());
+        Connection conn = DBConnection();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<Song> songs = new ArrayList<>();
+
+        try {
+            pstmt = conn.prepareStatement("SELECT s.song_id, a.artist_name, s.song_name, s.click_count, s.song_file\n" +
+                    "FROM Song s\n" +
+                    "LEFT OUTER JOIN Artist a \n" +
+                    "ON s.artist_id = a.artist_id \n" +
+                    "ORDER BY click_count");
+            rs = pstmt.executeQuery();
+
+            while(rs.next()) {
+                Song song = new Song(rs.getLong("song_id"), rs.getString("song_name"), rs.getString("artist_name"), rs.getLong("click_count"));
+                System.out.println(song.getName());
+                songs.add(song);
+            }
+            ObservableList<Song> songList = FXCollections.observableArrayList(songs);
+            tableView.setItems(songList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         ranking.setCellValueFactory(new PropertyValueFactory<Song, Integer>("id"));
         songName.setCellValueFactory(new PropertyValueFactory<Song, String>("name"));
         artistName.setCellValueFactory(new PropertyValueFactory<Song, String>("artist"));
-        tableView.setItems(songList);
 
         playBtn.setCellFactory(new Callback<>() {
             @Override
@@ -175,32 +198,32 @@ public class SongChartController implements Initializable {
             }
         });
 
-        addBtn.setCellFactory(new Callback<>() {
-            @Override
-            public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
-                return new TableCell<>() {
-                    private final Button addButton = new Button("+");
-                    {
-                        // 버튼 클릭 시 이벤트 처리
-                        addButton.setOnAction(event -> {
-                            Song selectedSong = getTableView().getItems().get(getIndex());
-                            temporaryDB.setMyPlaylist(selectedSong);
-                        });
-                    }
-
-                    // 셸 Rendering
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if(empty) setGraphic(null);
-                        else {
-                            setGraphic(addButton);
-                            setAlignment(Pos.CENTER);
-                        }
-                    }
-                };
-            }
-        });
+//        addBtn.setCellFactory(new Callback<>() {
+//            @Override
+//            public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
+//                return new TableCell<>() {
+//                    private final Button addButton = new Button("+");
+//                    {
+//                        // 버튼 클릭 시 이벤트 처리
+//                        addButton.setOnAction(event -> {
+//                            Song selectedSong = getTableView().getItems().get(getIndex());
+//                            temporaryDB.setMyPlaylist(selectedSong);
+//                        });
+//                    }
+//
+//                    // 셸 Rendering
+//                    @Override
+//                    protected void updateItem(Void item, boolean empty) {
+//                        super.updateItem(item, empty);
+//                        if(empty) setGraphic(null);
+//                        else {
+//                            setGraphic(addButton);
+//                            setAlignment(Pos.CENTER);
+//                        }
+//                    }
+//                };
+//            }
+//        });
 
         likebtn.setCellFactory(new Callback<>() {
             @Override
@@ -211,9 +234,7 @@ public class SongChartController implements Initializable {
                         // 버튼 클릭 시 이벤트 처리
                         likeButton.setOnAction(event -> {
                             Song selectedSong = getTableView().getItems().get(getIndex());
-                            selectedSong.setLikeCnt();
                             System.out.println("selectedSong.getName() = " + selectedSong.getName());
-                            System.out.println("selectedSong.getLikeCnt() = " + selectedSong.getLikeCnt());
                         });
                     }
 
@@ -263,5 +284,9 @@ public class SongChartController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setMember(Member member) {
+        this.currentMember = member;
     }
 }
