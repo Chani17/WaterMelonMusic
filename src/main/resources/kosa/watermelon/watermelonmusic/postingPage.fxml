@@ -1,16 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="464.0" prefWidth="600.0"
 	style="-fx-background-color: #FFFFFF;"
 	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="kosa.watermelon.watermelonmusic.postingPageController">
-	<Label layoutX="20.0" layoutY="20.0" text="포스팅 페이지" />
+	fx:controller="kosa.watermelon.watermelonmusic.PostingPageController">
+	<Label layoutX="19.0" layoutY="21.0" prefHeight="22.0"
+		prefWidth="150.0" text="▶ 포스팅 페이지">
+		<font>
+			<Font name="D2Coding" size="20.0" />
+		</font>
+	</Label>
+	<Button fx:id="addPlaylist_BTN" layoutX="480.0" layoutY="21.0"
+		prefHeight="24.0" prefWidth="50.0"
+		text="+">
+		<font>
+			<Font name="D2Coding Bold" size="14.0" />
+		</font>
+	</Button>
 	<Button fx:id="goToMyPage_BTN" layoutX="536.0" layoutY="21.0"
 		onAction="#goToMyPage_Action" prefHeight="24.0" prefWidth="50.0"
 		text="◀◀" />
-	<!-- TODO Add Nodes -->
+	<!-- 플레이리스트를 담을 ScrollPane -->
+	<ScrollPane layoutX="19.0" layoutY="60.0" prefHeight="380.0"
+		prefWidth="562.0">
+		<VBox fx:id="playlistContainer" spacing="10.0" />
+	</ScrollPane>
 </AnchorPane>
