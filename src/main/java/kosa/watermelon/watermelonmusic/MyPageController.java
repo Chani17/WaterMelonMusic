@@ -48,15 +48,24 @@ public class MyPageController implements Initializable {
 			// 추가 URL을 여기에 넣기
 	};
 
-	private TemporaryDB temporaryDB;
-
 	private Member currentMember;
+	
+	private TemporaryDB temporaryDB;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		//currentMember = temporaryDB.getMemberById("abcd");
+		this.currentMember = SessionManager.getInstance().getCurrentMember();
+        if (currentMember != null) {
+            System.out.println("MyPageController: Member set with ID - " + currentMember.getId());
+            loadMemberInfo();
+        } else {
+            System.out.println("Error: currentMember is null.");
+        }
+        
         // 앨범 ... 아직 TemporaryDB에 연결되어 있음
 		temporaryDB = TemporaryDB.getInstance();
-		//currentMember = temporaryDB.getMemberById("abcd");
+        
 		String[] albums = temporaryDB.getSongs().stream().map(song -> song.getName() + " - " + song.getArtist())
 				.toArray(String[]::new);
 
@@ -76,13 +85,18 @@ public class MyPageController implements Initializable {
 		Platform.runLater(() -> focusLabel.requestFocus());
 	}
 
-	
-	// 추가한 부분
 	public void setMember(Member member) {
-        this.currentMember = member;
+		this.currentMember = member;
+        if (this.currentMember == null) {
+            System.out.println("MyPageController: setMember called with null member");
+        } else {
+            System.out.println("MyPageController: Member set with ID - " + currentMember.getId());
+            loadMemberInfo();
+        }
+    }
 
-        // 가져온 데이터를 UI에 설정
-        if (currentMember != null) {
+    private void loadMemberInfo() {
+    	if (currentMember != null) {
             userNAME_TextField.setText(currentMember.getNickname());
             userID_TextField.setText(currentMember.getId());
             userEMAIL_TextField.setText(currentMember.getEmail());

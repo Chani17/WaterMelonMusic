@@ -1,5 +1,5 @@
 package kosa.watermelon.watermelonmusic;
-	
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
@@ -29,269 +29,289 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class SongChartController implements Initializable {
-    private final static String id = "";
-    private final static String pw = "";
-    private final static String url = "";
+	private final static String id = "admin";
+	private final static String pw = "1234";
+	private final static String url = "jdbc:oracle:thin:@localhost:1521:xe";
 
-    @FXML private TableView<Song> tableView;
+	@FXML
+	private TableView<Song> tableView;
 
-    @FXML private TableColumn<Song, Integer> ranking;
+	@FXML
+	private TableColumn<Song, Integer> ranking;
 
-    @FXML private TableColumn<Song, String> songName;
+	@FXML
+	private TableColumn<Song, String> songName;
 
-    @FXML private TableColumn<Song, String> artistName;
+	@FXML
+	private TableColumn<Song, String> artistName;
 
-    @FXML private TableColumn<Song, Void> playBtn;
+	@FXML
+	private TableColumn<Song, Void> playBtn;
 
-    @FXML private TableColumn<Song, Void> addBtn;
+	@FXML
+	private TableColumn<Song, Void> addBtn;
 
-    @FXML private TableColumn<Song, Void> likebtn;
+	@FXML
+	private TableColumn<Song, Void> likebtn;
 
-    @FXML private Button detailButton;
+	@FXML
+	private Button detailButton;
 
-    @FXML private GridPane root;
-    
-    @FXML private HBox searchContainer;
-    
-    private TemporaryDB temporaryDB;
+	@FXML
+	private GridPane root;
 
-    private ContextMenu contextMenu;
-    
-    private Member currentMember;
+	@FXML
+	private HBox searchContainer;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        temporaryDB = TemporaryDB.getInstance();
-        
-        ranking.setCellValueFactory(new PropertyValueFactory<>("id"));
-        songName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        artistName.setCellValueFactory(new PropertyValueFactory<>("artistName"));
-        
-        ObservableList<Song> allSongs = FXCollections.observableArrayList(temporaryDB.getSongs());
-        tableView.setItems(allSongs);
-        
-        // Load the search component
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("search.fxml"));
-            HBox searchBox = loader.load();
-            SearchController searchController = loader.getController();
-            searchController.setTableView(tableView);
-            searchContainer.getChildren().add(searchBox);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        setListView();
-        setUpContextMenu();
-        setupMyPlaylistButton();
-    }
+	private TemporaryDB temporaryDB;
 
-    public void setMember(Member member) {
-    	this.currentMember = member;
-    }
-    
-    private void setupMyPlaylistButton() {
-        detailButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                contextMenu.show(detailButton,
-                        detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinX(),
-                                detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinY()+ detailButton.getHeight());
-            }
-        });
-    }
+	private ContextMenu contextMenu;
 
-    @FXML
-    private void setUpContextMenu() {
-        contextMenu = new ContextMenu();
+	private Member currentMember;
 
-        MenuItem myPlaylistItem = new MenuItem("My Playlist");
-        MenuItem myPageItem = new MenuItem("My Page");
+	@Override
+	public void initialize(URL url, ResourceBundle resourceBundle) {
+		temporaryDB = TemporaryDB.getInstance();
+		this.currentMember = SessionManager.getInstance().getCurrentMember();
+		if (currentMember != null) {
+			System.out.println("SongChartController: Member set with ID - " + currentMember.getId());
+		} else {
+			System.out.println("Error: currentMember is null.");
+		}
 
-        myPlaylistItem.setOnAction(event -> moveToMyPlaylistPage(event));
-        myPageItem.setOnAction(event -> moveToMyPage(event));
+		ranking.setCellValueFactory(new PropertyValueFactory<>("id"));
+		songName.setCellValueFactory(new PropertyValueFactory<>("name"));
+		artistName.setCellValueFactory(new PropertyValueFactory<>("artistName"));
 
-        contextMenu.getItems().addAll(myPlaylistItem, myPageItem);
+		ObservableList<Song> allSongs = FXCollections.observableArrayList(temporaryDB.getSongs());
+		tableView.setItems(allSongs);
+
+		// Load the search component
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("search.fxml"));
+			HBox searchBox = loader.load();
+			SearchController searchController = loader.getController();
+			searchController.setTableView(tableView);
+			searchContainer.getChildren().add(searchBox);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		setListView();
+		setUpContextMenu();
+		setupMyPlaylistButton();
+	}
+
+	public void setMember(Member member) {
+		this.currentMember = member;
+	}
+
+	private void setupMyPlaylistButton() {
+		detailButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			if (event.getButton() == MouseButton.PRIMARY) {
+				contextMenu.show(detailButton, detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinX(),
+						detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinY()
+								+ detailButton.getHeight());
+			}
+		});
+	}
+
+	@FXML
+	private void setUpContextMenu() {
+		contextMenu = new ContextMenu();
+
+		MenuItem myPlaylistItem = new MenuItem("My Playlist");
+		MenuItem myPageItem = new MenuItem("My Page");
+
+		myPlaylistItem.setOnAction(event -> moveToMyPlaylistPage(event));
+		myPageItem.setOnAction(event -> moveToMyPage(event));
+
+		contextMenu.getItems().addAll(myPlaylistItem, myPageItem);
 //        myPlaylistBtn.setContextMenu(contextMenu);
 
-    }
+	}
 
-    private void moveToMyPage(ActionEvent event) {
-        try {
-            Stage newStage = new Stage();
-            Stage stage = (Stage) detailButton.getScene().getWindow();
+	private void moveToMyPage(ActionEvent event) {
+		try {
+			// FXML 파일 로드
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("myPage.fxml"));
+            Parent parent = loader.load();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("mypage.fxml"));
-            Parent myPage = loader.load();
             // MyPageController 인스턴스를 가져와서 멤버 설정
             MyPageController controller = loader.getController();
             controller.setMember(currentMember);
-            
-            Scene scene = new Scene(myPage);
 
-            newStage.setTitle("My Page");
-            newStage.setScene(scene);
-            newStage.show();
-
-            stage.hide();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void moveToMyPlaylistPage(ActionEvent event) {
-        try {
+            // 새 Stage 생성 후 기존 Stage 닫기
             Stage newStage = new Stage();
-            Stage stage = (Stage) detailButton.getScene().getWindow();
-
-            Parent playlist = FXMLLoader.load(getClass().getResource("playlist.fxml"));
-
-            Scene scene = new Scene(playlist);
-
-            newStage.setTitle("My Playlist");
-            newStage.setScene(scene);
+            newStage.setTitle("My Page");
+            newStage.setScene(new Scene(parent, 600, 464));
             newStage.show();
 
-            stage.hide();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+            // 현재 Stage 닫기
+            ((Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow()).close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-    private void setListView() {
-        ObservableList<Song> songList = FXCollections.observableArrayList(temporaryDB.getSongs());
-        ranking.setCellValueFactory(new PropertyValueFactory<Song, Integer>("id"));
-        songName.setCellValueFactory(new PropertyValueFactory<Song, String>("name"));
-        artistName.setCellValueFactory(new PropertyValueFactory<Song, String>("artist"));
-        tableView.setItems(songList);
+	private void moveToMyPlaylistPage(ActionEvent event) {
+		try {
+			Stage newStage = new Stage();
+			Stage stage = (Stage) detailButton.getScene().getWindow();
 
-        playBtn.setCellFactory(new Callback<>() {
-            @Override
-            public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
-                return new TableCell<>() {
-                    private final Button playButton = new Button("▶");
-                    {
-                        // 버튼 클릭 시 이벤트 처리
-                        playButton.setOnAction(event -> {
-                            Song selectedSong = getTableView().getItems().get(getIndex());
-                            selectedSong.setClickCnt();
-                            Connection conn = DBConnection();
+			Parent playlist = FXMLLoader.load(getClass().getResource("playlist.fxml"));
 
-                            try(PreparedStatement pstmt = conn.prepareStatement("SELECT song_file FROM Song WHERE song_id=?")) {
-                                pstmt.setLong(1, selectedSong.getId());
-                                try(ResultSet res = pstmt.executeQuery()) {
-                                    if(res.next()) {
-                                        System.out.println("selectedSong.getName() = " + res.getString("song_file"));
-                                    }
-                                }
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            } finally {
-                                DBClose(conn);
-                            }
-                        });
-                    }
+			Scene scene = new Scene(playlist);
 
-                    // 셸 Rendering
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if(empty) setGraphic(null);
-                        else {
-                            setGraphic(playButton);
-                            setAlignment(Pos.CENTER);
-                        }
-                    }
-                };
-            }
-        });
+			newStage.setTitle("My Playlist");
+			newStage.setScene(scene);
+			newStage.show();
 
-        addBtn.setCellFactory(new Callback<>() {
-            @Override
-            public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
-                return new TableCell<>() {
-                    private final Button addButton = new Button("+");
-                    {
-                        // 버튼 클릭 시 이벤트 처리
-                        addButton.setOnAction(event -> {
-                            Song selectedSong = getTableView().getItems().get(getIndex());
-                            temporaryDB.setMyPlaylist(selectedSong);
-                        });
-                    }
+			stage.hide();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-                    // 셸 Rendering
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if(empty) setGraphic(null);
-                        else {
-                            setGraphic(addButton);
-                            setAlignment(Pos.CENTER);
-                        }
-                    }
-                };
-            }
-        });
+	private void setListView() {
+		ObservableList<Song> songList = FXCollections.observableArrayList(temporaryDB.getSongs());
+		ranking.setCellValueFactory(new PropertyValueFactory<Song, Integer>("id"));
+		songName.setCellValueFactory(new PropertyValueFactory<Song, String>("name"));
+		artistName.setCellValueFactory(new PropertyValueFactory<Song, String>("artist"));
+		tableView.setItems(songList);
 
-        likebtn.setCellFactory(new Callback<>() {
-            @Override
-            public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
-                return new TableCell<>() {
-                    private final Button likeButton = new Button("❤");
-                    {
-                        // 버튼 클릭 시 이벤트 처리
-                        likeButton.setOnAction(event -> {
-                            Song selectedSong = getTableView().getItems().get(getIndex());
-                            selectedSong.setLikeCnt();
-                            System.out.println("selectedSong.getName() = " + selectedSong.getName());
-                            System.out.println("selectedSong.getLikeCnt() = " + selectedSong.getLikeCnt());
-                        });
-                    }
+		playBtn.setCellFactory(new Callback<>() {
+			@Override
+			public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
+				return new TableCell<>() {
+					private final Button playButton = new Button("▶");
+					{
+						// 버튼 클릭 시 이벤트 처리
+						playButton.setOnAction(event -> {
+							Song selectedSong = getTableView().getItems().get(getIndex());
+							selectedSong.setClickCnt();
+							Connection conn = DBConnection();
 
-                    // 셸 Rendering
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if(empty) setGraphic(null);
-                        else {
-                            setGraphic(likeButton);
-                            setAlignment(Pos.CENTER);
-                        }
-                    }
-                };
-            }
-        });
-    }
+							try (PreparedStatement pstmt = conn
+									.prepareStatement("SELECT song_file FROM Song WHERE song_id=?")) {
+								pstmt.setLong(1, selectedSong.getId());
+								try (ResultSet res = pstmt.executeQuery()) {
+									if (res.next()) {
+										System.out.println("selectedSong.getName() = " + res.getString("song_file"));
+									}
+								}
+							} catch (SQLException e) {
+								e.printStackTrace();
+							} finally {
+								DBClose(conn);
+							}
+						});
+					}
 
-    private Connection DBConnection() {
-        //드라이버 검색 (db와 연동 준비)
-        try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            System.out.println("Driver search success");
-        } catch (ClassNotFoundException e) {
-            System.err.println("Driver search fail");
-            System.exit(0);
-        }
+					// 셸 Rendering
+					@Override
+					protected void updateItem(Void item, boolean empty) {
+						super.updateItem(item, empty);
+						if (empty)
+							setGraphic(null);
+						else {
+							setGraphic(playButton);
+							setAlignment(Pos.CENTER);
+						}
+					}
+				};
+			}
+		});
 
-        //데이터베이스 연결 - 커넥션 만들기
-        Connection conn = null;
+		addBtn.setCellFactory(new Callback<>() {
+			@Override
+			public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
+				return new TableCell<>() {
+					private final Button addButton = new Button("+");
+					{
+						// 버튼 클릭 시 이벤트 처리
+						addButton.setOnAction(event -> {
+							Song selectedSong = getTableView().getItems().get(getIndex());
+							temporaryDB.setMyPlaylist(selectedSong);
+						});
+					}
 
-        try {
-            conn = DriverManager.getConnection(url, id, pw);
-            System.out.println("Sucess");
-        } catch (SQLException e) {
-            System.err.println("Fail");
-            System.exit(0);
-        }
-        return conn;
-    }
+					// 셸 Rendering
+					@Override
+					protected void updateItem(Void item, boolean empty) {
+						super.updateItem(item, empty);
+						if (empty)
+							setGraphic(null);
+						else {
+							setGraphic(addButton);
+							setAlignment(Pos.CENTER);
+						}
+					}
+				};
+			}
+		});
 
-    private void DBClose(Connection conn) {
-        try {
-            if(conn != null) {
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+		likebtn.setCellFactory(new Callback<>() {
+			@Override
+			public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
+				return new TableCell<>() {
+					private final Button likeButton = new Button("❤");
+					{
+						// 버튼 클릭 시 이벤트 처리
+						likeButton.setOnAction(event -> {
+							Song selectedSong = getTableView().getItems().get(getIndex());
+							selectedSong.setLikeCnt();
+							System.out.println("selectedSong.getName() = " + selectedSong.getName());
+							System.out.println("selectedSong.getLikeCnt() = " + selectedSong.getLikeCnt());
+						});
+					}
+
+					// 셸 Rendering
+					@Override
+					protected void updateItem(Void item, boolean empty) {
+						super.updateItem(item, empty);
+						if (empty)
+							setGraphic(null);
+						else {
+							setGraphic(likeButton);
+							setAlignment(Pos.CENTER);
+						}
+					}
+				};
+			}
+		});
+	}
+
+	private Connection DBConnection() {
+		// 드라이버 검색 (db와 연동 준비)
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			System.out.println("Driver search success");
+		} catch (ClassNotFoundException e) {
+			System.err.println("Driver search fail");
+			System.exit(0);
+		}
+
+		// 데이터베이스 연결 - 커넥션 만들기
+		Connection conn = null;
+
+		try {
+			conn = DriverManager.getConnection(url, id, pw);
+			System.out.println("Sucess");
+		} catch (SQLException e) {
+			System.err.println("Fail");
+			System.exit(0);
+		}
+		return conn;
+	}
+
+	private void DBClose(Connection conn) {
+		try {
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -59,25 +59,6 @@ public class TemporaryDB {
         return myPlaylist;
     }
     
-//    public Member getMemberById(String id) {
-//		for (Member member : members) {
-//			if (member.getId().equals(id)) {
-//				return member;
-//			}
-//		}
-//		throw new IllegalArgumentException("Member not found");
-//	}
-
-//	public void updateMember(Member updatedMember) {
-//		for (int i = 0; i < members.size(); i++) {
-//			if (members.get(i).getId().equals(updatedMember.getId())) {
-//				members.set(i, updatedMember);
-//				return;
-//			}
-//		}
-//		throw new IllegalArgumentException("Member not found");
-//	}
-
     public void updateMyPlaylist(List<Song> playlist) {
         this.myPlaylist = playlist;
     }
