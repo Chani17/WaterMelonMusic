@@ -1,10 +1,24 @@
 package kosa.watermelon.watermelonmusic;
 
+import java.time.LocalDate;
+
 public class Member {
 	private String id;
 	private String pw;
 	private String nickname;
-	private String email; // 이메일 추가
+	private String email;
+	private String gender;
+	private LocalDate birth;
+
+
+	public Member(String id, String pw, String nickname, String email, String gender, LocalDate birth) {
+		this.id = id;
+		this.pw = pw;
+		this.nickname = nickname;
+		this.email = email;
+		this.gender = gender;
+		this.birth = birth;
+	}
 
 	public String getId() {
 		return id;
@@ -12,36 +26,5 @@ public class Member {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getPw() {
-		return pw;
-	}
-
-	public void setPw(String pw) {
-		this.pw = pw;
-	}
-
-	public String getNickname() {
-		return nickname;
-	}
-
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
-
-	public String getEMAIL() {
-		return email;
-	}
-
-	public void setEMAIL(String email) {
-		this.email = email;
-	}
-
-	public Member(String id, String pw, String nickname, String email) {
-		this.id = id;
-		this.pw = pw;
-		this.nickname = nickname;
-		this.email = email;
 	}
 }
