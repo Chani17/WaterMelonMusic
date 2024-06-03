@@ -25,14 +25,14 @@
 		<TextField fx:id="search_TextField" promptText="검색어를 입력하세요"
 			prefHeight="30.0" prefWidth="250.0">
 			<font>
-                <Font name="D2Coding" size="18.0" />
-            </font>
+				<Font name="D2Coding" size="18.0" />
+			</font>
 		</TextField>
 		<Button fx:id="search_BTN" text="검색" onAction="#search_Action"
 			prefHeight="30.0" prefWidth="50.0">
 			<font>
-                <Font name="D2Coding" size="13.0" />
-            </font>
+				<Font name="D2Coding" size="13.0" />
+			</font>
 		</Button>
 	</children>
 	<HBox.margin>

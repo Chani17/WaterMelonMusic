@@ -56,6 +56,8 @@ public class SongChartController implements Initializable {
     private TemporaryDB temporaryDB;
 
     private ContextMenu contextMenu;
+    
+    private Member currentMember;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -84,6 +86,10 @@ public class SongChartController implements Initializable {
         setupMyPlaylistButton();
     }
 
+    public void setMember(Member member) {
+    	this.currentMember = member;
+    }
+    
     private void setupMyPlaylistButton() {
         detailButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
@@ -114,8 +120,12 @@ public class SongChartController implements Initializable {
             Stage newStage = new Stage();
             Stage stage = (Stage) detailButton.getScene().getWindow();
 
-            Parent myPage = FXMLLoader.load(getClass().getResource("mypage.fxml"));
-
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("myPage.fxml"));
+            Parent myPage = loader.load();
+            // MyPageController 인스턴스를 가져와서 멤버 설정
+            MyPageController controller = loader.getController();
+            controller.setMember(currentMember);
+            
             Scene scene = new Scene(myPage);
 
             newStage.setTitle("My Page");

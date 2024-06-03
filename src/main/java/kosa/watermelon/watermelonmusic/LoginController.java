@@ -21,73 +21,106 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
 
-    @FXML
-    private Button loginBtn;
+	@FXML
+	private Button loginBtn;
 
-    @FXML
-    private TextField userID;
+	@FXML
+	private TextField userID;
 
-    @FXML
-    private TextField userPW;
+	@FXML
+	private TextField userPW;
 
-    //private TemporaryDB temporaryDB;
+	// private TemporaryDB temporaryDB;
 
-    private static final String URL = "";
-    private static final String USER = "";
-    private static final String PASSWORD = "";
-    
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        //temporaryDB = TemporaryDB.getInstance();
-    }
+	private static final String URL = "";
+	private static final String USER = "";
+	private static final String PASSWORD = "";
 
-    @FXML
-    void selectedLoginBtn(ActionEvent event) {
-        String id = userID.getText();
-        String pw = userPW.getText();
-        
-        if (checkIdAndPw(id, pw)) {
-            try {
-                Stage newStage = new Stage();
-                Stage stage = (Stage) loginBtn.getScene().getWindow();
+	@Override
+	public void initialize(URL url, ResourceBundle resourceBundle) {
+		// temporaryDB = TemporaryDB.getInstance();
+	}
 
-                Parent songChart = FXMLLoader.load(getClass().getResource("songChart.fxml"));
+	@FXML
+	void selectedLoginBtn(ActionEvent event) {
+		String id = userID.getText();
+		String pw = userPW.getText();
 
-                Scene scene = new Scene(songChart);
+		if (checkIdAndPw(id, pw)) {
+			try {
+				Stage newStage = new Stage();
+				Stage stage = (Stage) loginBtn.getScene().getWindow();
 
-                newStage.setTitle("인기 차트!");
-                newStage.setScene(scene);
-                newStage.show();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("songChart.fxml"));
+				Parent songChart = loader.load();
 
-                stage.close();
+				// SongChartController 인스턴스를 가져와서 멤버 설정
+				SongChartController controller = loader.getController();
+				Member member = getMemberById(id);
+				controller.setMember(member);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            // 로그인 실패 처리
-            System.out.println("Invalid ID or Password");
-        }
-    }
+				Scene scene = new Scene(songChart);
 
-    private boolean checkIdAndPw(String id, String pw) {
-        boolean isValid = false;
-        
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            String sql = "SELECT COUNT(*) FROM Member WHERE member_id = ? AND member_pw = ?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, id);
-            statement.setString(2, pw);
+				newStage.setTitle("인기 차트!");
+				newStage.setScene(scene);
+				newStage.show();
 
-            ResultSet resultSet = statement.executeQuery();
+				stage.close();
 
-            if (resultSet.next()) {
-                isValid = resultSet.getInt(1) > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        
-        return isValid;
-    }
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			// 로그인 실패 처리
+			System.out.println("Invalid ID or Password");
+		}
+	}
+
+	private boolean checkIdAndPw(String id, String pw) {
+		boolean isValid = false;
+
+		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+			String sql = "SELECT COUNT(*) FROM Member WHERE member_id = ? AND member_pw = ?";
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, id);
+			statement.setString(2, pw);
+
+			ResultSet resultSet = statement.executeQuery();
+
+			if (resultSet.next()) {
+				isValid = resultSet.getInt(1) > 0;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return isValid;
+	}
+
+	private Member getMemberById(String id) {
+		Member member = null;
+
+		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+			String sql = "SELECT member_id, member_pw, email, nickname, gender, birth FROM Member WHERE member_id = ?";
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, id);
+
+			ResultSet resultSet = statement.executeQuery();
+
+			if (resultSet.next()) {
+				String memberId = resultSet.getString("member_id");
+				String memberPw = resultSet.getString("member_pw");
+				String email = resultSet.getString("email");
+				String nickname = resultSet.getString("nickname");
+				String gender = resultSet.getString("gender");
+				java.sql.Date birth = resultSet.getDate("birth");
+
+				member = new Member(memberId, memberPw, nickname, email, gender, birth.toLocalDate());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return member;
+	}
 }

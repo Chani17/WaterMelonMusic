@@ -10,15 +10,15 @@ import java.util.List;
 
 public class TestDB_mypage {
 	// git에 올릴 때 URL, USER, PASSSWORD 삭제하고 주석처리해서 올리기!!!
-	//private static final String URL = "";
-    //private static final String USER = "";
-    //private static final String PASSWORD = "";
+	private static final String url = "";
+    private static final String id = "";
+    private static final String pw= "";
     
     private static TestDB_mypage instance;
     private List<Member> members;
     
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        return DriverManager.getConnection(url, id, pw);
     }
 
     public TestDB_mypage() {

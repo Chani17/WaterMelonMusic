@@ -54,38 +54,11 @@ public class MyPageController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		// Example of getting current user from a static context or a singleton
-        currentMember = SessionManager.getCurrentUser();
-        
-        if (currentMember != null) {
-            userNAME_TextField.setText(currentMember.getNickname());
-            userID_TextField.setText(currentMember.getId());
-            userEMAIL_TextField.setText(currentMember.getEmail());
-            userGender_TextField.setText(currentMember.getGender());
-            userBirth_TextField.setText(currentMember.getBirth().toString());
-        }
-        
+        // 앨범 ... 아직 TemporaryDB에 연결되어 있음
 		temporaryDB = TemporaryDB.getInstance();
 		//currentMember = temporaryDB.getMemberById("abcd");
 		String[] albums = temporaryDB.getSongs().stream().map(song -> song.getName() + " - " + song.getArtist())
 				.toArray(String[]::new);
-//		
-//		currentMember = TestDB_mypage.getMemberById("test");
-//		
-//		if (currentMember != null) {
-//			userNAME_TextField.setText(currentMember.getNickname());
-//			userID_TextField.setText(currentMember.getId());
-//			userEMAIL_TextField.setText(currentMember.getEmail());
-//			userGender_TextField.setText(currentMember.getGender());
-//			userBirth_TextField.setText(currentMember.getBirth().toString());
-//		}
-		
-		
-		
-		//// 가져온 데이터를 UI에 설정
-		//userNAME_TextField.setText(currentMember.getNickname());
-		//userID_TextField.setText(currentMember.getId());
-		//userEMAIL_TextField.setText(currentMember.getEmail());
 
 		// TextField를 수정 불가능하게 설정
 		userNAME_TextField.setEditable(false);
@@ -100,6 +73,21 @@ public class MyPageController implements Initializable {
 		Platform.runLater(() -> focusLabel.requestFocus());
 	}
 
+	
+	// 추가한 부분
+	public void setMember(Member member) {
+        this.currentMember = member;
+
+        // 가져온 데이터를 UI에 설정
+        if (currentMember != null) {
+            userNAME_TextField.setText(currentMember.getNickname());
+            userID_TextField.setText(currentMember.getId());
+            userEMAIL_TextField.setText(currentMember.getEmail());
+            userGender_TextField.setText(currentMember.getGender());
+            userBirth_TextField.setText(currentMember.getBirth().toString());
+        }
+    }
+	// 여기까지
 	
 	// 만든 플레이리스트 항목을 넣고 싶은데 일단 임시로 외부 이미지 파일을 연결
 	private void loadPlaylistImage() {
@@ -138,7 +126,6 @@ public class MyPageController implements Initializable {
 			newStage.setTitle("프로필 편집");
 			newStage.setScene(new Scene(parent, 300, 200));
 			newStage.showAndWait();
-			//currentStage.close();
 
 			// 프로필 수정 후 업데이트
 			userNAME_TextField.setText(currentMember.getNickname());
