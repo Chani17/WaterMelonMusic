@@ -1,10 +1,13 @@
 package kosa.watermelon.watermelonmusic;
 
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -24,8 +27,9 @@ public class PlayViewController implements Initializable {
     @FXML private Button playButton;
     @FXML private Button stopButton;
     @FXML private Button pauseButton;
+    @FXML private ImageView albumCover;
     private MediaPlayer mediaPlayer;
-    private int songId;
+    private long songId;
     private boolean endOfMedia;             // 재생 완료를 확인하는 플래그 필드
 
     @Override
@@ -35,26 +39,50 @@ public class PlayViewController implements Initializable {
         pauseButton.setOnAction(event -> pauseSong());
     }
 
-    public void setSongId(int id) {
+    public void setSongId(long id) {
         this.songId = id;
         setPlayView();
     }
 
     private void setPlayView() {
         Connection conn = DBConnection();
-        PreparedStatement pstmt = null;
-        ResultSet res = null;
+        PreparedStatement pstmt_song = null;
+        PreparedStatement pstmt_album = null;
+        ResultSet res_song = null;
+        ResultSet res_album = null;
 
         try{
-            pstmt = conn.prepareStatement("SELECT * FROM Song WHERE song_id=?");
-            pstmt.setLong(1, this.songId);
-            res = pstmt.executeQuery();
+            pstmt_song = conn.prepareStatement("SELECT * FROM Song WHERE song_id=?");
+            pstmt_album = conn.prepareStatement("SELECT album_cover FROM Album WHERE album_id=?");
+            pstmt_song.setLong(1, this.songId);
+            res_song = pstmt_song.executeQuery();
 
-            if(res.next()) {
-                songTitle.setText(res.getString("song_name"));
-                artist.setText(res.getString("artist_id"));
+            if(res_song.next()) {
+                songTitle.setText(res_song.getString("song_name"));
+                artist.setText(res_song.getString("artist_id"));
 
-                String songFilePath = res.getString("song_file");
+                pstmt_album.setLong(1, res_song.getLong("album_id"));
+                res_album = pstmt_album.executeQuery();
+
+                if(res_album.next()) {
+                    Blob blob = res_album.getBlob("album_cover");
+//                    System.out.println("Album Name: " + res_album.getString("album_name"));
+                    System.out.println("Blob: " + blob);
+                    if(blob != null) {
+                        // Blob -> byte -> image
+                        byte[] imageData = blob.getBytes(1, (int)blob.length());
+                        if(imageData.length > 0) {
+                            Image image = new Image(new ByteArrayInputStream(imageData));
+                            Platform.runLater(() -> albumCover.setImage(image));
+                        } else {
+                            System.out.println("Image data is empty");
+                        }
+                    } else {
+                        System.out.println("Blob is null");
+                    }
+                }
+
+                String songFilePath = res_song.getString("song_file");
 
                 // 미디어 등록
                 Media media = new Media(new File(songFilePath).toURI().toString());
@@ -69,8 +97,10 @@ public class PlayViewController implements Initializable {
         } finally {
             try {
                 // 리소스 정리
-                res.close();
-                pstmt.close();
+                if(res_song != null) res_song.close();
+                if(res_album != null) res_album.close();
+                if(pstmt_song != null) pstmt_song.close();
+                if(pstmt_album != null) pstmt_album.close();
                 DBClose(conn);
             } catch (SQLException exception) {
                 exception.printStackTrace();

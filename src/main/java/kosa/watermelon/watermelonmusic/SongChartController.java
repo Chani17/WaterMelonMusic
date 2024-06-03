@@ -29,9 +29,9 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class SongChartController implements Initializable {
-    private final static String id = "admin";
-    private final static String pw = "1234";
-    private final static String url = "jdbc:oracle:thin:@localhost:1521:xe";
+    private final static String ID = "admin";
+    private final static String PW = "1234";
+    private final static String URL = "jdbc:oracle:thin:@localhost:1521:xe";
 
     @FXML private TableView<Song> tableView;
 
@@ -53,9 +53,10 @@ public class SongChartController implements Initializable {
 
     private ContextMenu contextMenu;
 
+    private Playlist playlist;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        temporaryDB = TemporaryDB.getInstance();
         setListView();
         setUpContextMenu();
         setupMyPlaylistButton();
@@ -109,7 +110,14 @@ public class SongChartController implements Initializable {
             Stage newStage = new Stage();
             Stage stage = (Stage) detailButton.getScene().getWindow();
 
-            Parent playlist = FXMLLoader.load(getClass().getResource("playlist.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist.fxml"));
+            Parent playlist = loader.load();
+
+            // PlaylistController 인스턴스를 가져와서 멤버 설정
+            PlaylistController controller = loader.getController();
+            System.out.println("before currentMember.getId() = "  + currentMember.getId());
+//            Member member = getMemberById(currentMember.getId());
+            controller.setMember(currentMember);
 
             Scene scene = new Scene(playlist);
 
@@ -139,7 +147,6 @@ public class SongChartController implements Initializable {
 
             while(rs.next()) {
                 Song song = new Song(rs.getLong("song_id"), rs.getString("song_name"), rs.getString("artist_name"), rs.getLong("click_count"));
-                System.out.println(song.getName());
                 songs.add(song);
             }
             ObservableList<Song> songList = FXCollections.observableArrayList(songs);
@@ -147,6 +154,7 @@ public class SongChartController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         ranking.setCellValueFactory(new PropertyValueFactory<Song, Integer>("id"));
         songName.setCellValueFactory(new PropertyValueFactory<Song, String>("name"));
         artistName.setCellValueFactory(new PropertyValueFactory<Song, String>("artist"));
@@ -198,32 +206,48 @@ public class SongChartController implements Initializable {
             }
         });
 
-//        addBtn.setCellFactory(new Callback<>() {
-//            @Override
-//            public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
-//                return new TableCell<>() {
-//                    private final Button addButton = new Button("+");
-//                    {
-//                        // 버튼 클릭 시 이벤트 처리
-//                        addButton.setOnAction(event -> {
-//                            Song selectedSong = getTableView().getItems().get(getIndex());
-//                            temporaryDB.setMyPlaylist(selectedSong);
-//                        });
-//                    }
-//
-//                    // 셸 Rendering
-//                    @Override
-//                    protected void updateItem(Void item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if(empty) setGraphic(null);
-//                        else {
-//                            setGraphic(addButton);
-//                            setAlignment(Pos.CENTER);
-//                        }
-//                    }
-//                };
-//            }
-//        });
+        addBtn.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
+                return new TableCell<>() {
+                    Connection conn = DBConnection();
+
+                    private final Button addButton = new Button("+");
+                    {
+                        // 버튼 클릭 시 이벤트 처리
+                        addButton.setOnAction(event -> {
+                            Song selectedSong = getTableView().getItems().get(getIndex());
+                            try {
+                                Playlist playlist = getCurrentMemberPlaylist(currentMember.getId(), conn);
+                                if(playlist != null) {
+                                    // 재생 목록에 노래 추가
+                                    playlist.addSong(selectedSong);
+
+                                    // 데이터베이스 update
+                                    updatePlaylist(playlist, conn);
+                                } else {
+                                    // 새로운 재생목록 생성
+                                    playlist = new Playlist(generateNewPlaylistId(conn), "Default Playlist", currentMember.getId());
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+
+                    // 셸 Rendering
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if(empty) setGraphic(null);
+                        else {
+                            setGraphic(addButton);
+                            setAlignment(Pos.CENTER);
+                        }
+                    }
+                };
+            }
+        });
 
         likebtn.setCellFactory(new Callback<>() {
             @Override
@@ -267,7 +291,7 @@ public class SongChartController implements Initializable {
         Connection conn = null;
 
         try {
-            conn = DriverManager.getConnection(url, id, pw);
+            conn = DriverManager.getConnection(URL, ID, PW);
             System.out.println("Sucess");
         } catch (SQLException e) {
             System.err.println("Fail");
@@ -289,4 +313,53 @@ public class SongChartController implements Initializable {
     public void setMember(Member member) {
         this.currentMember = member;
     }
+
+    // 존재하는 재생목록 가져오기
+    private Playlist getCurrentMemberPlaylist(String memberId, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Playlist WHERE member_id=?");
+        pstmt.setString(1, memberId);
+        ResultSet rs = pstmt.executeQuery();
+
+        if(rs.next()) {
+            // 재생 목록이 존재하면 Playlist 객체를 만들어서 반환
+            return new Playlist(rs.getInt("playlist_id"), rs.getString("playlist_name"), rs.getString("member_id"));
+        } else {
+            return null;
+        }
+    }
+
+    // 새로운 재생목록 ID를 생성하는 메서드
+    private int generateNewPlaylistId(Connection conn) throws SQLException {
+        // 데이터베이스에서 가장 큰 재생목록 ID를 찾아서 1을 더하여 새로운 ID 생성
+        PreparedStatement pstmt = conn.prepareStatement("SELECT MAX(playlist_id) FROM Playlist");
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) + 1;
+        } else {
+            return 1;
+        }
+    }
+
+    // 데이터베이스에 재생목록 update
+    private void updatePlaylist(Playlist playlist, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement("UPDATE Playlist SET song=? WHERE playlist_id=?");
+        pstmt.setArray(1, conn.createArrayOf("INTEGER", playlist.getSongList().toArray()));
+        pstmt.setInt(2, playlist.getPlaylistID());
+        pstmt.executeQuery();
+    }
+
+    // 데이터베이스에 재생목록 insert
+    private void insertPlayList(Playlist playlist, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Playlist(playlist_id, playlist_name, member_id) VALUES (?, ?, ?)");
+        pstmt.setInt(1, playlist.getPlaylistID());
+        pstmt.setString(2, playlist.getPlaylistName());
+        pstmt.setString(3, playlist.getMemberId());
+        pstmt.executeQuery();
+    }
+
+//    private Member getMemberById(String id) {
+//        Member member = null;
+//
+//        return member;
+//    }
 }
