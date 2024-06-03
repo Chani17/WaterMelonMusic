@@ -27,7 +27,7 @@
 		fitWidth="158.0" layoutX="15.0" layoutY="81.0" pickOnBounds="true"
 		preserveRatio="true">
 		<image>
-			<Image url="@profile.jpg" />
+			<Image url="@kosa/watermelon/watermelonmusic/image/profile.jpg" />
 		</image>
 	</ImageView>
 

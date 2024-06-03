@@ -67,6 +67,9 @@ public class MyPageController implements Initializable {
 		userGender_TextField.setEditable(false);
 		userBirth_TextField.setEditable(false);
 		
+		Image image = new Image(getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/image/profile.jpg"));
+	    profile_Image.setImage(image);
+	    
 		loadPlaylistImage();
 		
         // TextField에 포커스를 제거하고 다른 곳으로 포커스를 설정

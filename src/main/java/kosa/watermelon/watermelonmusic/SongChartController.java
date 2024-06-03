@@ -120,7 +120,7 @@ public class SongChartController implements Initializable {
             Stage newStage = new Stage();
             Stage stage = (Stage) detailButton.getScene().getWindow();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("myPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("mypage.fxml"));
             Parent myPage = loader.load();
             // MyPageController 인스턴스를 가져와서 멤버 설정
             MyPageController controller = loader.getController();
