@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox xmlns="http://javafx.com/javafx/21"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="kosa.watermelon.watermelonmusic.SearchController"
+	spacing="10" alignment="CENTER_LEFT">
+	<children>
+		<ImageView fx:id="search_ImageView" fitHeight="30.0"
+			fitWidth="30.0">
+			<image>
+				<Image url="@search_IMG.png" />
+			</image>
+		</ImageView>
+		<TextField fx:id="search_TextField" promptText="검색어를 입력하세요"
+			prefHeight="30.0" prefWidth="250.0">
+			<font>
+				<Font name="D2Coding" size="18.0" />
+			</font>
+		</TextField>
+		<Button fx:id="search_BTN" text="검색" onAction="#search_Action"
+			prefHeight="30.0" prefWidth="50.0">
+			<font>
+				<Font name="D2Coding" size="13.0" />
+			</font>
+		</Button>
+	</children>
+	<HBox.margin>
+		<Insets top="20.0" right="10.0" />
+	</HBox.margin>
+</HBox>

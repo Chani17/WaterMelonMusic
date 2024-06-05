@@ -1,12 +1,11 @@
 package kosa.watermelon.watermelonmusic;
 
 import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,10 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
@@ -27,38 +23,19 @@ import javafx.stage.Stage;
 
 public class MyPageController implements Initializable {
 
-	@FXML
-	private ImageView profile_Image;
-
-	@FXML
-	private Button profileEdit_BTN;
-
-	@FXML
-	private Button goToChart_BTN;
-
-	@FXML
-	private TextField userNAME_TextField;
-
-	@FXML
-	private TextField userID_TextField;
-
-	@FXML
-	private TextField userPW_TextField;
-
-	@FXML
-	private TextField userEMAIL_TextField;
-	
-	@FXML
-	private TextField userGender_TextField;
-	
-	@FXML
-	private TextField userBirth_TextField;
-
-	@FXML
-	private TilePane playlistImage_TilePane;
-	
-	@FXML
-	private Label focusLabel; // 마이페이지 텍스트필드에 커서 깜빡이지 않도록 수정
+	@FXML private ImageView profile_Image;
+	@FXML private Button profileEdit_BTN;
+	@FXML private Button goToChart_BTN;
+	@FXML private Button postingPage_BTN;
+	@FXML private Button likeSong_BTN;
+	@FXML private Button logout_BTN;
+	@FXML private TextField userNAME_TextField;
+	@FXML private TextField userID_TextField;
+	@FXML private TextField userEMAIL_TextField;
+	@FXML private TextField userGender_TextField;
+	@FXML private TextField userBirth_TextField;
+	@FXML private TilePane playlistImage_TilePane;
+	@FXML private Label focusLabel; // 마이페이지 텍스트필드에 커서 깜빡이지 않도록 수정
 	
 	private String[] playlist_ImageUrls = {
 			"https://i.pinimg.com/564x/35/23/86/352386ce038dd4de00f3fb832785dbb4.jpg",
@@ -74,23 +51,26 @@ public class MyPageController implements Initializable {
 			// 추가 URL을 여기에 넣기
 	};
 
-	private TemporaryDB temporaryDB;
-
 	private Member currentMember;
+	
+	private TemporaryDB temporaryDB;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		//currentMember = temporaryDB.getMemberById("abcd");
+		this.currentMember = SessionManager.getInstance().getCurrentMember();
+        if (currentMember != null) {
+            System.out.println("MyPageController: Member set with ID - " + currentMember.getId());
+            loadMemberInfo();
+        } else {
+            System.out.println("Error: currentMember is null.");
+        }
+        
+        // 앨범 ... 아직 TemporaryDB에 연결되어 있음
 		temporaryDB = TemporaryDB.getInstance();
-
-		// 임시로 선택된 사용자 ("abcd")
-		currentMember = temporaryDB.getMemberById("abcd");
+        
 		String[] albums = temporaryDB.getSongs().stream().map(song -> song.getName() + " - " + song.getArtist())
 				.toArray(String[]::new);
-
-		// 가져온 데이터를 UI에 설정
-		userNAME_TextField.setText(currentMember.getNickname());
-		userID_TextField.setText(currentMember.getId());
-		userEMAIL_TextField.setText(currentMember.getEMAIL());
 
 		// TextField를 수정 불가능하게 설정
 		userNAME_TextField.setEditable(false);
@@ -98,14 +78,37 @@ public class MyPageController implements Initializable {
 		userEMAIL_TextField.setEditable(false);
 		userGender_TextField.setEditable(false);
 		userBirth_TextField.setEditable(false);
-		
+	    
 		loadPlaylistImage();
 		
-		// 이 메서드는 FXML이 로드된 후 호출됩니다.
-        // 여기서 TextField에 포커스를 제거하고 다른 곳으로 포커스를 설정합니다.
+        // TextField에 포커스를 제거하고 다른 곳으로 포커스를 설정
 		Platform.runLater(() -> focusLabel.requestFocus());
 	}
 
+	public void setMember(Member member) {
+		this.currentMember = member;
+        if (this.currentMember == null) {
+            System.out.println("MyPageController: setMember called with null member");
+        } else {
+            System.out.println("MyPageController: Member set with ID - " + currentMember.getId());
+            loadMemberInfo();
+        }
+    }
+
+    private void loadMemberInfo() {
+    	if (currentMember != null) {
+            userNAME_TextField.setText(currentMember.getNickname());
+            userID_TextField.setText(currentMember.getId());
+            userEMAIL_TextField.setText(currentMember.getEmail());
+            userGender_TextField.setText(currentMember.getGender());
+            userBirth_TextField.setText(currentMember.getBirth().toString());
+            
+            // Load profile image from byte array
+            byte[] profileImageBytes = currentMember.getProfileImage();
+            Image profileImage = new Image(new ByteArrayInputStream(profileImageBytes));
+            profile_Image.setImage(profileImage);
+        }
+    }
 	
 	// 만든 플레이리스트 항목을 넣고 싶은데 일단 임시로 외부 이미지 파일을 연결
 	private void loadPlaylistImage() {
@@ -125,8 +128,8 @@ public class MyPageController implements Initializable {
 		}
 	}
 
-	@FXML
-	void profileEdit_Action(ActionEvent event) {
+	@FXML // 마이페이지 → 프로필 편집 페이지 이동 이벤트 처리
+	private void profileEdit_Action(ActionEvent event) {
 		try {
 			// FXML 파일 로드
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("profileEDIT.fxml"));
@@ -144,7 +147,6 @@ public class MyPageController implements Initializable {
 			newStage.setTitle("프로필 편집");
 			newStage.setScene(new Scene(parent, 300, 200));
 			newStage.showAndWait();
-			//currentStage.close();
 
 			// 프로필 수정 후 업데이트
 			userNAME_TextField.setText(currentMember.getNickname());
@@ -153,8 +155,8 @@ public class MyPageController implements Initializable {
 		}
 	}
 
-	@FXML
-	void goToChart_Action(ActionEvent event) {
+	@FXML // 마이페이지 → 인기차트 페이지 이동 이벤트 처리
+	private void goToChart_Action(ActionEvent event) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("songChart.fxml"));
 			Parent parent = loader.load();
@@ -167,6 +169,45 @@ public class MyPageController implements Initializable {
 			newStage.setScene(new Scene(parent, 600, 464));
 			newStage.show();
 			currentStage.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@FXML // 마이페이지 → 포스팅 페이지 이동 이벤트 처리
+	private void postingPage_Action(ActionEvent event)  {
+		try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("postingPage.fxml"));
+            Parent parent = loader.load();
+            
+            Stage newStage = new Stage();
+			Stage currentStage = (Stage) postingPage_BTN.getScene().getWindow();
+			
+			newStage.initModality(Modality.APPLICATION_MODAL);
+			newStage.setTitle("플레이리스트 포스팅");
+			newStage.setScene(new Scene(parent, 600, 464));
+			newStage.show();
+			currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+	
+	@FXML // 로그아웃 이벤트 처리
+	private void logout_Action(ActionEvent event) {
+		// 세션 초기화
+		SessionManager.getInstance().clearSession();
+		
+		// 로그인 창 열기
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+			Scene scene = new Scene(loader.load(), 600, 464);
+			
+			// 현재 Stage 찾기
+			Stage currentStage = (Stage) logout_BTN.getScene().getWindow();
+			
+			// MainApplicatin의 Scene 설정
+			currentStage.setScene(scene);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
