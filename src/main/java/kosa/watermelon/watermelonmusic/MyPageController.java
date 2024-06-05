@@ -28,6 +28,7 @@ public class MyPageController implements Initializable {
 	@FXML private Button goToChart_BTN;
 	@FXML private Button postingPage_BTN;
 	@FXML private Button likeSong_BTN;
+	@FXML private Button logout_BTN;
 	@FXML private TextField userNAME_TextField;
 	@FXML private TextField userID_TextField;
 	@FXML private TextField userEMAIL_TextField;
@@ -108,7 +109,6 @@ public class MyPageController implements Initializable {
             profile_Image.setImage(profileImage);
         }
     }
-	// 여기까지
 	
 	// 만든 플레이리스트 항목을 넣고 싶은데 일단 임시로 외부 이미지 파일을 연결
 	private void loadPlaylistImage() {
@@ -192,4 +192,24 @@ public class MyPageController implements Initializable {
             e.printStackTrace();
         }
     }
+	
+	@FXML // 로그아웃 이벤트 처리
+	private void logout_Action(ActionEvent event) {
+		// 세션 초기화
+		SessionManager.getInstance().clearSession();
+		
+		// 로그인 창 열기
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+			Scene scene = new Scene(loader.load(), 600, 464);
+			
+			// 현재 Stage 찾기
+			Stage currentStage = (Stage) logout_BTN.getScene().getWindow();
+			
+			// MainApplicatin의 Scene 설정
+			currentStage.setScene(scene);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

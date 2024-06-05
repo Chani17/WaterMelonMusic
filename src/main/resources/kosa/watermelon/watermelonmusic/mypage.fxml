@@ -6,6 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.text.Font?>
 
@@ -25,60 +26,109 @@
 	<ImageView fx:id="profile_Image" fitHeight="160.0"
 		fitWidth="160.0" layoutX="14.0" layoutY="85.0" pickOnBounds="true"
 		preserveRatio="true" />
-	<Label layoutX="16.0" layoutY="296.0" prefHeight="22.0"
+	<Label layoutX="12.0" layoutY="296.0" prefHeight="22.0"
 		prefWidth="50.0" text="닉네임">
 		<font>
 			<Font name="D2Coding Bold" size="12.0" />
 		</font>
 	</Label>
-	<TextField fx:id="userNAME_TextField" layoutX="66.0"
-		layoutY="296.0" prefHeight="22.0" prefWidth="107.0" />
+	<TextField fx:id="userNAME_TextField" layoutX="55.0"
+		layoutY="296.0" prefHeight="22.0" prefWidth="118.0">
+		<font>
+			<Font name="D2Coding" size="12.0" />
+		</font>
+	</TextField>
 
-	<Label layoutX="16.0" layoutY="329.0" prefHeight="22.0"
+	<Label layoutX="12.0" layoutY="329.0" prefHeight="22.0"
 		prefWidth="50.0" text="아이디">
 		<font>
 			<Font name="D2Coding Bold" size="12.0" />
 		</font>
 	</Label>
-	<TextField fx:id="userID_TextField" layoutX="66.0"
-		layoutY="329.0" prefHeight="22.0" prefWidth="107.0" />
+	<TextField fx:id="userID_TextField" layoutX="55.0"
+		layoutY="329.0" prefHeight="22.0" prefWidth="118.0">
+		<font>
+			<Font name="D2Coding" size="12.0" />
+		</font>
+	</TextField>
 
-	<Label layoutX="16.0" layoutY="361.0" prefHeight="22.0"
+	<Label layoutX="11.0" layoutY="361.0" prefHeight="22.0"
 		prefWidth="50.0" text="이메일">
 		<font>
 			<Font name="D2Coding Bold" size="12.0" />
 		</font>
 	</Label>
-	<TextField fx:id="userEMAIL_TextField" layoutX="66.0"
-		layoutY="361.0" prefHeight="22.0" prefWidth="107.0" />
+	<TextField fx:id="userEMAIL_TextField" layoutX="55.0"
+		layoutY="361.0" prefHeight="22.0" prefWidth="118.0">
+		<font>
+			<Font name="D2Coding" size="12.0" />
+		</font>
+	</TextField>
 
-	<Label alignment="CENTER" layoutX="16.0" layoutY="393.0"
+	<Label alignment="CENTER" layoutX="11.0" layoutY="393.0"
 		prefHeight="22.0" prefWidth="50.0" text="생일" textAlignment="RIGHT">
 		<font>
 			<Font name="D2Coding Bold" size="12.0" />
 		</font>
 	</Label>
-	<TextField fx:id="userBirth_TextField" layoutX="66.0"
-		layoutY="393.0" prefHeight="22.0" prefWidth="107.0" />
+	<TextField fx:id="userBirth_TextField" layoutX="55.0"
+		layoutY="393.0" prefHeight="22.0" prefWidth="118.0">
+		<font>
+			<Font name="D2Coding" size="12.0" />
+		</font>
+	</TextField>
 
-	<Label alignment="CENTER" layoutX="15.0" layoutY="426.0"
+	<Label alignment="CENTER" layoutX="11.0" layoutY="426.0"
 		prefHeight="22.0" prefWidth="50.0" text="성별" textAlignment="RIGHT">
 		<font>
 			<Font name="D2Coding Bold" size="12.0" />
 		</font>
 	</Label>
-	<TextField fx:id="userGender_TextField" layoutX="66.0"
-		layoutY="426.0" prefHeight="22.0" prefWidth="107.0" />
+	<TextField fx:id="userGender_TextField" layoutX="55.0"
+		layoutY="426.0" prefHeight="22.0" prefWidth="118.0">
+		<font>
+			<Font name="D2Coding" size="12.0" />
+		</font>
+	</TextField>
 
-	<Button fx:id="profileEdit_BTN" layoutX="54.0" layoutY="256.0"
-		onAction="#profileEdit_Action" prefHeight="22.0" prefWidth="79.0"
-		text="프로필 편집" />
+	<Button fx:id="profileEdit_BTN" layoutX="14.0" layoutY="256.0"
+		onAction="#profileEdit_Action" prefHeight="22.0" prefWidth="160.0"
+		text="프로필 편집">
+		<font>
+			<Font name="D2Coding" size="14.0" />
+		</font>
+	</Button>
+
+	<Button fx:id="postingPage_BTN" layoutX="321.0" layoutY="22.0"
+		onAction="#postingPage_Action" prefHeight="22.0" prefWidth="64.0"
+		text="게시판">
+		<font>
+			<Font name="D2Coding" />
+		</font>
+	</Button>
+	<HBox layoutX="398.0" layoutY="22.0" spacing="10.0">
+		<Button fx:id="likeSong_BTN" mnemonicParsing="false"
+			prefHeight="22.0" prefWidth="50.0" text="♥">
+			<font>
+				<Font name="D2Coding" />
+			</font>
+		</Button>
+		<Button fx:id="logout_BTN" mnemonicParsing="false"
+			onAction="#logout_Action" prefHeight="22.0" prefWidth="64.0"
+			text="로그아웃">
+			<font>
+				<Font name="D2Coding" />
+			</font>
+		</Button>
+	</HBox>
 	<Button fx:id="goToChart_BTN" layoutX="536.0" layoutY="21.0"
 		onAction="#goToChart_Action" prefHeight="24.0" prefWidth="50.0"
-		text="◀◀" />
-	<Button fx:id="postingPage_BTN" layoutX="386.0" layoutY="22.0"
-		onAction="#postingPage_Action" prefHeight="22.0" prefWidth="79.0"
-		text="게시판" />
+		text="◀◀">
+		<font>
+			<Font name="D2Coding" />
+		</font>
+	</Button>
+
 	<ScrollPane layoutX="186.0" layoutY="85.0"
 		prefHeight="363.0" prefWidth="400.0">
 		<content>
@@ -95,6 +145,4 @@
 			<Font name="D2Coding" size="14.0" />
 		</font>
 	</Label>
-	<Button fx:id="likeSong_BTN" layoutX="477.0" layoutY="22.0"
-		mnemonicParsing="false" prefHeight="22.0" prefWidth="50.0" text="♥" />
 </AnchorPane>
