@@ -10,6 +10,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import oracle.jdbc.OracleResultSet;
+import oracle.sql.BFILE;
 
 import java.io.*;
 import java.net.URL;
@@ -22,15 +24,20 @@ public class PlayViewController implements Initializable {
     private final static String pw = "1234";
     private final static String url = "jdbc:oracle:thin:@localhost:1521:xe";
 
-    @FXML private Label songTitle;
-    @FXML private Label artist;
-    @FXML private Button playButton;
-    @FXML private Button stopButton;
-    @FXML private Button pauseButton;
-    @FXML private ImageView albumCover;
+    @FXML
+    private Label songTitle;
+    @FXML
+    private Label artist;
+    @FXML
+    private Button playButton;
+    @FXML
+    private Button stopButton;
+    @FXML
+    private Button pauseButton;
+    @FXML
+    private ImageView albumCover;
     private MediaPlayer mediaPlayer;
     private long songId;
-    private boolean endOfMedia;             // 재생 완료를 확인하는 플래그 필드
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -51,35 +58,43 @@ public class PlayViewController implements Initializable {
         ResultSet res_song = null;
         ResultSet res_album = null;
 
-        try{
+        try {
             pstmt_song = conn.prepareStatement("SELECT * FROM Song WHERE song_id=?");
             pstmt_album = conn.prepareStatement("SELECT album_cover FROM Album WHERE album_id=?");
             pstmt_song.setLong(1, this.songId);
             res_song = pstmt_song.executeQuery();
 
             if(res_song.next()) {
-                songTitle.setText(res_song.getString("song_name"));
-                artist.setText(res_song.getString("artist_id"));
+                String songName = res_song.getString("song_name");
+                String artist_id = res_song.getString("artist_id");
+                songTitle.setText(songName);
+                artist.setText(artist_id);
 
                 pstmt_album.setLong(1, res_song.getLong("album_id"));
                 res_album = pstmt_album.executeQuery();
 
-                if(res_album.next()) {
-                    Blob blob = res_album.getBlob("album_cover");
-//                    System.out.println("Album Name: " + res_album.getString("album_name"));
-                    System.out.println("Blob: " + blob);
-                    if(blob != null) {
-                        // Blob -> byte -> image
-                        byte[] imageData = blob.getBytes(1, (int)blob.length());
-                        if(imageData.length > 0) {
-                            Image image = new Image(new ByteArrayInputStream(imageData));
-                            Platform.runLater(() -> albumCover.setImage(image));
-                        } else {
-                            System.out.println("Image data is empty");
-                        }
-                    } else {
-                        System.out.println("Blob is null");
+                if (res_album.next()) {
+                    BFILE bfile = ((OracleResultSet) res_album).getBFILE("album_cover");
+                    bfile.openFile(); // BFILE 열기
+                    InputStream inputStream = bfile.getBinaryStream();
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
                     }
+                    byte[] imageData = outputStream.toByteArray();
+                    outputStream.close();
+                    inputStream.close();
+                    PlaylistView playlistView = new PlaylistView(songName, artist_id, imageData);
+
+                    // 이미지 데이터를 이용하여 Image 객체 생성
+                    Image image = new Image(new ByteArrayInputStream(playlistView.getAlbumCover()));
+
+                    // ImageView에 이미지 설정
+                    albumCover.setImage(image);
+                } else {
+                    System.out.println("Album not found");
                 }
 
                 String songFilePath = res_song.getString("song_file");
@@ -88,26 +103,25 @@ public class PlayViewController implements Initializable {
                 Media media = new Media(new File(songFilePath).toURI().toString());
                 mediaPlayer = new MediaPlayer(media);
                 mediaPlayer.setAutoPlay(true);
-
-        } else {
-            System.out.println("No song found with id = " + this.songId);
-        }
-        } catch (SQLException e) {
+            } else {
+                System.out.println("No song found with id = " + this.songId);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
                 // 리소스 정리
-                if(res_song != null) res_song.close();
-                if(res_album != null) res_album.close();
-                if(pstmt_song != null) pstmt_song.close();
-                if(pstmt_album != null) pstmt_album.close();
+                if (res_song != null) res_song.close();
+                if (res_album != null) res_album.close();
+                if (pstmt_song != null) pstmt_song.close();
+                if (pstmt_album != null) pstmt_album.close();
                 DBClose(conn);
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }
-
         }
     }
+
 
     private void playSong() {
         if (mediaPlayer != null) {
@@ -152,7 +166,7 @@ public class PlayViewController implements Initializable {
 
     private void DBClose(Connection conn) {
         try {
-            if(conn != null) {
+            if (conn != null) {
                 conn.close();
             }
         } catch (SQLException e) {
