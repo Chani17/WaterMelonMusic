@@ -13,16 +13,17 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.BFILE;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -39,7 +40,6 @@ public class LoginController implements Initializable {
 	@FXML
 	private ImageView profile_Image;
 
-	// private TemporaryDB temporaryDB;
 
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
 	private static final String USER = "admin";
@@ -47,7 +47,7 @@ public class LoginController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		// temporaryDB = TemporaryDB.getInstance();
+		
 	}
 
 	@FXML

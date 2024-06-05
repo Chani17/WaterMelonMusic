@@ -14,7 +14,6 @@ public class TemporaryDB {
     public TemporaryDB() {
     	//this.members = new ArrayList<>();
 		
-
         this.songs = new ArrayList<>();
         songs.add(new Song(1, "Supernova", "aespa",0 ,0));
         songs.add(new Song(2, "How Sweet", "NewJeans", 0, 0));
@@ -34,13 +33,6 @@ public class TemporaryDB {
 
         this.myPlaylist = new ArrayList<>();
     }
-
-//    public Member checkIdAndPw(String id, String pw) {
-//        for(Member member : members) {
-//            if(member.getId().equals(id) && member.getPw().equals(pw)) return member;
-//        }
-//        throw new IllegalArgumentException("Please check your id/pw");
-//    }
 
     public static TemporaryDB getInstance() {
         if(instance == null) instance = new TemporaryDB();
