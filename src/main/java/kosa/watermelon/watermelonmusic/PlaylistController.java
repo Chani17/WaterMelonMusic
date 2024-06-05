@@ -74,6 +74,8 @@ public class PlaylistController implements Initializable {
                playlistSongs.add(new PlaylistSong(name, artist));
            }
             ObservableList<PlaylistSong> playlist = FXCollections.observableArrayList(playlistSongs);
+            songName.setCellValueFactory(new PropertyValueFactory<PlaylistSong, String>("songName"));
+            artist.setCellValueFactory(new PropertyValueFactory<PlaylistSong, String>("artistName"));
             playlistView.setItems(playlist);
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,9 +142,8 @@ public class PlaylistController implements Initializable {
 //        });
 
 
-        songName.setCellValueFactory(new PropertyValueFactory<PlaylistSong, String>("songName"));
-        artist.setCellValueFactory(new PropertyValueFactory<PlaylistSong, String>("artistName"));
-//        playlistView.setItems(songList);
+
+//        playlistView.setItems(playlist);
 
         playBtn.setCellFactory(new Callback<>() {
             @Override
