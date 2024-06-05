@@ -1,11 +1,11 @@
 package kosa.watermelon.watermelonmusic;
 
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
@@ -36,12 +36,26 @@ public class PlayViewController implements Initializable {
     private Button pauseButton;
     @FXML
     private ImageView albumCover;
+    @FXML
+    private Slider playBar;
+    @FXML
+    private Label playTimeHour;
+    @FXML
+    private Label playTimeMinute;
+    @FXML
+    private Label endTimeHour;
+    @FXML
+    private Label endTimeMinute;
     private MediaPlayer mediaPlayer;
     private long songId;
+    private long totalTime, totalTimeHour, totalTimeMinute, currentTime, currentTimeHour, currentTimeMinute;
+    private boolean isPlaying = true;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        playButton.setOnAction(event -> playSong());
+        playBar.setValueChanging(true);     // 외부에서 슬라이더바 조작 가능
+        playBar.setValue(0);
+        playButton.setOnAction(event -> togglePlayPause());
         stopButton.setOnAction(event -> stopSong());
         pauseButton.setOnAction(event -> pauseSong());
     }
@@ -102,7 +116,15 @@ public class PlayViewController implements Initializable {
                 // 미디어 등록
                 Media media = new Media(new File(songFilePath).toURI().toString());
                 mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.setOnReady(() -> {
+                    totalTime = (long) mediaPlayer.getTotalDuration().toSeconds();
+                    totalTimeHour = totalTime / 60;
+                    totalTimeMinute = totalTime % 60;
+                    endTimeHour.setText(String.format("%02d", totalTimeHour));
+                    endTimeMinute.setText(String.format("%02d", totalTimeMinute));
+                });
                 mediaPlayer.setAutoPlay(true);
+                mediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updatePlayTime());
             } else {
                 System.out.println("No song found with id = " + this.songId);
             }
@@ -122,23 +144,76 @@ public class PlayViewController implements Initializable {
         }
     }
 
+    private void togglePlayPause() {
+        if (mediaPlayer == null) return;
+
+        if (isPlaying) {
+            pauseSong();
+        } else {
+            playSong();
+        }
+    }
 
     private void playSong() {
-        if (mediaPlayer != null) {
-            mediaPlayer.play();
-        }
+        if (mediaPlayer == null) return;
+
+        mediaPlayer.play();
+        isPlaying = true;
+
+        // UI를 주기적으로 업데이트하는 스레드 생성
+        Thread thread = new Thread(() -> {
+            while (isPlaying) {
+                Platform.runLater(this::updatePlayTime);
+
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.setDaemon(true); // 애플리케이션 종료 시 스레드 자동 종료
+        thread.start();
     }
 
     private void pauseSong() {
-        if (mediaPlayer != null) {
-            mediaPlayer.pause();
-        }
+        if (mediaPlayer == null) return;
+
+        mediaPlayer.pause();
+        isPlaying = false;
     }
 
     private void stopSong() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
+        if (mediaPlayer == null) return;
+
+        mediaPlayer.stop();
+        isPlaying = false;
+        playBar.setValue(0);
+        playTimeHour.setText("0");
+        playTimeMinute.setText("00");
+        endTimeHour.setText(String.format("%02d", totalTimeHour));
+        endTimeMinute.setText(String.format("%02d", totalTimeMinute));
+    }
+
+    private void updatePlayTime() {
+        if (mediaPlayer == null) return;
+
+        currentTime = (long) mediaPlayer.getCurrentTime().toSeconds();
+        currentTimeHour = currentTime / 60;
+        currentTimeMinute = currentTime % 60;
+
+        playBar.setValue((double) currentTime / totalTime * 100);
+
+        playTimeHour.setText(String.valueOf( currentTimeHour));
+        if( currentTimeMinute < 10) playTimeMinute.setText("0" + currentTimeMinute);
+        else playTimeMinute.setText(String.valueOf(currentTimeMinute));
+
+        long remainingTime = totalTime - currentTime;
+        long remainingHour = remainingTime / 60;
+        long remainingMinute = remainingTime % 60;
+
+        endTimeHour.setText(String.format("%02d", remainingHour));
+        endTimeMinute.setText(String.format("%02d", remainingMinute));
     }
 
     private Connection DBConnection() {
@@ -156,7 +231,7 @@ public class PlayViewController implements Initializable {
 
         try {
             conn = DriverManager.getConnection(url, id, pw);
-            System.out.println("Sucess");
+            System.out.println("Success");
         } catch (SQLException e) {
             System.err.println("Fail");
             System.exit(0);
