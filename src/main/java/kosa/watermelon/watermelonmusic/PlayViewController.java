@@ -24,17 +24,28 @@ public class PlayViewController implements Initializable {
     private final static String pw = "1234";
     private final static String url = "jdbc:oracle:thin:@localhost:1521:xe";
 
-    @FXML private Label songTitle;
-    @FXML private Label artist;
-    @FXML private Button playButton;
-    @FXML private Button stopButton;
-    @FXML private Button pauseButton;
-    @FXML private ImageView albumCover;
-    @FXML private Slider playBar;
-    @FXML private Label playTimeHour;
-    @FXML private Label playTimeMinute;
-    @FXML private Label endTimeHour;
-    @FXML private Label endTimeMinute;
+    @FXML
+    private Label songTitle;
+    @FXML
+    private Label artist;
+    @FXML
+    private Button playButton;
+    @FXML
+    private Button stopButton;
+    @FXML
+    private Button pauseButton;
+    @FXML
+    private ImageView albumCover;
+    @FXML
+    private Slider playBar;
+    @FXML
+    private Label playTimeHour;
+    @FXML
+    private Label playTimeMinute;
+    @FXML
+    private Label endTimeHour;
+    @FXML
+    private Label endTimeMinute;
     private MediaPlayer mediaPlayer;
     private long songId;
     private long totalTime;
@@ -48,7 +59,7 @@ public class PlayViewController implements Initializable {
         playBar.setValueChanging(true);     // 외부에서 슬라이더바 조작 가능
         playBar.setValue(0);
         playBar.valueProperty().addListener(((observable, oldValue, newValue) -> {
-            if(isSliderChanging) {
+            if (isSliderChanging) {
                 double currentTime = (newValue.doubleValue() / 100) * totalTime;
                 mediaPlayer.seek(javafx.util.Duration.seconds(currentTime));
             }
@@ -75,43 +86,42 @@ public class PlayViewController implements Initializable {
         ResultSet res_album = null;
 
         try {
-            pstmt_song = conn.prepareStatement("SELECT * FROM Song WHERE song_id=?");
-            pstmt_album = conn.prepareStatement("SELECT album_cover FROM Album WHERE album_id=?");
+            pstmt_song = conn.prepareStatement("SELECT s.song_name, s.song_file, a.album_cover, ar.artist_name\n" +
+                    "FROM Song s\n" +
+                    "LEFT OUTER JOIN Album a \n" +
+                    "ON s.album_id = a.album_id \n" +
+                    "LEFT OUTER JOIN Artist ar\n" +
+                    "ON ar.artist_id = a.artist_id\n" +
+                    "WHERE song_id=?");
             pstmt_song.setLong(1, this.songId);
             res_song = pstmt_song.executeQuery();
 
-            if(res_song.next()) {
+            if (res_song.next()) {
                 String songName = res_song.getString("song_name");
-                String artist_id = res_song.getString("artist_id");
+                String artistName = res_song.getString("artist_name");
+                BFILE bfile = ((OracleResultSet) res_song).getBFILE("album_cover");
+
                 songTitle.setText(songName);
-                artist.setText(artist_id);
+                artist.setText(artistName);
 
-                pstmt_album.setLong(1, res_song.getLong("album_id"));
-                res_album = pstmt_album.executeQuery();
-
-                if (res_album.next()) {
-                    BFILE bfile = ((OracleResultSet) res_album).getBFILE("album_cover");
-                    bfile.openFile(); // BFILE 열기
-                    InputStream inputStream = bfile.getBinaryStream();
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-                    byte[] imageData = outputStream.toByteArray();
-                    outputStream.close();
-                    inputStream.close();
-                    PlaylistView playlistView = new PlaylistView(songName, artist_id, imageData);
-
-                    // 이미지 데이터를 이용하여 Image 객체 생성
-                    Image image = new Image(new ByteArrayInputStream(playlistView.getAlbumCover()));
-
-                    // ImageView에 이미지 설정
-                    albumCover.setImage(image);
-                } else {
-                    System.out.println("Album not found");
+                bfile.openFile(); // BFILE 열기
+                InputStream inputStream = bfile.getBinaryStream();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
                 }
+                byte[] imageData = outputStream.toByteArray();
+                outputStream.close();
+                inputStream.close();
+                PlaylistView playlistView = new PlaylistView(songName, artistName, imageData);
+
+                // 이미지 데이터를 이용하여 Image 객체 생성
+                Image image = new Image(new ByteArrayInputStream(playlistView.getAlbumCover()));
+
+                // ImageView에 이미지 설정
+                albumCover.setImage(image);
 
                 String songFilePath = res_song.getString("song_file");
 
@@ -208,7 +218,7 @@ public class PlayViewController implements Initializable {
         playBar.setValue((double) currentTime / totalTime * 100);
 
         playTimeHour.setText(String.valueOf(currentTimeHour));
-        if( currentTimeMinute < 10) playTimeMinute.setText("0" + currentTimeMinute);
+        if (currentTimeMinute < 10) playTimeMinute.setText("0" + currentTimeMinute);
         else playTimeMinute.setText(String.valueOf(currentTimeMinute));
 
         long remainingTime = totalTime - currentTime;
