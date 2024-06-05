@@ -53,13 +53,13 @@ public class ProfileEditController {
 	            return;
 	        }
 			
-			if (newNAME.length() > 10) {
+			if (newNAME.length() > 30) {
 	            System.out.println("닉네임이 최대 길이를 초과했습니다. 변경할 수 없습니다.");
 	            userNAME_TextField.setText(member.getNickname()); // 길이를 초과한 경우 텍스트 필드를 초기화
 	            return;
 	        }
 
-	        if (newPW.length() > 20) {
+	        if (newPW.length() > 40) {
 	            System.out.println("비밀번호가 최대 길이를 초과했습니다. 변경할 수 없습니다.");
 	            userPW_TextField.setText(member.getPw()); // 길이를 초과한 경우 텍스트 필드를 초기화
 	            return;
