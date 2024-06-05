@@ -1,5 +1,5 @@
 package kosa.watermelon.watermelonmusic;
-	
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
@@ -25,106 +25,135 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
 
 public class SongChartController implements Initializable {
-    private final static String ID = "admin";
-    private final static String PW = "1234";
-    private final static String URL = "jdbc:oracle:thin:@localhost:1521:xe";
+   private final static String ID = "admin";
+   private final static String PW = "1234";
+   private final static String URL = "jdbc:oracle:thin:@localhost:1521:xe";
 
-    @FXML private TableView<Song> tableView;
+	@FXML private TableView<Song> tableView;
 
-    @FXML private TableColumn<Song, Integer> ranking;
+	@FXML private TableColumn<Song, Integer> ranking;
 
-    @FXML private TableColumn<Song, String> songName;
+	@FXML private TableColumn<Song, String> songName;
 
-    @FXML private TableColumn<Song, String> artistName;
+	@FXML private TableColumn<Song, String> artistName;
 
-    @FXML private TableColumn<Song, Void> playBtn;
+	@FXML private TableColumn<Song, Void> playBtn;
 
-    @FXML private TableColumn<Song, Void> addBtn;
+	@FXML private TableColumn<Song, Void> addBtn;
 
-    @FXML private TableColumn<Song, Void> likebtn;
+	@FXML private TableColumn<Song, Void> likebtn;
 
-    @FXML private Button detailButton;
+	@FXML private Button detailButton;
 
-    private Member currentMember;
+  private Member currentMember;
 
-    private ContextMenu contextMenu;
+	@FXML private GridPane root;
 
-    private Playlist playlist;
+	@FXML private HBox searchContainer;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        setListView();
-        setUpContextMenu();
-        setupMyPlaylistButton();
-    }
+  private Playlist playlist;
 
-    private void setupMyPlaylistButton() {
-        detailButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                contextMenu.show(detailButton,
-                        detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinX(),
-                                detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinY()+ detailButton.getHeight());
-            }
-        });
-    }
+  @Override
+  public void initialize(URL url, ResourceBundle resourceBundle) {
+      setListView();
+      setUpContextMenu();
+      setupMyPlaylistButton();
+  }
 
-    @FXML
-    private void setUpContextMenu() {
-        contextMenu = new ContextMenu();
+	private ContextMenu contextMenu;
 
-        MenuItem myPlaylistItem = new MenuItem("My Playlist");
-        MenuItem myPageItem = new MenuItem("My Page");
+	private Member currentMember;
 
-        myPlaylistItem.setOnAction(event -> moveToMyPlaylistPage(event));
-        myPageItem.setOnAction(event -> moveToMyPage(event));
+	@Override
+	public void initialize(URL url, ResourceBundle resourceBundle) {
+		temporaryDB = TemporaryDB.getInstance();
+		this.currentMember = SessionManager.getInstance().getCurrentMember();
+		if (currentMember != null) {
+			System.out.println("SongChartController: Member set with ID - " + currentMember.getId());
+		} else {
+			System.out.println("Error: currentMember is null.");
+		}
 
-        contextMenu.getItems().addAll(myPlaylistItem, myPageItem);
+		ranking.setCellValueFactory(new PropertyValueFactory<>("id"));
+		songName.setCellValueFactory(new PropertyValueFactory<>("name"));
+		artistName.setCellValueFactory(new PropertyValueFactory<>("artistName"));
 
-    }
 
-    private void moveToMyPage(ActionEvent event) {
-        try {
-            Stage newStage = new Stage();
-            Stage stage = (Stage) detailButton.getScene().getWindow();
+    contextMenu.getItems().addAll(myPlaylistItem, myPageItem);
 
-            Parent myPage = FXMLLoader.load(getClass().getResource("mypage.fxml"));
+		// Load the search component
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("search.fxml"));
+			HBox searchBox = loader.load();
+			SearchController searchController = loader.getController();
+			searchController.setTableView(tableView);
+			searchContainer.getChildren().add(searchBox);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-            Scene scene = new Scene(myPage);
+		setListView();
+		setUpContextMenu();
+		setupMyPlaylistButton();
+	}
 
-            newStage.setTitle("My Page");
-            newStage.setScene(scene);
-            newStage.show();
+	public void setMember(Member member) {
+		this.currentMember = member;
+	}
 
-            stage.hide();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	private void setupMyPlaylistButton() {
+		detailButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			if (event.getButton() == MouseButton.PRIMARY) {
+				contextMenu.show(detailButton, detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinX(),
+						detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinY()
+								+ detailButton.getHeight());
+			}
+		});
+	}
 
-    private void moveToMyPlaylistPage(ActionEvent event) {
-        try {
-            Stage newStage = new Stage();
-            Stage stage = (Stage) detailButton.getScene().getWindow();
+	@FXML
+	private void setUpContextMenu() {
+		contextMenu = new ContextMenu();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist.fxml"));
-            Parent playlist = loader.load();
+		MenuItem myPlaylistItem = new MenuItem("My Playlist");
+		MenuItem myPageItem = new MenuItem("My Page");
 
-            // PlaylistController 인스턴스를 가져와서 멤버 설정
-            PlaylistController controller = loader.getController();
+		myPlaylistItem.setOnAction(event -> moveToMyPlaylistPage(event));
+		myPageItem.setOnAction(event -> moveToMyPage(event));
+
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist.fxml"));
+    Parent playlist = loader.load();
+
+    // PlaylistController 인스턴스를 가져와서 멤버 설정
+    PlaylistController controller = loader.getController();
+    controller.setMember(currentMember);
+
+		contextMenu.getItems().addAll(myPlaylistItem, myPageItem);
+	}
+
+	private void moveToMyPage(ActionEvent event) {
+		try {
+			// FXML 파일 로드
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("myPage.fxml"));
+            Parent parent = loader.load();
+
+            // MyPageController 인스턴스를 가져와서 멤버 설정
+            MyPageController controller = loader.getController();
             controller.setMember(currentMember);
 
-            Scene scene = new Scene(playlist);
-
-            newStage.setTitle("My Playlist");
-            newStage.setScene(scene);
+            // 새 Stage 생성 후 기존 Stage 닫기
+            Stage newStage = new Stage();
+            newStage.setTitle("My Page");
+            newStage.setScene(new Scene(parent, 600, 464));
             newStage.show();
-
             stage.hide();
         } catch (IOException e) {
             e.printStackTrace();
@@ -371,10 +400,4 @@ public class SongChartController implements Initializable {
         pstmt.setString(3, playlist.getMemberId());
         pstmt.executeQuery();
     }
-
-//    private Member getMemberById(String id) {
-//        Member member = null;
-//
-//        return member;
-//    }
 }

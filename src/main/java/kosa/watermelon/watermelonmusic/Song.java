@@ -44,4 +44,12 @@ public class Song {
     public void setClickCnt() {
         this.clickCnt++;
     }
+
+    public long getLikeCnt() {
+        return likeCnt;
+    }
+
+    public void setLikeCnt() {
+        this.likeCnt++;
+    }
 }
