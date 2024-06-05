@@ -41,11 +41,22 @@ public class PlayViewController implements Initializable {
     private long totalTimeHour;
     private long totalTimeMinute;
     private boolean isPlaying = true;
+    private boolean isSliderChanging = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         playBar.setValueChanging(true);     // 외부에서 슬라이더바 조작 가능
         playBar.setValue(0);
+        playBar.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if(isSliderChanging) {
+                double currentTime = (newValue.doubleValue() / 100) * totalTime;
+                mediaPlayer.seek(javafx.util.Duration.seconds(currentTime));
+            }
+        }));
+
+        playBar.setOnMousePressed(event -> isSliderChanging = true);
+        playBar.setOnMouseReleased(event -> isSliderChanging = false);
+
         playButton.setOnAction(event -> togglePlayPause());
         stopButton.setOnAction(event -> stopSong());
         pauseButton.setOnAction(event -> pauseSong());
@@ -116,6 +127,7 @@ public class PlayViewController implements Initializable {
                 });
                 mediaPlayer.setAutoPlay(true);
                 mediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updatePlayTime());
+                mediaPlayer.setOnEndOfMedia(this::resetMediaPlayer);
             } else {
                 System.out.println("No song found with id = " + this.songId);
             }
@@ -187,7 +199,7 @@ public class PlayViewController implements Initializable {
     }
 
     private void updatePlayTime() {
-        if (mediaPlayer == null) return;
+        if (mediaPlayer == null || isSliderChanging) return;
 
         long currentTime = (long) mediaPlayer.getCurrentTime().toSeconds();
         long currentTimeHour = currentTime / 60;
@@ -205,6 +217,17 @@ public class PlayViewController implements Initializable {
 
         endTimeHour.setText(String.format("%02d", remainingHour));
         endTimeMinute.setText(String.format("%02d", remainingMinute));
+    }
+
+    private void resetMediaPlayer() {
+        isPlaying = false;
+        playBar.setValue(0);
+        playTimeHour.setText("0");
+        playTimeMinute.setText("00");
+        endTimeHour.setText(String.format("%02d", totalTimeHour));
+        endTimeMinute.setText(String.format("%02d", totalTimeMinute));
+        mediaPlayer.seek(javafx.util.Duration.ZERO);
+        mediaPlayer.stop();
     }
 
     private Connection DBConnection() {
