@@ -24,31 +24,22 @@ public class PlayViewController implements Initializable {
     private final static String pw = "1234";
     private final static String url = "jdbc:oracle:thin:@localhost:1521:xe";
 
-    @FXML
-    private Label songTitle;
-    @FXML
-    private Label artist;
-    @FXML
-    private Button playButton;
-    @FXML
-    private Button stopButton;
-    @FXML
-    private Button pauseButton;
-    @FXML
-    private ImageView albumCover;
-    @FXML
-    private Slider playBar;
-    @FXML
-    private Label playTimeHour;
-    @FXML
-    private Label playTimeMinute;
-    @FXML
-    private Label endTimeHour;
-    @FXML
-    private Label endTimeMinute;
+    @FXML private Label songTitle;
+    @FXML private Label artist;
+    @FXML private Button playButton;
+    @FXML private Button stopButton;
+    @FXML private Button pauseButton;
+    @FXML private ImageView albumCover;
+    @FXML private Slider playBar;
+    @FXML private Label playTimeHour;
+    @FXML private Label playTimeMinute;
+    @FXML private Label endTimeHour;
+    @FXML private Label endTimeMinute;
     private MediaPlayer mediaPlayer;
     private long songId;
-    private long totalTime, totalTimeHour, totalTimeMinute, currentTime, currentTimeHour, currentTimeMinute;
+    private long totalTime;
+    private long totalTimeHour;
+    private long totalTimeMinute;
     private boolean isPlaying = true;
 
     @Override
@@ -198,13 +189,13 @@ public class PlayViewController implements Initializable {
     private void updatePlayTime() {
         if (mediaPlayer == null) return;
 
-        currentTime = (long) mediaPlayer.getCurrentTime().toSeconds();
-        currentTimeHour = currentTime / 60;
-        currentTimeMinute = currentTime % 60;
+        long currentTime = (long) mediaPlayer.getCurrentTime().toSeconds();
+        long currentTimeHour = currentTime / 60;
+        long currentTimeMinute = currentTime % 60;
 
         playBar.setValue((double) currentTime / totalTime * 100);
 
-        playTimeHour.setText(String.valueOf( currentTimeHour));
+        playTimeHour.setText(String.valueOf(currentTimeHour));
         if( currentTimeMinute < 10) playTimeMinute.setText("0" + currentTimeMinute);
         else playTimeMinute.setText(String.valueOf(currentTimeMinute));
 
