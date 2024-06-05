@@ -10,9 +10,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import oracle.jdbc.OracleResultSet;
+import oracle.sql.BFILE;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -33,6 +39,9 @@ public class LoginController implements Initializable {
 
 	@FXML
 	private TextField userPW;
+	
+	@FXML
+	private ImageView profile_Image;
 
 	// private TemporaryDB temporaryDB;
 
@@ -53,7 +62,12 @@ public class LoginController implements Initializable {
 		if (checkIdAndPw(id, pw)) {
 			Member member = getMemberById(id);
 			SessionManager.getInstance().setCurrentMember(member);
-
+			
+			if (member != null && member.getProfileImage() != null && profile_Image != null) {
+			    Image image = new Image(new ByteArrayInputStream(member.getProfileImage()));
+			    profile_Image.setImage(image);
+			}
+			
 			try {
 				Stage newStage = new Stage();
 				Stage stage = (Stage) loginBtn.getScene().getWindow();
@@ -103,30 +117,41 @@ public class LoginController implements Initializable {
 
 	private Member getMemberById(String id) {
 		Member member = null;
+		
+		String query = "SELECT MEMBER_ID, MEMBER_PW, EMAIL, NICKNAME, PROFILE_IMAGE, GENDER, BIRTH FROM MEMBER WHERE MEMBER_ID = ?";
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-			String sql = "SELECT member_id, member_pw, email, nickname, profile_image, gender, birth FROM Member WHERE member_id = ?";
-			PreparedStatement statement = connection.prepareStatement(sql);
-			statement.setString(1, id);
+            if (resultSet.next()) {
+                String memberId = resultSet.getString("MEMBER_ID");
+                String memberPw = resultSet.getString("MEMBER_PW");
+                String email = resultSet.getString("EMAIL");
+                String nickname = resultSet.getString("NICKNAME");
+                byte[] profileImage = getProfileImage(resultSet);  // BFILE 읽기
+                String gender = resultSet.getString("GENDER");
+                java.sql.Date birth = resultSet.getDate("BIRTH");
+                member = new Member(memberId, memberPw, email, nickname, profileImage, gender, birth.toLocalDate());
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
 
-			ResultSet resultSet = statement.executeQuery();
+        return member;
+    }
+	
+	private byte[] getProfileImage(ResultSet resultSet) throws SQLException, IOException {
+        BFILE bfile = ((OracleResultSet) resultSet).getBFILE("PROFILE_IMAGE");
+        if (bfile == null) {
+            return null;
+        }
 
-			if (resultSet.next()) {
-				String memberId = resultSet.getString("member_id");
-				String memberPw = resultSet.getString("member_pw");
-				String email = resultSet.getString("email");
-				String nickname = resultSet.getString("nickname");
-				Blob profileImageBlob = resultSet.getBlob("profile_image");
-				byte[] profileImage = profileImageBlob.getBytes(1, (int) profileImageBlob.length());
-				String gender = resultSet.getString("gender");
-				java.sql.Date birth = resultSet.getDate("birth");
-
-				member = new Member(memberId, memberPw, nickname, profileImage, email, gender, birth.toLocalDate());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return member;
-	}
+        bfile.openFile();
+        try (InputStream inputStream = bfile.getBinaryStream()) {
+            return inputStream.readAllBytes();
+        } finally {
+            bfile.closeFile();
+        }
+    }
 }

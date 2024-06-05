@@ -7,7 +7,7 @@ public class Member {
 	private String pw;
 	private String email;
 	private String nickname;
-	private byte[] profileImage; // BLOB 필드를 byte[]로 선언
+	private byte[] profileImage; // BFILE 필드를 byte[]로 선언
 	private String gender;
 	private LocalDate birth;
 
@@ -32,12 +32,12 @@ public class Member {
 	public LocalDate getBirth() { return birth; }
 	public void setBirth(LocalDate birth) { this.birth = birth; }
 
-	public Member(String id, String pw, String nickname, byte[] profileImage, String email, String gender, LocalDate birth) {
+	public Member(String id, String pw, String email, String nickname, byte[] profileImage, String gender, LocalDate birth) {
 		this.id = id;
 		this.pw = pw;
+		this.email = email;
 		this.nickname = nickname;
 		this.profileImage = profileImage;
-		this.email = email;
 		this.gender = gender;
 		this.birth = birth;
 	}

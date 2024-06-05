@@ -1,6 +1,7 @@
 package kosa.watermelon.watermelonmusic;
 
 import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -26,6 +27,7 @@ public class MyPageController implements Initializable {
 	@FXML private Button profileEdit_BTN;
 	@FXML private Button goToChart_BTN;
 	@FXML private Button postingPage_BTN;
+	@FXML private Button likeSong_BTN;
 	@FXML private TextField userNAME_TextField;
 	@FXML private TextField userID_TextField;
 	@FXML private TextField userEMAIL_TextField;
@@ -75,9 +77,6 @@ public class MyPageController implements Initializable {
 		userEMAIL_TextField.setEditable(false);
 		userGender_TextField.setEditable(false);
 		userBirth_TextField.setEditable(false);
-		
-		Image image = new Image(getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/image/profile.jpg"));
-	    profile_Image.setImage(image);
 	    
 		loadPlaylistImage();
 		
@@ -102,6 +101,11 @@ public class MyPageController implements Initializable {
             userEMAIL_TextField.setText(currentMember.getEmail());
             userGender_TextField.setText(currentMember.getGender());
             userBirth_TextField.setText(currentMember.getBirth().toString());
+            
+            // Load profile image from byte array
+            byte[] profileImageBytes = currentMember.getProfileImage();
+            Image profileImage = new Image(new ByteArrayInputStream(profileImageBytes));
+            profile_Image.setImage(profileImage);
         }
     }
 	// 여기까지
