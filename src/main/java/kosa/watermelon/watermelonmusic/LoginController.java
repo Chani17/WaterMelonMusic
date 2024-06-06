@@ -68,15 +68,18 @@ public class LoginController implements Initializable {
 				Stage newStage = new Stage();
 				Stage stage = (Stage) loginBtn.getScene().getWindow();
 
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("songChart.fxml"));
-				Parent songChart = loader.load();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
+				Parent dashBoard = loader.load();
+				Scene scene = new Scene(dashBoard);
 
 				// SongChartController 인스턴스를 가져와서 멤버 설정
-				SongChartController controller = loader.getController();
-				controller.setMember(member);
-				Scene scene = new Scene(songChart);
+				DashboardController controller = loader.getController();
+				//SongChartController controller = loader.getController();
+				//controller.setMember(member);
+				//Scene scene = new Scene(songChart);
 
-				newStage.setTitle("인기 차트!");
+				//newStage.setTitle("인기 차트!");
+				newStage.setTitle("메인 화면");
 				newStage.setScene(scene);
 				newStage.show();
 
