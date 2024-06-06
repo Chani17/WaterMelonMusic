@@ -116,7 +116,8 @@ public class PlayViewController implements Initializable {
                 outputStream.close();
                 inputStream.close();
                 PlaylistView playlistView = new PlaylistView(songName, artistName, imageData);
-
+                bfile.closeFile(); // 자원 누수 방지를 위함
+                
                 // 이미지 데이터를 이용하여 Image 객체 생성
                 Image image = new Image(new ByteArrayInputStream(playlistView.getAlbumCover()));
 

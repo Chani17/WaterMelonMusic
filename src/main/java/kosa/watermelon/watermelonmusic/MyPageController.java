@@ -52,12 +52,9 @@ public class MyPageController implements Initializable {
 	};
 
 	private Member currentMember;
-	
-	private TemporaryDB temporaryDB;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		//currentMember = temporaryDB.getMemberById("abcd");
 		this.currentMember = SessionManager.getInstance().getCurrentMember();
         if (currentMember != null) {
             System.out.println("MyPageController: Member set with ID - " + currentMember.getId());
@@ -66,12 +63,6 @@ public class MyPageController implements Initializable {
             System.out.println("Error: currentMember is null.");
         }
         
-        // 앨범 ... 아직 TemporaryDB에 연결되어 있음
-		temporaryDB = TemporaryDB.getInstance();
-        
-		String[] albums = temporaryDB.getSongs().stream().map(song -> song.getName() + " - " + song.getArtist())
-				.toArray(String[]::new);
-
 		// TextField를 수정 불가능하게 설정
 		userNAME_TextField.setEditable(false);
 		userID_TextField.setEditable(false);
@@ -128,7 +119,7 @@ public class MyPageController implements Initializable {
 		}
 	}
 
-	@FXML // 마이페이지 → 프로필 편집 페이지 이동 이벤트 처리
+	@FXML // 마이페이지 → 프로필 편집 페이지 생성 이벤트 처리
 	private void profileEdit_Action(ActionEvent event) {
 		try {
 			// FXML 파일 로드
@@ -139,10 +130,8 @@ public class MyPageController implements Initializable {
 			ProfileEditController controller = loader.getController();
 			controller.setMember(currentMember);
 
-			// 새 stage 생성 후 기존 스테이지 닫기
 			Stage newStage = new Stage();
-			Stage currentStage = (Stage) profileEdit_BTN.getScene().getWindow();
-
+		
 			newStage.initModality(Modality.APPLICATION_MODAL); // 새로운 Stage를 모달로 설정
 			newStage.setTitle("프로필 편집");
 			newStage.setScene(new Scene(parent, 300, 200));
@@ -161,6 +150,10 @@ public class MyPageController implements Initializable {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("songChart.fxml"));
 			Parent parent = loader.load();
 
+			// SongChartController 인스턴스를 가져와서 멤버 설정
+			SongChartController controller = loader.getController();
+			controller.setMember(currentMember);
+			
 			Stage newStage = new Stage();
 			Stage currentStage = (Stage) goToChart_BTN.getScene().getWindow();
 
