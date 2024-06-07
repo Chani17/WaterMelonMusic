@@ -24,28 +24,17 @@ public class PlayViewController implements Initializable {
     private final static String pw = "1234";
     private final static String url = "jdbc:oracle:thin:@localhost:1521:xe";
 
-    @FXML
-    private Label songTitle;
-    @FXML
-    private Label artist;
-    @FXML
-    private Button playButton;
-    @FXML
-    private Button stopButton;
-    @FXML
-    private Button pauseButton;
-    @FXML
-    private ImageView albumCover;
-    @FXML
-    private Slider playBar;
-    @FXML
-    private Label playTimeHour;
-    @FXML
-    private Label playTimeMinute;
-    @FXML
-    private Label endTimeHour;
-    @FXML
-    private Label endTimeMinute;
+    @FXML private Label songTitle;
+    @FXML private Label artist;
+    @FXML private Button playButton;
+    @FXML private Button stopButton;
+    @FXML private Button pauseButton;
+    @FXML private ImageView albumCover;
+    @FXML private Slider playBar;
+    @FXML private Label playTimeHour;
+    @FXML private Label playTimeMinute;
+    @FXML private Label endTimeHour;
+    @FXML private Label endTimeMinute;
     private MediaPlayer mediaPlayer;
     private long songId;
     private long totalTime;
@@ -86,6 +75,7 @@ public class PlayViewController implements Initializable {
         ResultSet res_album = null;
 
         try {
+            System.out.println(this.songId);
             pstmt_song = conn.prepareStatement("SELECT s.song_name, s.song_file, a.album_cover, ar.artist_name\n" +
                     "FROM Song s\n" +
                     "LEFT OUTER JOIN Album a \n" +
@@ -100,6 +90,7 @@ public class PlayViewController implements Initializable {
                 String songName = res_song.getString("song_name");
                 String artistName = res_song.getString("artist_name");
                 BFILE bfile = ((OracleResultSet) res_song).getBFILE("album_cover");
+                System.out.println(bfile.getName());
 
                 songTitle.setText(songName);
                 artist.setText(artistName);
