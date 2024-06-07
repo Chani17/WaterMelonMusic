@@ -72,7 +72,7 @@ public class LoginController implements Initializable {
 				Parent dashBoard = loader.load();
 				Scene scene = new Scene(dashBoard);
 
-				// SongChartController 인스턴스를 가져와서 멤버 설정
+				// DashboardController 인스턴스를 가져와서 멤버 설정
 				DashboardController controller = loader.getController();
 				//SongChartController controller = loader.getController();
 				//controller.setMember(member);

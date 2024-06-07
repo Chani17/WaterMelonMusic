@@ -20,6 +20,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.*;
@@ -38,6 +39,7 @@ public class PlaylistController implements Initializable {
     @FXML private Button delete;
     @FXML private Button deleteAll;
     @FXML private Button back;
+    @FXML private Button goToDashboard_BTN;
     private Member currentMember;
 
     @Override
@@ -228,6 +230,29 @@ public class PlaylistController implements Initializable {
         }
     }
 
+    @FXML // My Playlist → DashBoard 페이지 이동 이벤트 처리
+	private void goToDashboard_Action(ActionEvent event) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
+			Parent parent = loader.load();
+			
+			// DashboardController 인스턴스를 가져와서 멤버 설정
+			DashboardController controller = loader.getController();
+			controller.setMember(currentMember);
+			
+			Stage newStage = new Stage();
+			Stage currentStage = (Stage) goToDashboard_BTN.getScene().getWindow();
+			
+			newStage.initModality(Modality.APPLICATION_MODAL);
+			newStage.setTitle("메인 화면");
+			newStage.setScene(new Scene(parent, 600, 464));
+			newStage.show();
+			currentStage.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+    
     private Connection DBConnection() {
         //드라이버 검색 (db와 연동 준비)
         try {

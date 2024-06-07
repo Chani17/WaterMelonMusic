@@ -12,8 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane onContextMenuRequested="#setUpContextMenu"
-	prefHeight="464.0" prefWidth="600.0"
+<GridPane prefHeight="464.0" prefWidth="600.0"
 	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="kosa.watermelon.watermelonmusic.SongChartController">
 	<children>
@@ -31,10 +30,11 @@
 			GridPane.rowIndex="0">
 			<!-- Search TextField and Button will be loaded here from search.fxml -->
 		</HBox>
-		<Button fx:id="detailButton" mnemonicParsing="false"
-			onAction="#setUpContextMenu" text="..." prefHeight="30.0"
-			prefWidth="50.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT"
-			GridPane.rowIndex="0">
+
+		<Button fx:id="goToDashboard_BTN" mnemonicParsing="false"
+			onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="50.0"
+			GridPane.columnIndex="2" GridPane.halignment="RIGHT"
+			GridPane.rowIndex="0" text="◀◀">
 			<GridPane.margin>
 				<Insets right="10.0" top="20.0" />
 			</GridPane.margin>

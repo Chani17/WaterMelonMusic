@@ -27,6 +27,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import oracle.sql.ARRAY;
@@ -58,8 +59,10 @@ public class SongChartController implements Initializable {
 	@FXML
 	private TableColumn<Song, Void> likebtn;
 
+//	@FXML
+//	private Button detailButton;
 	@FXML
-	private Button detailButton;
+	private Button goToDashboard_BTN;
 
 	@FXML
 	private GridPane root;
@@ -67,7 +70,7 @@ public class SongChartController implements Initializable {
 	@FXML
 	private HBox searchContainer;
 	
-	private ContextMenu contextMenu;
+	//private ContextMenu contextMenu;
 
 	private Member currentMember;
 	
@@ -98,95 +101,113 @@ public class SongChartController implements Initializable {
 		}
 
 		setListView();
-		setUpContextMenu();
-		setupMyPlaylistButton();
+		//setUpContextMenu();
+		//setupMyPlaylistButton();
 	}
 
 	public void setMember(Member member) {
 		this.currentMember = member;
 	}
 
-	private void setupMyPlaylistButton() {
-		detailButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			if (event.getButton() == MouseButton.PRIMARY) {
-				contextMenu.show(detailButton, detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinX(),
-						detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinY()
-								+ detailButton.getHeight());
-			}
-		});
-	}
+//	private void setupMyPlaylistButton() {
+//		detailButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+//			if (event.getButton() == MouseButton.PRIMARY) {
+//				contextMenu.show(detailButton, detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinX(),
+//						detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinY()
+//								+ detailButton.getHeight());
+//			}
+//		});
+//	}
 
-	@FXML
-	private void setUpContextMenu() {
-		contextMenu = new ContextMenu();
+//	@FXML
+//	private void setUpContextMenu() {
+//		contextMenu = new ContextMenu();
+//
+//		MenuItem myPlaylistItem = new MenuItem("My Playlist");
+//		MenuItem myPageItem = new MenuItem("My Page");
+//
+//		myPlaylistItem.setOnAction(event -> moveToMyPlaylistPage(event));
+//		myPageItem.setOnAction(event -> moveToMyPage(event));
+//
+//		FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist.fxml"));
+//		try {
+//			Parent playlist = loader.load();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		// PlaylistController 인스턴스를 가져와서 멤버 설정
+//		PlaylistController controller = loader.getController();
+//		controller.setMember(currentMember);
+//
+//		contextMenu.getItems().addAll(myPlaylistItem, myPageItem);
+//	}
+//
+//	private void moveToMyPage(ActionEvent event) {
+//		try {
+//			// FXML 파일 로드
+//			FXMLLoader loader = new FXMLLoader(getClass().getResource("mypage.fxml"));
+//			Parent parent = loader.load();
+//
+//			// MyPageController 인스턴스를 가져와서 멤버 설정
+//			MyPageController controller = loader.getController();
+//			controller.setMember(currentMember);
+//
+//			// 새 Stage 생성 후 기존 Stage 닫기
+//			Stage newStage = new Stage();
+//			Stage currentStage = (Stage) detailButton.getScene().getWindow();
+//			
+//			newStage.setTitle("마이페이지");
+//			newStage.setScene(new Scene(parent, 600, 464));
+//			newStage.show();
+//			currentStage.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	private void moveToMyPlaylistPage(ActionEvent event) {
+//        try {
+//            // FXML 파일 로드
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist.fxml"));
+//            Parent parent = loader.load();
+//
+//            // PlaylistController 인스턴스를 가져와서 멤버 설정
+//            PlaylistController controller = loader.getController();
+//            controller.setMember(currentMember);
+//
+//            // 새 Stage 생성 후 기존 Stage 닫기
+//            Stage newStage = new Stage();
+//            Stage currentStage = (Stage) detailButton.getScene().getWindow();
+//            
+//            newStage.setTitle("My Playlist");
+//            newStage.setScene(new Scene(parent, 600, 464));
+//            newStage.show();
+//            currentStage.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-		MenuItem myPlaylistItem = new MenuItem("My Playlist");
-		MenuItem myPageItem = new MenuItem("My Page");
-
-		myPlaylistItem.setOnAction(event -> moveToMyPlaylistPage(event));
-		myPageItem.setOnAction(event -> moveToMyPage(event));
-
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist.fxml"));
+	@FXML // 인기차트 → DashBoard 페이지 이동 이벤트 처리
+	private void goToDashboard_Action(ActionEvent event)  {
 		try {
-			Parent playlist = loader.load();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// PlaylistController 인스턴스를 가져와서 멤버 설정
-		PlaylistController controller = loader.getController();
-		controller.setMember(currentMember);
-
-		contextMenu.getItems().addAll(myPlaylistItem, myPageItem);
-	}
-
-	private void moveToMyPage(ActionEvent event) {
-		try {
-			// FXML 파일 로드
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("mypage.fxml"));
-			Parent parent = loader.load();
-
-			// MyPageController 인스턴스를 가져와서 멤버 설정
-			MyPageController controller = loader.getController();
-			controller.setMember(currentMember);
-
-			// 새 Stage 생성 후 기존 Stage 닫기
-			Stage newStage = new Stage();
-			Stage currentStage = (Stage) detailButton.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
+            Parent parent = loader.load();
+            
+            Stage newStage = new Stage();
+			Stage currentStage = (Stage) goToDashboard_BTN.getScene().getWindow();
 			
-			newStage.setTitle("마이페이지");
+			newStage.initModality(Modality.APPLICATION_MODAL);
+			newStage.setTitle("메인 화면");
 			newStage.setScene(new Scene(parent, 600, 464));
 			newStage.show();
 			currentStage.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void moveToMyPlaylistPage(ActionEvent event) {
-        try {
-            // FXML 파일 로드
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist.fxml"));
-            Parent parent = loader.load();
-
-            // PlaylistController 인스턴스를 가져와서 멤버 설정
-            PlaylistController controller = loader.getController();
-            controller.setMember(currentMember);
-
-            // 새 Stage 생성 후 기존 Stage 닫기
-            Stage newStage = new Stage();
-            Stage currentStage = (Stage) detailButton.getScene().getWindow();
-            
-            newStage.setTitle("My Playlist");
-            newStage.setScene(new Scene(parent, 600, 464));
-            newStage.show();
-            currentStage.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 	private void setListView() {
 		Connection conn = DBConnection();
 		PreparedStatement pstmt = null;

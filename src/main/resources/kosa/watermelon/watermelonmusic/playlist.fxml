@@ -64,8 +64,9 @@
 				<Insets bottom="340.0" left="50.0" />
 			</GridPane.margin>
 		</Button>
-		<Button fx:id="back" mnemonicParsing="false" text="  ↩  "
-			textAlignment="CENTER" onAction="#backToPage">
+		<Button fx:id="goToDashboard_BTN" mnemonicParsing="false"
+			text="◀◀" textAlignment="CENTER" onAction="#goToDashboard_Action"
+			prefHeight="30.0" prefWidth="50.0">
 			<GridPane.margin>
 				<Insets bottom="35.0" left="5.0" />
 			</GridPane.margin>

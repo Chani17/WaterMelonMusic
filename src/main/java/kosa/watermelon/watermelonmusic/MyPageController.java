@@ -25,9 +25,7 @@ public class MyPageController implements Initializable {
 
 	@FXML private ImageView profile_Image;
 	@FXML private Button profileEdit_BTN;
-	@FXML private Button goToChart_BTN;
-	@FXML private Button postingPage_BTN;
-	@FXML private Button likeSong_BTN;
+	@FXML private Button goToDashboard_BTN;
 	@FXML private Button logout_BTN;
 	@FXML private TextField userNAME_TextField;
 	@FXML private TextField userID_TextField;
@@ -143,22 +141,22 @@ public class MyPageController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-
-	@FXML // 마이페이지 → 인기차트 페이지 이동 이벤트 처리
-	private void goToChart_Action(ActionEvent event) {
+	
+	@FXML // 마이페이지 → DashBoard 페이지 이동 이벤트 처리
+	private void goToDashboard_Action(ActionEvent event) {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("songChart.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
 			Parent parent = loader.load();
-
-			// SongChartController 인스턴스를 가져와서 멤버 설정
-			SongChartController controller = loader.getController();
+			
+			// DashboardController 인스턴스를 가져와서 멤버 설정
+			DashboardController controller = loader.getController();
 			controller.setMember(currentMember);
 			
 			Stage newStage = new Stage();
-			Stage currentStage = (Stage) goToChart_BTN.getScene().getWindow();
-
+			Stage currentStage = (Stage) goToDashboard_BTN.getScene().getWindow();
+			
 			newStage.initModality(Modality.APPLICATION_MODAL);
-			newStage.setTitle("인기 차트!");
+			newStage.setTitle("메인 화면");
 			newStage.setScene(new Scene(parent, 600, 464));
 			newStage.show();
 			currentStage.close();
@@ -166,25 +164,6 @@ public class MyPageController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-	
-	@FXML // 마이페이지 → 포스팅 페이지 이동 이벤트 처리
-	private void postingPage_Action(ActionEvent event)  {
-		try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("postingPage.fxml"));
-            Parent parent = loader.load();
-            
-            Stage newStage = new Stage();
-			Stage currentStage = (Stage) postingPage_BTN.getScene().getWindow();
-			
-			newStage.initModality(Modality.APPLICATION_MODAL);
-			newStage.setTitle("플레이리스트 포스팅");
-			newStage.setScene(new Scene(parent, 600, 464));
-			newStage.show();
-			currentStage.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 	
 	@FXML // 로그아웃 이벤트 처리
 	private void logout_Action(ActionEvent event) {

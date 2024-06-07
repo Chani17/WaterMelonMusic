@@ -6,7 +6,6 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.text.Font?>
 
@@ -98,31 +97,15 @@
 			<Font name="D2Coding" size="14.0" />
 		</font>
 	</Button>
-
-	<Button fx:id="postingPage_BTN" layoutX="321.0" layoutY="22.0"
-		onAction="#postingPage_Action" prefHeight="22.0" prefWidth="64.0"
-		text="게시판">
+	<Button fx:id="logout_BTN" layoutX="462.0" layoutY="22.0"
+		mnemonicParsing="false" onAction="#logout_Action" prefHeight="30.0"
+		prefWidth="64.0" text="로그아웃">
 		<font>
 			<Font name="D2Coding" />
 		</font>
 	</Button>
-	<HBox layoutX="398.0" layoutY="22.0" spacing="10.0">
-		<Button fx:id="likeSong_BTN" mnemonicParsing="false"
-			prefHeight="22.0" prefWidth="50.0" text="♥">
-			<font>
-				<Font name="D2Coding" />
-			</font>
-		</Button>
-		<Button fx:id="logout_BTN" mnemonicParsing="false"
-			onAction="#logout_Action" prefHeight="22.0" prefWidth="64.0"
-			text="로그아웃">
-			<font>
-				<Font name="D2Coding" />
-			</font>
-		</Button>
-	</HBox>
-	<Button fx:id="goToChart_BTN" layoutX="536.0" layoutY="21.0"
-		onAction="#goToChart_Action" prefHeight="24.0" prefWidth="50.0"
+	<Button fx:id="goToDashboard_BTN" layoutX="536.0" layoutY="21.0"
+		onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="50.0"
 		text="◀◀">
 		<font>
 			<Font name="D2Coding" />
