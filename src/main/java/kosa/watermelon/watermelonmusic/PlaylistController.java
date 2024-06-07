@@ -196,7 +196,7 @@ public class PlaylistController implements Initializable {
 //        temporaryDB.clearMyPlaylist();
 //    }
 
-    private List<Song> getMyPlayllist(String memberId) {
+    private List<Song> getMyPlaylist(String memberId) {
         try {
             Connection conn = DBUtil.getConnection();
             PreparedStatement pstmt = null;
