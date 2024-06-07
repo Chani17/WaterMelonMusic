@@ -6,10 +6,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.BFILE;
@@ -32,6 +35,9 @@ public class LoginController implements Initializable {
 	private Button loginBtn;
 
 	@FXML
+	private Button adminLogin_BTN;
+	
+	@FXML
 	private TextField userID;
 
 	@FXML
@@ -47,7 +53,7 @@ public class LoginController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		
+		adminLogin_BTN.setOnAction(event -> openAdminLogin());
 	}
 
 	@FXML
@@ -90,9 +96,29 @@ public class LoginController implements Initializable {
 		} else {
 			// 로그인 실패 처리
 			System.out.println("Invalid ID or Password");
+			Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("로그인 실패");
+            alert.setHeaderText(null);
+            alert.setContentText("사용자 정보를 찾을 수 없습니다.\n 아이디와 비밀번호를 다시 확인해주세요.");
+            alert.showAndWait();
 		}
 	}
-
+	
+	// 관리자 계정으로 접속시
+	private void openAdminLogin() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("adminLogin.fxml"));
+            Parent root = loader.load();
+            Stage newStage = new Stage();
+            newStage.initModality(Modality.APPLICATION_MODAL); // 새로운 Stage를 모달로 설정
+            newStage.setTitle("관리자 로그인");
+            newStage.setScene(new Scene(root));
+            newStage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
 	private boolean checkIdAndPw(String id, String pw) {
 		boolean isValid = false;
 
