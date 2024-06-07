@@ -69,7 +69,7 @@ public class SongChartController implements Initializable {
 
 	private Member currentMember;
 	
-	//private Playlist playlist;
+	private Playlist playlist;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -243,7 +243,7 @@ public class SongChartController implements Initializable {
 
 									// 데이터베이스 update
 									updatePlaylist(playlist, selectedSong, conn);
-									DBClose(conn);
+									DBUtil.close(conn);
 								}
 							} catch (Exception e) {
 								e.printStackTrace();

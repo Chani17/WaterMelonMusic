@@ -39,13 +39,6 @@ public class MyPageController implements Initializable {
 			"https://i.pinimg.com/564x/0a/9e/69/0a9e69096943ed19407cf02991957cd1.jpg",
 			"https://i.pinimg.com/564x/9b/11/6c/9b116c0ec240443e5937bf782fa117aa.jpg",
 			"https://i.pinimg.com/564x/46/e5/8a/46e58af50c57bda8bc9ce3cf15746628.jpg",
-			"https://i.pinimg.com/564x/a3/17/d9/a317d91b9e10272dbae7c07180a8bdcd.jpg",
-			"https://i.pinimg.com/564x/65/d5/71/65d5718995458b549eacae3c40153168.jpg",
-			"https://i.pinimg.com/564x/19/00/4d/19004df230620eada6d5b0726ac035ca.jpg",
-			"https://i.pinimg.com/564x/a5/da/a6/a5daa6a5133355111ecdee0c7e67b729.jpg",
-			"https://i.pinimg.com/564x/11/48/9b/11489b8f2ac4e1dc98e876b445af93d6.jpg",
-			"https://i.pinimg.com/564x/bb/37/b8/bb37b8da81fadf1f14637d9e475198cc.jpg"
-			// 추가 URL을 여기에 넣기
 	};
 
 	private Member currentMember;
