@@ -43,7 +43,7 @@
 			<Font name="D2Coding" size="12.0" />
 		</font>
 	</Button>
-	<VBox layoutX="51.0" layoutY="155.0" prefHeight="127.0"
+	<VBox layoutX="90.0" layoutY="168.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
 			<ImageView fx:id="SongChart_ImageView" fitHeight="94.0"
@@ -61,7 +61,7 @@
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="189.0" layoutY="155.0" prefHeight="127.0"
+	<VBox layoutX="250.0" layoutY="168.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
 			<ImageView fx:id="Search_ImageView" fitHeight="94.0"
@@ -79,7 +79,7 @@
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="324.0" layoutY="155.0" prefHeight="127.0"
+	<VBox layoutX="410.0" layoutY="315.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
 			<ImageView fx:id="PostingPage_ImageView" fitHeight="94.0"
@@ -97,7 +97,7 @@
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="451.0" layoutY="155.0" prefHeight="127.0"
+	<VBox layoutX="410.0" layoutY="168.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
 			<ImageView fx:id="MusicEdit_ImageView" fitHeight="94.0"
@@ -115,7 +115,7 @@
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="51.0" layoutY="315.0" prefHeight="127.0"
+	<VBox layoutX="90.0" layoutY="315.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
 			<ImageView fx:id="MyPage_ImageView" fitHeight="94.0"
@@ -133,25 +133,7 @@
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="189.0" layoutY="315.0" prefHeight="127.0"
-		prefWidth="82.0">
-		<children>
-			<ImageView fx:id="LikeSongs_ImageView" fitHeight="94.0"
-				fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
-				<image>
-					<Image
-						url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/likeSong_icon.png" />
-				</image>
-			</ImageView>
-			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0"
-				text="좋아하는 곡">
-				<font>
-					<Font name="D2Coding" size="14.0" />
-				</font>
-			</Label>
-		</children>
-	</VBox>
-	<VBox layoutX="324.0" layoutY="315.0" prefHeight="127.0"
+	<VBox layoutX="250.0" layoutY="315.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
 			<ImageView fx:id="Playlist_ImageView" fitHeight="94.0"
@@ -163,24 +145,6 @@
 			</ImageView>
 			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0"
 				text="플레이리스트">
-				<font>
-					<Font name="D2Coding" size="14.0" />
-				</font>
-			</Label>
-		</children>
-	</VBox>
-	<VBox layoutX="451.0" layoutY="315.0" prefHeight="127.0"
-		prefWidth="82.0">
-		<children>
-			<ImageView fx:id="AdminLogin_ImageView" fitHeight="94.0"
-				fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
-				<image>
-					<Image
-						url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/adminLogin_icon.png" />
-				</image>
-			</ImageView>
-			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0"
-				text="관리자 로그인">
 				<font>
 					<Font name="D2Coding" size="14.0" />
 				</font>
