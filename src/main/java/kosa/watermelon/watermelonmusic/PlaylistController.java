@@ -211,6 +211,7 @@ public class PlaylistController implements Initializable {
         }
         return null;
     }
+
     // 페이지 되돌아가기(My playlist -> 인기 차트)
     @FXML
     private void backToPage(ActionEvent event) {

@@ -9,10 +9,10 @@ public class Playlist {
     private List<Long> songList;
     private String memberId;
 
-    public Playlist(Long playlistId, String playlistName, String memberId) {
+    public Playlist(Long playlistId, String playlistName, List<Long> songList, String memberId) {
         this.playlistId = playlistId;
         this.playlistName = playlistName;
-        this.songList = new ArrayList<>();
+        this.songList = songList;
         this.memberId = memberId;
     }
 

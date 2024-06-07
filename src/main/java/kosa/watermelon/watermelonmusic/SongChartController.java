@@ -1,9 +1,11 @@
 package kosa.watermelon.watermelonmusic;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -221,21 +223,27 @@ public class SongChartController implements Initializable {
 							try {
 								conn = DBUtil.getConnection();
 								Playlist playlist = getCurrentMemberPlaylist(currentMember.getId(), conn);
+
+								if(playlist==null) System.out.println("null");
+								else System.out.println("not null");
+
 								if (playlist != null) {
 									// 재생 목록에 노래 추가
-									playlist.addSong(selectedSong.getId());
+//									playlist.addSong(selectedSong.getId());
 
 									// 데이터베이스 update
-									updatePlaylist(playlist, conn);
+									updatePlaylist(playlist, selectedSong, conn);
 								} else {
 									// 새로운 재생목록 생성
-									playlist = new Playlist(generateNewPlaylistId(conn), "Default Playlist",
+									playlist = new Playlist(generateNewPlaylistId(conn), "Default Playlist", new ArrayList<Long>(),
 											currentMember.getId());
+
 									insertPlayList(playlist, conn);
-									playlist.addSong(selectedSong.getId());
+//									playlist.addSong(selectedSong.getId());
 
 									// 데이터베이스 update
-									updatePlaylist(playlist, conn);
+									updatePlaylist(playlist, selectedSong, conn);
+									DBClose(conn);
 								}
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -296,7 +304,13 @@ public class SongChartController implements Initializable {
 
 		if (rs.next()) {
 			// 재생 목록이 존재하면 Playlist 객체를 만들어서 반환
-			return new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), rs.getString("member_id"));
+			Array songArray = rs.getArray("Song");
+			BigDecimal[] songs = (BigDecimal[]) songArray.getArray();
+			List<Long> songList = new ArrayList<>();
+			for (BigDecimal bd : songs) {
+				songList.add(bd.longValue());
+			}
+			return new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), songList, rs.getString("member_id"));
 		} else {
 			return null;
 		}
@@ -316,20 +330,27 @@ public class SongChartController implements Initializable {
 	}
 
 	// 데이터베이스에 재생목록 update
-	private void updatePlaylist(Playlist playlist, Connection conn) throws SQLException {
-		// Convert List<Long> to Long[]
-		Long[] songArray = playlist.getSongList().toArray(new Long[0]);
+	private void updatePlaylist(Playlist playlist, Song selectedSong, Connection conn) {
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("UPDATE Playlist SET Song = ? WHERE playlist_id = ?");
 
-		// Create Oracle ArrayDescriptor for SONG_ARRAY
-		ArrayDescriptor desc = ArrayDescriptor.createDescriptor("SONG_ARRAY", conn);
+			if(!playlist.getSongList().contains(selectedSong.getId())) {
+				playlist.getSongList().add(selectedSong.getId());
 
-		// Convert Long[] to oracle.sql.ARRAY
-		ARRAY oracleArray = new ARRAY(desc, conn, songArray);
+				Long[] newSongs = playlist.getSongList().toArray(new Long[0]);
 
-		PreparedStatement pstmt = conn.prepareStatement("UPDATE Playlist SET song=? WHERE playlist_id=?");
-		pstmt.setArray(1, oracleArray);
-		pstmt.setLong(2, playlist.getPlaylistID());
-		pstmt.executeUpdate();
+				ArrayDescriptor desc = ArrayDescriptor.createDescriptor("SONG_ARRAY", conn);
+				ARRAY newSongArray = new ARRAY(desc, conn, newSongs);
+				pstmt.setArray(1, newSongArray);
+				pstmt.setLong(2, playlist.getPlaylistID());
+				pstmt.executeUpdate();
+				pstmt.close();
+				System.out.println("successful add!");
+			}
+		} catch(SQLException e) {
+			System.out.println("Playlist not updated successfully");
+			e.printStackTrace();
+		}
 	}
 
 	// 데이터베이스에 재생목록 insert
