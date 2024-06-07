@@ -1,18 +1,28 @@
 package kosa.watermelon.watermelonmusic;
 
 public class Song {
+	private int ranking;
     private long id;
     private String name;
     private String artist;
     private long clickCnt;
 
-    public Song(long id, String name, String artist, long clickCnt) {
-        this.id = id;
+    public Song(int ranking, long id, String name, String artist, long clickCnt) {
+        this.ranking = ranking;
+    	this.id = id;
         this.name = name;
         this.artist = artist;
         this.clickCnt = clickCnt;
     }
 
+    public int getRanking() {
+    	return ranking;
+    }
+    
+    public void setRanking(int ranking) {
+    	this.ranking = ranking;
+    }
+    
     public long getId() {
         return id;
     }
@@ -45,11 +55,11 @@ public class Song {
         this.clickCnt++;
     }
 
-    public long getLikeCnt() {
-        return likeCnt;
-    }
-
-    public void setLikeCnt() {
-        this.likeCnt++;
-    }
+//    public long getLikeCnt() {
+//        return likeCnt;
+//    }
+//
+//    public void setLikeCnt() {
+//        this.likeCnt++;
+//    }
 }

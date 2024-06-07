@@ -1,5 +1,13 @@
 package kosa.watermelon.watermelonmusic;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,8 +24,6 @@ public class SearchController {
     @FXML private Button search_BTN;
     
     @FXML private ImageView search_ImageView;
-
-    private TemporaryDB temporaryDB = TemporaryDB.getInstance();
 
     private TableView<Song> tableView;
 
@@ -49,8 +55,57 @@ public class SearchController {
     @FXML
     void search_Action(ActionEvent event) {
         String searchSong = search_TextField.getText();
-        ObservableList<Song> searchResults = FXCollections.observableArrayList(temporaryDB.searchSongs(searchSong));
+        ObservableList<Song> searchResults = FXCollections.observableArrayList(searchSongs(searchSong));
         tableView.setItems(searchResults);
 		System.out.println("검색된 단어 : " + searchSong);
 	}
+    
+    // TemporaryDB.java에 있던 searchSongs 메서드를 옮김
+    private List<Song> searchSongs(String keyword) {
+        List<Song> result = new ArrayList<>();
+        String query = "SELECT " +
+                "ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
+                "s.song_id, s.song_name, a.artist_name, s.click_count " +
+                "FROM Song s " +
+                "LEFT OUTER JOIN Artist a " +
+                "ON s.artist_id = a.artist_id " +
+                "WHERE LOWER(s.song_name) LIKE ? OR LOWER(a.artist_name) LIKE ? " +
+                "ORDER BY s.click_count DESC";
+
+        try (Connection conn = DBConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            
+            pstmt.setString(1, "%" + keyword.toLowerCase() + "%");
+            pstmt.setString(2, "%" + keyword.toLowerCase() + "%");
+            
+            ResultSet rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+            	Song song = new Song(
+                    rs.getInt("ranking"), 
+                    rs.getLong("song_id"), 
+                    rs.getString("song_name"), 
+                    rs.getString("artist_name"), 
+                    rs.getLong("click_count")
+                );
+                result.add(song);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private Connection DBConnection() {
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            System.out.println("Driver OK!!");
+            Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "admin", "1234");
+            System.out.println("Connection OK!!");
+            return conn;
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
