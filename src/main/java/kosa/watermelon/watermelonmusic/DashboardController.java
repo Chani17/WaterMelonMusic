@@ -34,11 +34,7 @@ public class DashboardController implements Initializable {
 	@FXML
 	private ImageView MyPage_ImageView;
 	@FXML
-	private ImageView LikeSongs_ImageView;
-	@FXML
 	private ImageView Playlist_ImageView;
-	@FXML
-	private ImageView AdminLogin_ImageView;
 	@FXML
 	private TextField userNAME_TextField;
 	@FXML
@@ -84,12 +80,8 @@ public class DashboardController implements Initializable {
 				.getResourceAsStream("/kosa/watermelon/watermelonmusic/image/dashBoardIcon/editSong_icon.png"));
 		Image MyPage_Icon = new Image(
 				getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/image/dashBoardIcon/myPage_icon.png"));
-		Image LikeSongs_Icon = new Image(getClass()
-				.getResourceAsStream("/kosa/watermelon/watermelonmusic/image/dashBoardIcon/likeSong_icon.png"));
 		Image Playlist_Icon = new Image(getClass()
 				.getResourceAsStream("/kosa/watermelon/watermelonmusic/image/dashBoardIcon/playlist_icon.png"));
-		Image AdminLogin_Icon = new Image(
-				getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/image/dashBoardIcon/admin_icon.png"));
 
 		logo_ImageView.setImage(logo_Icon);
 		SongChart_ImageView.setImage(SongChart_Icon);
@@ -97,9 +89,7 @@ public class DashboardController implements Initializable {
 		PostingPage_ImageView.setImage(PostingPage_Icon);
 		MusicEdit_ImageView.setImage(MusicEdit_Icon);
 		MyPage_ImageView.setImage(MyPage_Icon);
-		LikeSongs_ImageView.setImage(LikeSongs_Icon);
 		Playlist_ImageView.setImage(Playlist_Icon);
-		AdminLogin_ImageView.setImage(AdminLogin_Icon);
 	}
 
 	private void setOnMouseClickEvents() {
@@ -108,9 +98,7 @@ public class DashboardController implements Initializable {
 		PostingPage_ImageView.setOnMouseClicked(event -> goToPage("postingPage.fxml", PostingPage_ImageView));
 //	    MusicEdit_ImageView.setOnMouseClicked(event -> goToPage("musicEdit.fxml", MusicEdit_ImageView));
 		MyPage_ImageView.setOnMouseClicked(event -> goToPage("mypage.fxml", MyPage_ImageView));
-//	    LikeSongs_ImageView.setOnMouseClicked(event -> goToPage("likeSongs.fxml", LikeSongs_ImageView));
 		Playlist_ImageView.setOnMouseClicked(event -> goToPage("playlist.fxml", Playlist_ImageView));
-//	    AdminLogin_ImageView.setOnMouseClicked(event -> goToPage("adminLogin.fxml", AdminLogin_ImageView));
 	}
 
 	private void goToPage(String fxmlFile, ImageView sourceImageView) {

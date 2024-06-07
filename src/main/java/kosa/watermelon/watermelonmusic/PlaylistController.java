@@ -233,37 +233,4 @@ public class PlaylistController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-    
-//    private Connection DBConnection() {
-//        //드라이버 검색 (db와 연동 준비)
-//        try {
-//            Class.forName("oracle.jdbc.driver.OracleDriver");
-//            System.out.println("Driver search success");
-//        } catch (ClassNotFoundException e) {
-//            System.err.println("Driver search fail");
-//            System.exit(0);
-//        }
-//
-//        //데이터베이스 연결 - 커넥션 만들기
-//        Connection conn = null;
-//
-//        try {
-//            conn = DriverManager.getConnection(URL, ID, PW);
-//            System.out.println("Sucess");
-//        } catch (SQLException e) {
-//            System.err.println("Fail");
-//            System.exit(0);
-//        }
-//        return conn;
-//    }
-//
-//    private void DBClose(Connection conn) {
-//        try {
-//            if(conn != null) {
-//                conn.close();
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
