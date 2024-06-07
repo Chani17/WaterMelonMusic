@@ -7,10 +7,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -39,8 +41,10 @@ public class DashboardController implements Initializable {
     private ImageView AdminLogin_ImageView;
     @FXML
     private TextField userNAME_TextField;
-    
-    @FXML private Label focusLabel; // 마이페이지 텍스트필드에 커서 깜빡이지 않도록 수정
+    @FXML
+    private Label focusLabel; // 마이페이지 텍스트필드에 커서 깜빡이지 않도록 수정
+    @FXML
+    private Button logout_BTN;
     
     private Member currentMember;
     
@@ -78,6 +82,7 @@ public class DashboardController implements Initializable {
 	    Search_ImageView.setOnMouseClicked(event -> goToPage("songChart.fxml", Search_ImageView));
 	    PostingPage_ImageView.setOnMouseClicked(event -> goToPage("postingPage.fxml", PostingPage_ImageView));
 //	    MusicEdit_ImageView.setOnMouseClicked(event -> goToPage("musicEdit.fxml", MusicEdit_ImageView));
+	    MyPage_ImageView.setOnMouseClicked(event -> goToPage("mypage.fxml", MyPage_ImageView));
 //	    LikeSongs_ImageView.setOnMouseClicked(event -> goToPage("likeSongs.fxml", LikeSongs_ImageView));
 	    Playlist_ImageView.setOnMouseClicked(event -> goToPage("playlist.fxml", Playlist_ImageView));
 //	    AdminLogin_ImageView.setOnMouseClicked(event -> goToPage("adminLogin.fxml", AdminLogin_ImageView));
@@ -98,9 +103,28 @@ public class DashboardController implements Initializable {
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
-    			
     }
 
+    @FXML // 로그아웃 이벤트 처리
+	private void logout_Action(ActionEvent event) {
+		// 세션 초기화
+		SessionManager.getInstance().clearSession();
+		
+		// 로그인 창 열기
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+			Scene scene = new Scene(loader.load(), 600, 464);
+			
+			// 현재 Stage 찾기
+			Stage currentStage = (Stage) logout_BTN.getScene().getWindow();
+			
+			// MainApplicatin의 Scene 설정
+			currentStage.setScene(scene);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+    
     public void setMember(Member member) {
 		this.currentMember = member;
         if (this.currentMember == null) {
@@ -116,4 +140,6 @@ public class DashboardController implements Initializable {
             userNAME_TextField.setText(currentMember.getNickname());
         }
     }
+    
+    
 }
