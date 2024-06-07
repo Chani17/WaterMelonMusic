@@ -196,20 +196,6 @@ public class PlaylistController implements Initializable {
 //        temporaryDB.clearMyPlaylist();
 //    }
 
-    private List<Song> getMyPlayllist(String memberId) {
-        try {
-            Connection conn = DBConnection();
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
-            pstmt = conn.prepareStatement("SELECT * FROM Playlist WHERE member_id=?");
-            pstmt.setString(1, memberId);
-            rs = pstmt.executeQuery();
-            return (List<Song>) rs.getArray("song");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
     // 페이지 되돌아가기(My playlist -> 인기 차트)
     @FXML
     private void backToPage(ActionEvent event) {
