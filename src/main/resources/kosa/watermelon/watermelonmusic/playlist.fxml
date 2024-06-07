@@ -11,15 +11,34 @@
 	xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="kosa.watermelon.watermelonmusic.PlaylistController">
 	<children>
+		<ImageView fitHeight="32.0" fitWidth="32.0"
+			pickOnBounds="true" preserveRatio="true" GridPane.hgrow="ALWAYS"
+			GridPane.vgrow="ALWAYS">
+			<GridPane.margin>
+				<Insets left="20.0" top="40.0" />
+			</GridPane.margin>
+			<image>
+				<Image url="@playButton.png" />
+			</image>
+		</ImageView>
 		<Label text="My Playlist" GridPane.columnIndex="0"
 			GridPane.halignment="LEFT" GridPane.rowIndex="0">
 			<font>
 				<Font name="D2Coding" size="18.0" />
 			</font>
 			<GridPane.margin>
-				<Insets left="10.0" top="40.0" />
+				<Insets left="60.0" top="40.0" />
 			</GridPane.margin>
 		</Label>
+		<Button fx:id="goToDashboard_BTN" mnemonicParsing="false" text="◀◀"
+			textAlignment="CENTER" onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="50.0">
+			<GridPane.margin>
+				<Insets bottom="35.0" left="536.0" />
+			</GridPane.margin>
+			<font>
+				<Font name="D2Coding" size="14.0" />
+			</font>
+		</Button>
 		<TableView fx:id="playlistView" GridPane.rowIndex="2">
 			<columns>
 				<TableColumn fx:id="check" prefWidth="39.0"
@@ -36,16 +55,6 @@
 				<Insets top="40.0" />
 			</GridPane.margin>
 		</TableView>
-		<ImageView fitHeight="32.0" fitWidth="32.0"
-			pickOnBounds="true" preserveRatio="true" GridPane.hgrow="ALWAYS"
-			GridPane.vgrow="ALWAYS">
-			<GridPane.margin>
-				<Insets left="540.0" top="20.0" />
-			</GridPane.margin>
-			<image>
-				<Image url="@playButton.png" />
-			</image>
-		</ImageView>
 		<Button fx:id="delete" mnemonicParsing="false"
 			prefHeight="22.0" prefWidth="42.0" text="삭제" GridPane.rowIndex="2">
 			<GridPane.margin>
@@ -63,15 +72,6 @@
 			<GridPane.margin>
 				<Insets bottom="340.0" left="50.0" />
 			</GridPane.margin>
-		</Button>
-		<Button fx:id="back" mnemonicParsing="false" text="  ↩  "
-			textAlignment="CENTER" onAction="#backToPage">
-			<GridPane.margin>
-				<Insets bottom="35.0" left="5.0" />
-			</GridPane.margin>
-			<font>
-				<Font name="D2Coding" size="14.0" />
-			</font>
 		</Button>
 	</children>
 	<columnConstraints>

@@ -18,14 +18,13 @@
 		</font>
 	</Label>
 	<Button fx:id="addPlaylist_BTN" layoutX="480.0" layoutY="21.0"
-		prefHeight="24.0" prefWidth="50.0"
-		text="+">
+		prefHeight="24.0" prefWidth="50.0" text="+">
 		<font>
 			<Font name="D2Coding Bold" size="14.0" />
 		</font>
 	</Button>
-	<Button fx:id="goToMyPage_BTN" layoutX="536.0" layoutY="21.0"
-		onAction="#goToMyPage_Action" prefHeight="24.0" prefWidth="50.0"
+	<Button fx:id="goToDashboard_BTN" layoutX="536.0" layoutY="21.0"
+		onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="50.0"
 		text="◀◀" />
 	<!-- 플레이리스트를 담을 ScrollPane -->
 	<ScrollPane layoutX="19.0" layoutY="60.0" prefHeight="380.0"

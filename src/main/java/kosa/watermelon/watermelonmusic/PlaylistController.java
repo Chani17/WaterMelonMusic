@@ -20,15 +20,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.*;
 
 public class PlaylistController implements Initializable {
-
-    private static String ID = "admin";
-    private static String PW = "1234";
-    private static String URL = "jdbc:oracle:thin:@localhost:1521:xe";
 
     @FXML private TableView<PlaylistSong> playlistView;
     @FXML private TableColumn<Song, Boolean> check;
@@ -38,6 +35,7 @@ public class PlaylistController implements Initializable {
     @FXML private Button delete;
     @FXML private Button deleteAll;
     @FXML private Button back;
+    @FXML private Button goToDashboard_BTN;
     private Member currentMember;
 
     @Override
@@ -52,12 +50,13 @@ public class PlaylistController implements Initializable {
     }
 
     private void setListView() {
-        Connection conn = DBConnection();
+        Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         List<PlaylistSong> playlistSongs = new ArrayList<>();
 
         try {
+        	conn = DBUtil.getConnection();
             pstmt = conn.prepareStatement("SELECT s.song_name, a.artist_name \n" +
                     "FROM Playlist p, TABLE(p.song) song \n" +
                     "LEFT OUTER JOIN Song s ON song.COLUMN_VALUE = s.song_id \n" +
@@ -79,6 +78,8 @@ public class PlaylistController implements Initializable {
             playlistView.setItems(playlist);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+        	DBUtil.close(rs, pstmt, conn);
         }
 
 //        check.setCellValueFactory(data -> {
@@ -196,6 +197,21 @@ public class PlaylistController implements Initializable {
 //        temporaryDB.clearMyPlaylist();
 //    }
 
+    private List<Song> getMyPlayllist(String memberId) {
+        try {
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement pstmt = null;
+            ResultSet rs = null;
+            pstmt = conn.prepareStatement("SELECT * FROM Playlist WHERE member_id=?");
+            pstmt.setString(1, memberId);
+            rs = pstmt.executeQuery();
+            return (List<Song>) rs.getArray("song");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // 페이지 되돌아가기(My playlist -> 인기 차트)
     @FXML
     private void backToPage(ActionEvent event) {
@@ -214,36 +230,59 @@ public class PlaylistController implements Initializable {
         }
     }
 
-    private Connection DBConnection() {
-        //드라이버 검색 (db와 연동 준비)
-        try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            System.out.println("Driver search success");
-        } catch (ClassNotFoundException e) {
-            System.err.println("Driver search fail");
-            System.exit(0);
-        }
-
-        //데이터베이스 연결 - 커넥션 만들기
-        Connection conn = null;
-
-        try {
-            conn = DriverManager.getConnection(URL, ID, PW);
-            System.out.println("Sucess");
-        } catch (SQLException e) {
-            System.err.println("Fail");
-            System.exit(0);
-        }
-        return conn;
-    }
-
-    private void DBClose(Connection conn) {
-        try {
-            if(conn != null) {
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    @FXML // My Playlist → DashBoard 페이지 이동 이벤트 처리
+	private void goToDashboard_Action(ActionEvent event) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
+			Parent parent = loader.load();
+			
+			// DashboardController 인스턴스를 가져와서 멤버 설정
+			DashboardController controller = loader.getController();
+			controller.setMember(currentMember);
+			
+			Stage newStage = new Stage();
+			Stage currentStage = (Stage) goToDashboard_BTN.getScene().getWindow();
+			
+			newStage.initModality(Modality.APPLICATION_MODAL);
+			newStage.setTitle("메인 화면");
+			newStage.setScene(new Scene(parent, 600, 464));
+			newStage.show();
+			currentStage.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+    
+//    private Connection DBConnection() {
+//        //드라이버 검색 (db와 연동 준비)
+//        try {
+//            Class.forName("oracle.jdbc.driver.OracleDriver");
+//            System.out.println("Driver search success");
+//        } catch (ClassNotFoundException e) {
+//            System.err.println("Driver search fail");
+//            System.exit(0);
+//        }
+//
+//        //데이터베이스 연결 - 커넥션 만들기
+//        Connection conn = null;
+//
+//        try {
+//            conn = DriverManager.getConnection(URL, ID, PW);
+//            System.out.println("Sucess");
+//        } catch (SQLException e) {
+//            System.err.println("Fail");
+//            System.exit(0);
+//        }
+//        return conn;
+//    }
+//
+//    private void DBClose(Connection conn) {
+//        try {
+//            if(conn != null) {
+//                conn.close();
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

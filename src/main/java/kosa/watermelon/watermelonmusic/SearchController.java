@@ -95,15 +95,11 @@ public class SearchController {
         }
         return result;
     }
-
+    
     private Connection DBConnection() {
         try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            System.out.println("Driver OK!!");
-            Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "admin", "1234");
-            System.out.println("Connection OK!!");
-            return conn;
-        } catch (ClassNotFoundException | SQLException e) {
+            return DBUtil.getConnection();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;

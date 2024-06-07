@@ -19,11 +19,6 @@ import java.sql.*;
 import java.util.ResourceBundle;
 
 public class PlayViewController implements Initializable {
-
-    private final static String id = "admin";
-    private final static String pw = "1234";
-    private final static String url = "jdbc:oracle:thin:@localhost:1521:xe";
-
     @FXML private Label songTitle;
     @FXML private Label artist;
     @FXML private Button playButton;
@@ -68,14 +63,15 @@ public class PlayViewController implements Initializable {
     }
 
     private void setPlayView() {
-        Connection conn = DBConnection();
+        Connection conn = null;
         PreparedStatement pstmt_song = null;
         PreparedStatement pstmt_album = null;
         ResultSet res_song = null;
         ResultSet res_album = null;
 
         try {
-            System.out.println(this.songId);
+        	  conn = DBUtil.getConnection();
+
             pstmt_song = conn.prepareStatement("SELECT s.song_name, s.song_file, a.album_cover, ar.artist_name\n" +
                     "FROM Song s\n" +
                     "LEFT OUTER JOIN Album a \n" +
@@ -136,16 +132,7 @@ public class PlayViewController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                // 리소스 정리
-                if (res_song != null) res_song.close();
-                if (res_album != null) res_album.close();
-                if (pstmt_song != null) pstmt_song.close();
-                if (pstmt_album != null) pstmt_album.close();
-                DBClose(conn);
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
+        	DBUtil.close(res_song, pstmt_song, conn);
         }
     }
 
@@ -230,38 +217,5 @@ public class PlayViewController implements Initializable {
         endTimeMinute.setText(String.format("%02d", totalTimeMinute));
         mediaPlayer.seek(javafx.util.Duration.ZERO);
         mediaPlayer.stop();
-    }
-
-    private Connection DBConnection() {
-        //드라이버 검색 (db와 연동 준비)
-        try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            System.out.println("Driver search success");
-        } catch (ClassNotFoundException e) {
-            System.err.println("Driver search fail");
-            System.exit(0);
-        }
-
-        //데이터베이스 연결 - 커넥션 만들기
-        Connection conn = null;
-
-        try {
-            conn = DriverManager.getConnection(url, id, pw);
-            System.out.println("Success");
-        } catch (SQLException e) {
-            System.err.println("Fail");
-            System.exit(0);
-        }
-        return conn;
-    }
-
-    private void DBClose(Connection conn) {
-        try {
-            if (conn != null) {
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 }

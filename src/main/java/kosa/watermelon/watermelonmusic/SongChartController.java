@@ -29,15 +29,13 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
 
 public class SongChartController implements Initializable {
-	private final static String ID = "admin";
-	private final static String PW = "1234";
-	private final static String URL = "jdbc:oracle:thin:@localhost:1521:xe";
 
 	@FXML
 	private TableView<Song> tableView;
@@ -61,15 +59,13 @@ public class SongChartController implements Initializable {
 	private TableColumn<Song, Void> likebtn;
 
 	@FXML
-	private Button detailButton;
+	private Button goToDashboard_BTN;
 
 	@FXML
 	private GridPane root;
 
 	@FXML
 	private HBox searchContainer;
-	
-	private ContextMenu contextMenu;
 
 	private Member currentMember;
 	
@@ -100,102 +96,39 @@ public class SongChartController implements Initializable {
 		}
 
 		setListView();
-		setUpContextMenu();
-		setupMyPlaylistButton();
 	}
 
 	public void setMember(Member member) {
 		this.currentMember = member;
 	}
 
-	private void setupMyPlaylistButton() {
-		detailButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			if (event.getButton() == MouseButton.PRIMARY) {
-				contextMenu.show(detailButton, detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinX(),
-						detailButton.localToScreen(detailButton.getBoundsInLocal()).getMinY()
-								+ detailButton.getHeight());
-			}
-		});
-	}
-
-	@FXML
-	private void setUpContextMenu() {
-		contextMenu = new ContextMenu();
-
-		MenuItem myPlaylistItem = new MenuItem("My Playlist");
-		MenuItem myPageItem = new MenuItem("My Page");
-
-		myPlaylistItem.setOnAction(event -> moveToMyPlaylistPage(event));
-		myPageItem.setOnAction(event -> moveToMyPage(event));
-
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist.fxml"));
+	@FXML // 인기차트 → DashBoard 페이지 이동 이벤트 처리
+	private void goToDashboard_Action(ActionEvent event)  {
 		try {
-			Parent playlist = loader.load();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// PlaylistController 인스턴스를 가져와서 멤버 설정
-		PlaylistController controller = loader.getController();
-		controller.setMember(currentMember);
-
-		contextMenu.getItems().addAll(myPlaylistItem, myPageItem);
-	}
-
-	private void moveToMyPage(ActionEvent event) {
-		try {
-			// FXML 파일 로드
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("mypage.fxml"));
-			Parent parent = loader.load();
-
-			// MyPageController 인스턴스를 가져와서 멤버 설정
-			MyPageController controller = loader.getController();
-			controller.setMember(currentMember);
-
-			// 새 Stage 생성 후 기존 Stage 닫기
-			Stage newStage = new Stage();
-			Stage currentStage = (Stage) detailButton.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
+            Parent parent = loader.load();
+            
+            Stage newStage = new Stage();
+			Stage currentStage = (Stage) goToDashboard_BTN.getScene().getWindow();
 			
-			newStage.setTitle("마이페이지");
+			newStage.initModality(Modality.APPLICATION_MODAL);
+			newStage.setTitle("메인 화면");
 			newStage.setScene(new Scene(parent, 600, 464));
 			newStage.show();
 			currentStage.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void moveToMyPlaylistPage(ActionEvent event) {
-        try {
-            // FXML 파일 로드
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist.fxml"));
-            Parent parent = loader.load();
-
-            // PlaylistController 인스턴스를 가져와서 멤버 설정
-            PlaylistController controller = loader.getController();
-            controller.setMember(currentMember);
-
-            // 새 Stage 생성 후 기존 Stage 닫기
-            Stage newStage = new Stage();
-            Stage currentStage = (Stage) detailButton.getScene().getWindow();
-            
-            newStage.setTitle("My Playlist");
-            newStage.setScene(new Scene(parent, 600, 464));
-            newStage.show();
-            currentStage.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 	private void setListView() {
-		Connection conn = DBConnection();
+		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		List<Song> songs = new ArrayList<>();
 
 		try {
+			// DBUtil 클래스를 사용하여 데이터베이스 연결
+            conn = DBUtil.getConnection();
 			pstmt = conn.prepareStatement(
 				"SELECT " +
 		        "ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
@@ -222,13 +155,7 @@ public class SongChartController implements Initializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
+			DBUtil.close(rs, pstmt, conn); // 연결 닫기
 		}
 
 		ranking.setCellValueFactory(new PropertyValueFactory<Song, Integer>("ranking"));
@@ -292,8 +219,9 @@ public class SongChartController implements Initializable {
 						// 버튼 클릭 시 이벤트 처리
 						addButton.setOnAction(event -> {
 							Song selectedSong = getTableView().getItems().get(getIndex());
-							Connection conn = DBConnection();
+							Connection conn = null;
 							try {
+								conn = DBUtil.getConnection();
 								Playlist playlist = getCurrentMemberPlaylist(currentMember.getId(), conn);
 
 								if(playlist==null) System.out.println("null");
@@ -320,12 +248,8 @@ public class SongChartController implements Initializable {
 							} catch (Exception e) {
 								e.printStackTrace();
 							} finally {
-								try {
-									if (conn != null) conn.close();
-								} catch (SQLException e) {
-									e.printStackTrace();
-								}
-							}
+								DBUtil.close(conn); // 연결 종료
+	                        }
 						});
 					}
 
@@ -371,43 +295,6 @@ public class SongChartController implements Initializable {
             }
         });
 	}
-
-	private Connection DBConnection() {
-		// 드라이버 검색 (db와 연동 준비)
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			System.out.println("Driver search success");
-		} catch (ClassNotFoundException e) {
-			System.err.println("Driver search fail");
-			System.exit(0);
-		}
-
-		// 데이터베이스 연결 - 커넥션 만들기
-		Connection conn = null;
-
-		try {
-			conn = DriverManager.getConnection(URL, ID, PW);
-			System.out.println("Sucess");
-		} catch (SQLException e) {
-			System.err.println("Fail");
-			System.exit(0);
-		}
-		return conn;
-	}
-
-	private void DBClose(Connection conn) {
-		try {
-			if (conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-//
-//	public void setMember(Member member) {
-//		this.currentMember = member;
-//	}
 
 	// 존재하는 재생목록 가져오기
 	private Playlist getCurrentMemberPlaylist(String memberId, Connection conn) throws SQLException {
