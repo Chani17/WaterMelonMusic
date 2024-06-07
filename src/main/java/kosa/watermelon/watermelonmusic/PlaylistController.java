@@ -34,7 +34,6 @@ public class PlaylistController implements Initializable {
     @FXML private TableColumn<Song, Void> playBtn;
     @FXML private Button delete;
     @FXML private Button deleteAll;
-    @FXML private Button back;
     @FXML private Button goToDashboard_BTN;
     private Member currentMember;
 
@@ -210,24 +209,6 @@ public class PlaylistController implements Initializable {
             e.printStackTrace();
         }
         return null;
-    }
-
-    // 페이지 되돌아가기(My playlist -> 인기 차트)
-    @FXML
-    private void backToPage(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("songChart.fxml"));
-            Parent parent = loader.load();
-
-            Stage newStage = new Stage();
-            Stage currentStage = (Stage) back.getScene().getWindow();
-            newStage.setTitle("인기 차트!");
-            newStage.setScene(new Scene(parent, 600, 464));
-            newStage.show();
-            currentStage.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML // My Playlist → DashBoard 페이지 이동 이벤트 처리

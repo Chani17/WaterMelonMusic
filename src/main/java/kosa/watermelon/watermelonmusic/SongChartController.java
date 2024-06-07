@@ -68,7 +68,7 @@ public class SongChartController implements Initializable {
 	private HBox searchContainer;
 
 	private Member currentMember;
-
+	
 	//private Playlist playlist;
 
 	@Override
@@ -79,11 +79,11 @@ public class SongChartController implements Initializable {
 		} else {
 			System.out.println("Error: currentMember is null.");
 		}
-
+		
 		ranking.setCellValueFactory(new PropertyValueFactory<>("id"));
 		songName.setCellValueFactory(new PropertyValueFactory<>("name"));
 		artistName.setCellValueFactory(new PropertyValueFactory<>("artistName"));
-
+		
 		// 검색 컴포넌트 로드
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("search.fxml"));
@@ -105,21 +105,21 @@ public class SongChartController implements Initializable {
 	@FXML // 인기차트 → DashBoard 페이지 이동 이벤트 처리
 	private void goToDashboard_Action(ActionEvent event)  {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
-			Parent parent = loader.load();
-
-			Stage newStage = new Stage();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
+            Parent parent = loader.load();
+            
+            Stage newStage = new Stage();
 			Stage currentStage = (Stage) goToDashboard_BTN.getScene().getWindow();
-
+			
 			newStage.initModality(Modality.APPLICATION_MODAL);
 			newStage.setTitle("메인 화면");
 			newStage.setScene(new Scene(parent, 600, 464));
 			newStage.show();
 			currentStage.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 	private void setListView() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -128,26 +128,26 @@ public class SongChartController implements Initializable {
 
 		try {
 			// DBUtil 클래스를 사용하여 데이터베이스 연결
-			conn = DBUtil.getConnection();
+            conn = DBUtil.getConnection();
 			pstmt = conn.prepareStatement(
-					"SELECT " +
-							"ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
-							"s.song_id, a.artist_name, s.song_name, s.click_count " +
-							"FROM Song s " +
-							"LEFT OUTER JOIN Artist a " +
-							"ON s.artist_id = a.artist_id " +
-							"ORDER BY click_count DESC"
-			);
+				"SELECT " +
+		        "ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
+		        "s.song_id, a.artist_name, s.song_name, s.click_count " +
+		        "FROM Song s " +
+		        "LEFT OUTER JOIN Artist a " +
+		        "ON s.artist_id = a.artist_id " +
+		        "ORDER BY click_count DESC"
+		    );
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
 				Song song = new Song(
-						rs.getInt("ranking"),
-						rs.getLong("song_id"),
-						rs.getString("song_name"),
-						rs.getString("artist_name"),
-						rs.getLong("click_count")
-				);
+					rs.getInt("ranking"),
+		            rs.getLong("song_id"),
+		            rs.getString("song_name"),
+		            rs.getString("artist_name"),
+		            rs.getLong("click_count")
+		        );
 				songs.add(song);
 			}
 			ObservableList<Song> songList = FXCollections.observableArrayList(songs);
@@ -187,7 +187,7 @@ public class SongChartController implements Initializable {
 								newStage.setTitle("Play Music!");
 								newStage.setScene(scene);
 								newStage.showAndWait();
-								//stage.hide();
+                                //stage.hide();
 
 							} catch (IOException e) {
 								e.printStackTrace();
@@ -248,7 +248,7 @@ public class SongChartController implements Initializable {
 								e.printStackTrace();
 							} finally {
 								DBUtil.close(conn); // 연결 종료
-							}
+	                        }
 						});
 					}
 
@@ -268,31 +268,31 @@ public class SongChartController implements Initializable {
 		});
 
 		likebtn.setCellFactory(new Callback<>() {
-			@Override
-			public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
-				return new TableCell<>() {
-					private final Button likeButton = new Button("❤");
-					{
-						// 버튼 클릭 시 이벤트 처리
-						likeButton.setOnAction(event -> {
-							Song selectedSong = getTableView().getItems().get(getIndex());
-							System.out.println("selectedSong.getName() = " + selectedSong.getName());
-						});
-					}
+            @Override
+            public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
+                return new TableCell<>() {
+                    private final Button likeButton = new Button("❤");
+                    {
+                        // 버튼 클릭 시 이벤트 처리
+                        likeButton.setOnAction(event -> {
+                            Song selectedSong = getTableView().getItems().get(getIndex());
+                            System.out.println("selectedSong.getName() = " + selectedSong.getName());
+                        });
+                    }
 
-					// 셸 Rendering
-					@Override
-					protected void updateItem(Void item, boolean empty) {
-						super.updateItem(item, empty);
-						if(empty) setGraphic(null);
-						else {
-							setGraphic(likeButton);
-							setAlignment(Pos.CENTER);
-						}
-					}
-				};
-			}
-		});
+                    // 셸 Rendering
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if(empty) setGraphic(null);
+                        else {
+                            setGraphic(likeButton);
+                            setAlignment(Pos.CENTER);
+                        }
+                    }
+                };
+            }
+        });
 	}
 
 	// 존재하는 재생목록 가져오기
