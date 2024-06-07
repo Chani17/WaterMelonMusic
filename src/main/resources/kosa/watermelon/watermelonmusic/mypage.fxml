@@ -97,13 +97,6 @@
 			<Font name="D2Coding" size="14.0" />
 		</font>
 	</Button>
-	<Button fx:id="logout_BTN" layoutX="462.0" layoutY="22.0"
-		mnemonicParsing="false" onAction="#logout_Action" prefHeight="30.0"
-		prefWidth="64.0" text="로그아웃">
-		<font>
-			<Font name="D2Coding" />
-		</font>
-	</Button>
 	<Button fx:id="goToDashboard_BTN" layoutX="536.0" layoutY="21.0"
 		onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="50.0"
 		text="◀◀">
