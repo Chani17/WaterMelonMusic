@@ -46,11 +46,6 @@ public class LoginController implements Initializable {
 	@FXML
 	private ImageView profile_Image;
 
-
-	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
-	private static final String USER = "admin";
-	private static final String PASSWORD = "1234";
-
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		adminLogin_BTN.setOnAction(event -> openAdminLogin());
@@ -99,7 +94,7 @@ public class LoginController implements Initializable {
 			Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("로그인 실패");
             alert.setHeaderText(null);
-            alert.setContentText("사용자 정보를 찾을 수 없습니다.\n 아이디와 비밀번호를 다시 확인해주세요.");
+            alert.setContentText("로그인에 실패하였습니다.\n없는 아이디이거나 아이디 또는 비밀번호가 일치하지 않습니다.");
             alert.showAndWait();
 		}
 	}
@@ -122,7 +117,7 @@ public class LoginController implements Initializable {
 	private boolean checkIdAndPw(String id, String pw) {
 		boolean isValid = false;
 
-		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+		try (Connection connection = DBUtil.getConnection()) {
 			String sql = "SELECT COUNT(*) FROM Member WHERE member_id = ? AND member_pw = ?";
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, id);
@@ -144,7 +139,7 @@ public class LoginController implements Initializable {
 		Member member = null;
 		
 		String query = "SELECT MEMBER_ID, MEMBER_PW, EMAIL, NICKNAME, PROFILE_IMAGE, GENDER, BIRTH FROM MEMBER WHERE MEMBER_ID = ?";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection connection = DBUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();

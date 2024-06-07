@@ -27,10 +27,6 @@ import java.util.*;
 
 public class PlaylistController implements Initializable {
 
-    private static String ID = "admin";
-    private static String PW = "1234";
-    private static String URL = "jdbc:oracle:thin:@localhost:1521:xe";
-
     @FXML private TableView<PlaylistSong> playlistView;
     @FXML private TableColumn<Song, Boolean> check;
     @FXML private TableColumn<PlaylistSong, String> songName;
@@ -54,12 +50,13 @@ public class PlaylistController implements Initializable {
     }
 
     private void setListView() {
-        Connection conn = DBConnection();
+        Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         List<PlaylistSong> playlistSongs = new ArrayList<>();
 
         try {
+        	conn = DBUtil.getConnection();
             pstmt = conn.prepareStatement("SELECT s.song_name, a.artist_name \n" +
                     "FROM Playlist p, TABLE(p.song) song \n" +
                     "LEFT OUTER JOIN Song s ON song.COLUMN_VALUE = s.song_id \n" +
@@ -81,6 +78,8 @@ public class PlaylistController implements Initializable {
             playlistView.setItems(playlist);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+        	DBUtil.close(rs, pstmt, conn);
         }
 
 //        check.setCellValueFactory(data -> {
@@ -200,7 +199,7 @@ public class PlaylistController implements Initializable {
 
     private List<Song> getMyPlayllist(String memberId) {
         try {
-            Connection conn = DBConnection();
+            Connection conn = DBUtil.getConnection();
             PreparedStatement pstmt = null;
             ResultSet rs = null;
             pstmt = conn.prepareStatement("SELECT * FROM Playlist WHERE member_id=?");
@@ -253,36 +252,36 @@ public class PlaylistController implements Initializable {
 		}
 	}
     
-    private Connection DBConnection() {
-        //드라이버 검색 (db와 연동 준비)
-        try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            System.out.println("Driver search success");
-        } catch (ClassNotFoundException e) {
-            System.err.println("Driver search fail");
-            System.exit(0);
-        }
-
-        //데이터베이스 연결 - 커넥션 만들기
-        Connection conn = null;
-
-        try {
-            conn = DriverManager.getConnection(URL, ID, PW);
-            System.out.println("Sucess");
-        } catch (SQLException e) {
-            System.err.println("Fail");
-            System.exit(0);
-        }
-        return conn;
-    }
-
-    private void DBClose(Connection conn) {
-        try {
-            if(conn != null) {
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+//    private Connection DBConnection() {
+//        //드라이버 검색 (db와 연동 준비)
+//        try {
+//            Class.forName("oracle.jdbc.driver.OracleDriver");
+//            System.out.println("Driver search success");
+//        } catch (ClassNotFoundException e) {
+//            System.err.println("Driver search fail");
+//            System.exit(0);
+//        }
+//
+//        //데이터베이스 연결 - 커넥션 만들기
+//        Connection conn = null;
+//
+//        try {
+//            conn = DriverManager.getConnection(URL, ID, PW);
+//            System.out.println("Sucess");
+//        } catch (SQLException e) {
+//            System.err.println("Fail");
+//            System.exit(0);
+//        }
+//        return conn;
+//    }
+//
+//    private void DBClose(Connection conn) {
+//        try {
+//            if(conn != null) {
+//                conn.close();
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
