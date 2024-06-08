@@ -11,6 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+import oracle.jdbc.OracleResultSet;
+import oracle.sql.BFILE;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +27,12 @@ public class AdminLoginController {
     @FXML
     private TextField adminEmail;
 
+    private Stage loginControllerStage;
+    
+    public void setLoginControllerStage(Stage stage) {
+        this.loginControllerStage = stage;
+    }
+    
     @FXML
     private void handleAdminLogin() {
         String id = adminID.getText();
@@ -33,15 +41,23 @@ public class AdminLoginController {
 
         // Admin credentials check
         if (validateAdminCredentials(id, pw, email)) {
-            try {
+        	// Admin 로그인 정보를 세션에 설정
+        	Member adminMember = getAdminMember(id);
+        	SessionManager.getInstance().setCurrentMember(adminMember);
+            
+        	try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("adminSong.fxml"));
                 Parent root = loader.load();
                 Stage stage = new Stage();
-                stage.setTitle("Admin Dashboard");
+                stage.setTitle("관리자 페이지");
                 stage.setScene(new Scene(root));
                 stage.show();
-                // Close the login window
+                
                 adminID.getScene().getWindow().hide();
+                
+                if (loginControllerStage != null) {
+                	loginControllerStage.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -55,7 +71,6 @@ public class AdminLoginController {
     }
 
     private boolean validateAdminCredentials(String id, String pw, String email) {
-        // Check if the ID is "admin"
     	if (!"admin".equals(id)) {
     		return false;
     	}
@@ -72,5 +87,39 @@ public class AdminLoginController {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    private Member getAdminMember(String id) {
+        Member member = null;
+
+        String query = "SELECT MEMBER_ID, MEMBER_PW, EMAIL, NICKNAME, PROFILE_IMAGE, GENDER, BIRTH FROM MEMBER WHERE MEMBER_ID = ?";
+        try (Connection connection = DBUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String memberId = resultSet.getString("MEMBER_ID");
+                String memberPw = resultSet.getString("MEMBER_PW");
+                String email = resultSet.getString("EMAIL");
+                String nickname = resultSet.getString("NICKNAME");
+                byte[] profileImage = null;
+                
+                BFILE bfile = ((OracleResultSet) resultSet).getBFILE("PROFILE_IMAGE");
+                if (bfile != null) {
+                    bfile.open();
+                    profileImage = bfile.getBytes();
+                    bfile.close();
+                }
+
+                String gender = resultSet.getString("GENDER");
+                java.sql.Date birth = resultSet.getDate("BIRTH");
+                member = new Member(memberId, memberPw, email, nickname, profileImage, gender, birth.toLocalDate());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return member;
     }
 }

@@ -78,7 +78,7 @@ public class PlaylistController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-        	DBUtil.close(rs, pstmt, conn);
+        	DBUtil.close(pstmt, rs, conn);
         }
 
 //        check.setCellValueFactory(data -> {

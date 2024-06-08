@@ -1,8 +1,6 @@
 package kosa.watermelon.watermelonmusic;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -24,6 +22,8 @@ public class DashboardController implements Initializable {
 	@FXML
 	private ImageView logo_ImageView;
 	@FXML
+	private ImageView logoText_ImageView;
+	@FXML
 	private ImageView SongChart_ImageView;
 	@FXML
 	private ImageView Search_ImageView;
@@ -38,7 +38,7 @@ public class DashboardController implements Initializable {
 	@FXML
 	private TextField userNAME_TextField;
 	@FXML
-	private Label focusLabel; // 마이페이지 텍스트필드에 커서 깜빡이지 않도록 수정
+	private Label focusLabel; // 대시보드 텍스트필드에 커서 깜빡이지 않도록 수정
 	@FXML
 	private Button logout_BTN;
 
@@ -69,7 +69,9 @@ public class DashboardController implements Initializable {
 
 	private void loadImages() {
 		Image logo_Icon = new Image(
-				getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo.png"));
+				getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png"));
+		Image logoText_Icon = new Image(
+				getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_text.png"));
 		Image SongChart_Icon = new Image(getClass()
 				.getResourceAsStream("/kosa/watermelon/watermelonmusic/image/dashBoardIcon/songChart_icon.png"));
 		Image Search_Icon = new Image(
@@ -84,6 +86,7 @@ public class DashboardController implements Initializable {
 				.getResourceAsStream("/kosa/watermelon/watermelonmusic/image/dashBoardIcon/playlist_icon.png"));
 
 		logo_ImageView.setImage(logo_Icon);
+		logoText_ImageView.setImage(logoText_Icon);
 		SongChart_ImageView.setImage(SongChart_Icon);
 		Search_ImageView.setImage(Search_Icon);
 		PostingPage_ImageView.setImage(PostingPage_Icon);

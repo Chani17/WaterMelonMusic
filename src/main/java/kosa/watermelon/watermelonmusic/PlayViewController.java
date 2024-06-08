@@ -132,7 +132,7 @@ public class PlayViewController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-        	DBUtil.close(res_song, pstmt_song, conn);
+        	DBUtil.close(pstmt_song, res_song, conn);
         }
     }
 
