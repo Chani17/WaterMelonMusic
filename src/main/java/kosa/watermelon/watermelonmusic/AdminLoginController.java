@@ -55,7 +55,12 @@ public class AdminLoginController {
     }
 
     private boolean validateAdminCredentials(String id, String pw, String email) {
-        String query = "SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_ID = ? AND MEMBER_PW = ? AND EMAIL = ?";
+        // Check if the ID is "admin"
+    	if (!"admin".equals(id)) {
+    		return false;
+    	}
+    	
+    	String query = "SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_ID = ? AND MEMBER_PW = ? AND EMAIL = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, id);
