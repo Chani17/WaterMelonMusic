@@ -20,6 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -69,6 +70,9 @@ public class SongChartController implements Initializable {
 
 	private Member currentMember;
 	
+	@FXML
+    private Label likeMessageLabel;
+	
 	//private Playlist playlist;
 	
 	@Override
@@ -96,7 +100,6 @@ public class SongChartController implements Initializable {
 	    }
 	    setListView();
 	}
-
 
 	public void setMember(Member member) {
 		this.currentMember = member;
@@ -271,12 +274,23 @@ public class SongChartController implements Initializable {
             @Override
             public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
                 return new TableCell<>() {
-                    private final Button likeButton = new Button("❤");
+                    private final Button likeButton = new Button();
                     {
                         // 버튼 클릭 시 이벤트 처리
                         likeButton.setOnAction(event -> {
                             Song selectedSong = getTableView().getItems().get(getIndex());
-                            System.out.println("selectedSong.getName() = " + selectedSong.getName());
+                            if (currentMember != null) {
+                            	if (likeButton.getText().equals("♡")) {
+                            		likeButton.setText("❤");
+                            		likeSong(selectedSong.getId(), currentMember.getId());
+                            		System.out.println("selectedSong.getName() = " + selectedSong.getName());
+                            	} else {
+                            		likeButton.setText("♡");
+                                    cancelLike(selectedSong.getId(), currentMember.getId());
+                            	}
+                            } else {
+                                System.out.println("로그인이 필요합니다.");
+                            }
                         });
                     }
 
@@ -286,6 +300,12 @@ public class SongChartController implements Initializable {
                         super.updateItem(item, empty);
                         if(empty) setGraphic(null);
                         else {
+                        	Song selectedSong = getTableView().getItems().get(getIndex());
+                            if (isSongLikedByUser(selectedSong.getId(), currentMember.getId())) {
+                                likeButton.setText("❤");
+                            } else {
+                                likeButton.setText("♡");
+                            }
                             setGraphic(likeButton);
                             setAlignment(Pos.CENTER);
                         }
@@ -360,5 +380,75 @@ public class SongChartController implements Initializable {
 		pstmt.setString(2, playlist.getPlaylistName());
 		pstmt.setString(3, playlist.getMemberId());
 		pstmt.executeQuery();
+	}
+	
+	// 좋아요 취소 로직 추가
+	private void cancelLike(long songId, String memberId) {
+	    try {
+	        Connection conn = DBUtil.getConnection();
+	        PreparedStatement pstmt = conn.prepareStatement("DELETE FROM LIKES WHERE SONG_ID = ? AND MEMBER_ID = ?");
+	        pstmt.setLong(1, songId);
+	        pstmt.setString(2, memberId);
+	        int deletedRows = pstmt.executeUpdate();
+
+	        if (deletedRows > 0) {
+	            // DB에서 좋아요 정보 삭제 성공
+	            System.out.println("좋아요 취소 성공");
+	        } else {
+	            // DB에서 좋아요 정보 삭제 실패
+	            System.out.println("좋아요 취소 실패");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	private void likeSong(long songId, String memberId) {
+	    try {
+	        Connection conn = DBUtil.getConnection();
+	        PreparedStatement pstmt;
+	        ResultSet rs;
+
+	        // 현재 사용자가 해당 곡에 좋아요를 눌렀는지 확인
+	        pstmt = conn.prepareStatement("SELECT * FROM LIKES WHERE SONG_ID = ? AND MEMBER_ID = ?");
+	        pstmt.setLong(1, songId);
+	        pstmt.setString(2, memberId);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            // 좋아요를 이미 누른 경우, 좋아요를 취소하고 DB에서 해당 정보 삭제
+	            cancelLike(songId, memberId);
+	        } else {
+	            // 좋아요를 누르지 않은 경우, 좋아요 정보를 추가하고 DB에 저장
+	            pstmt = conn.prepareStatement("INSERT INTO LIKES (SONG_ID, MEMBER_ID) VALUES (?, ?)");
+	            pstmt.setLong(1, songId);
+	            pstmt.setString(2, memberId);
+	            int insertedRows = pstmt.executeUpdate();
+
+	            if (insertedRows > 0) {
+	                // DB에 좋아요 정보 추가 성공
+	                System.out.println("좋아요 추가 성공");
+	            } else {
+	                // DB에 좋아요 정보 추가 실패
+	                System.out.println("좋아요 추가 실패");
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	// 좋아요 상태 확인 메서드 추가
+	private boolean isSongLikedByUser(long songId, String memberId) {
+	    try (Connection conn = DBUtil.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM LIKES WHERE SONG_ID = ? AND MEMBER_ID = ?")) {
+	        pstmt.setLong(1, songId);
+	        pstmt.setString(2, memberId);
+	        ResultSet rs = pstmt.executeQuery();
+	        return rs.next(); // 좋아요가 존재하면 true를 반환
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
 }
