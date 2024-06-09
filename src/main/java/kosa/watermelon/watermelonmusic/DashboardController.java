@@ -96,7 +96,7 @@ public class DashboardController implements Initializable {
 		SongChart_ImageView.setOnMouseClicked(event -> goToPage("songChart.fxml", SongChart_ImageView));
 		Search_ImageView.setOnMouseClicked(event -> goToPage("songChart.fxml", Search_ImageView));
 		PostingPage_ImageView.setOnMouseClicked(event -> goToPage("postingPage.fxml", PostingPage_ImageView));
-//	    MusicEdit_ImageView.setOnMouseClicked(event -> goToPage("musicEdit.fxml", MusicEdit_ImageView));
+	    MusicEdit_ImageView.setOnMouseClicked(event -> goToPage("editMusic.fxml", MusicEdit_ImageView));
 		MyPage_ImageView.setOnMouseClicked(event -> goToPage("mypage.fxml", MyPage_ImageView));
 		Playlist_ImageView.setOnMouseClicked(event -> goToPage("playlist.fxml", Playlist_ImageView));
 	}

@@ -147,26 +147,11 @@ public class SongChartController implements Initializable {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				BFILE bfile = ((OracleResultSet) rs).getBFILE("album_cover");
-				bfile.openFile(); // BFILE 열기
-				InputStream inputStream = bfile.getBinaryStream();
-				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				byte[] buffer = new byte[4096];
-				int bytesRead;
-				while ((bytesRead = inputStream.read(buffer)) != -1) {
-					outputStream.write(buffer, 0, bytesRead);
-				}
-				byte[] imageData = outputStream.toByteArray();
-				outputStream.close();
-				inputStream.close();
-				bfile.closeFile(); // 자원 누수 방지를 위함
-
 				Song song = new Song(
 						rs.getInt("ranking"),
 						rs.getLong("song_id"),
 						rs.getString("song_name"),
 						rs.getString("artist_name"),
-						imageData,
 						rs.getLong("click_count")
 				);
 

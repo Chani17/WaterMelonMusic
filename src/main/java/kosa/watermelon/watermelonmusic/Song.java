@@ -19,6 +19,13 @@ public class Song {
         this.clickCnt = clickCnt;
     }
 
+    public Song(int ranking, long id, String name, String artist, long clickCnt) {
+        this.ranking = ranking;
+        this.id = id;
+        this.name = name;
+        this.artist = artist;
+        this.clickCnt = clickCnt;
+    }
     public int getRanking() {
     	return ranking;
     }
