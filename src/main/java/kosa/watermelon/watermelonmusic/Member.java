@@ -1,6 +1,8 @@
 package kosa.watermelon.watermelonmusic;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Member {
 	private String id;
@@ -11,6 +13,8 @@ public class Member {
 	private String gender;
 	private LocalDate birth;
 
+	private List<Song> likedSongs = new ArrayList<>(); // 좋아하는 노래 목록 초기화
+	
 	public String getId() { return id; }
 	public void setId(String id) { this.id = id; }
 
@@ -32,6 +36,16 @@ public class Member {
 	public LocalDate getBirth() { return birth; }
 	public void setBirth(LocalDate birth) { this.birth = birth; }
 
+	// 좋아하는 노래 목록을 반환하는 메서드 추가
+    public List<Song> getLikedSongs() {
+        return likedSongs;
+    }
+
+    // 좋아하는 노래 목록을 설정하는 메서드 추가
+    public void setLikedSongs(List<Song> likedSongs) {
+        this.likedSongs = likedSongs;
+    }
+	
 	public Member(String id, String pw, String email, String nickname, byte[] profileImage, String gender, LocalDate birth) {
 		this.id = id;
 		this.pw = pw;
