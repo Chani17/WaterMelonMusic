@@ -1,6 +1,9 @@
 package kosa.watermelon.watermelonmusic;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
@@ -25,6 +28,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -32,8 +36,10 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import oracle.jdbc.OracleResultSet;
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
+import oracle.sql.BFILE;
 
 public class SongChartController implements Initializable {
 
@@ -141,13 +147,29 @@ public class SongChartController implements Initializable {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
+				BFILE bfile = ((OracleResultSet) rs).getBFILE("album_cover");
+				bfile.openFile(); // BFILE 열기
+				InputStream inputStream = bfile.getBinaryStream();
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				byte[] buffer = new byte[4096];
+				int bytesRead;
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);
+				}
+				byte[] imageData = outputStream.toByteArray();
+				outputStream.close();
+				inputStream.close();
+				bfile.closeFile(); // 자원 누수 방지를 위함
+
 				Song song = new Song(
-					rs.getInt("ranking"),
-		            rs.getLong("song_id"),
-		            rs.getString("song_name"),
-		            rs.getString("artist_name"),
-		            rs.getLong("click_count")
-		        );
+						rs.getInt("ranking"),
+						rs.getLong("song_id"),
+						rs.getString("song_name"),
+						rs.getString("artist_name"),
+						imageData,
+						rs.getLong("click_count")
+				);
+
 				songs.add(song);
 			}
 			ObservableList<Song> songList = FXCollections.observableArrayList(songs);
