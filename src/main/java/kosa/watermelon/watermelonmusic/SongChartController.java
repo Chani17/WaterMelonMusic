@@ -70,9 +70,6 @@ public class SongChartController implements Initializable {
 
 	private Member currentMember;
 	
-	@FXML
-    private Label likeMessageLabel;
-	
 	//private Playlist playlist;
 	
 	@Override
