@@ -155,7 +155,7 @@ public class SongChartController implements Initializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(rs, pstmt, conn); // 연결 닫기
+			DBUtil.close(pstmt, rs, conn); // 연결 닫기
 		}
 
 		ranking.setCellValueFactory(new PropertyValueFactory<Song, Integer>("ranking"));

@@ -78,7 +78,7 @@ public class PlaylistController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-        	DBUtil.close(rs, pstmt, conn);
+        	DBUtil.close(pstmt, rs, conn);
         }
 
 //        check.setCellValueFactory(data -> {
@@ -196,7 +196,7 @@ public class PlaylistController implements Initializable {
 //        temporaryDB.clearMyPlaylist();
 //    }
 
-    private List<Song> getMyPlayllist(String memberId) {
+    private List<Song> getMyPlaylist(String memberId) {
         try {
             Connection conn = DBUtil.getConnection();
             PreparedStatement pstmt = null;

@@ -19,26 +19,40 @@
 		prefHeight="0.0" prefWidth="0.0" />
 	<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d8ffd5"
 		height="127.0" stroke="#d8ffd5" strokeType="INSIDE" width="600.0" />
-	<ImageView fx:id="logo_ImageView" fitHeight="173.0"
-		fitWidth="219.0" layoutX="-7.0" layoutY="-18.0" pickOnBounds="true"
+	<ImageView fx:id="logo_ImageView" fitHeight="105.0"
+		fitWidth="99.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true"
 		preserveRatio="true">
 		<image>
 			<Image
-				url="@kosa/watermelon/watermelonmusic/watermelon_logo.png" />
+				url="@kosa/watermelon/watermelonmusic/watermelon_logo_only.png" />
 		</image>
 	</ImageView>
-	<TextField fx:id="userNAME_TextField" layoutX="190.0"
-		layoutY="76.0" prefHeight="22.0" prefWidth="134.0" />
-	<Text layoutX="330.0" layoutY="91.0" strokeType="OUTSIDE"
-		strokeWidth="0.0" text="님 로그인해주셔서 감사합니다."
-		wrappingWidth="218.6937255859375">
+	<ImageView fx:id="logoText_ImageView" fitHeight="46.0"
+		fitWidth="390.0" layoutX="129.0" layoutY="22.0" pickOnBounds="true"
+		preserveRatio="true">
+		<image>
+			<Image
+				url="@kosa/watermelon/watermelonmusic/watermelon_logo_text.png" />
+		</image>
+	</ImageView>
+	<TextField fx:id="userNAME_TextField"
+		alignment="CENTER_RIGHT" layoutX="135.0" layoutY="90.0"
+		prefHeight="22.0" prefWidth="118.0" text="nickname_Text">
+		<font>
+			<Font name="D2Coding" size="13.0" />
+		</font>
+	</TextField>
+	<Text layoutX="258.0" layoutY="106.0" strokeType="OUTSIDE"
+		strokeWidth="0.0" text="님 로그인해 주셔서 감사합니다."
+		wrappingWidth="201.89373779296875">
 		<font>
 			<Font name="D2Coding" size="13.0" />
 		</font>
 	</Text>
-	<Button fx:id="logout_BTN" layoutX="510.0" layoutY="22.0"
+
+	<Button fx:id="logout_BTN" layoutX="486.0" layoutY="22.0"
 		mnemonicParsing="false" onAction="#logout_Action" prefHeight="30.0"
-		prefWidth="80.0" text="로그아웃">
+		prefWidth="99.0" text="로그아웃">
 		<font>
 			<Font name="D2Coding" size="12.0" />
 		</font>
