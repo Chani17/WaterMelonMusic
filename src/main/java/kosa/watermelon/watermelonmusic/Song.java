@@ -1,6 +1,7 @@
 package kosa.watermelon.watermelonmusic;
 
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
 
 public class Song {
 	private int ranking;
@@ -8,6 +9,7 @@ public class Song {
     private String name;
     private String artist;
     private byte[] albumCover;
+    private String mediaSource;
     private long clickCnt;
 
     public Song(int ranking, long id, String name, String artist, byte[] albumCover, long clickCnt) {
@@ -26,6 +28,17 @@ public class Song {
         this.artist = artist;
         this.clickCnt = clickCnt;
     }
+
+    public Song(int ranking, long id, String name, String artist, byte[] albumCover, String mediaSource, long clickCnt) {
+        this.ranking = ranking;
+        this.id = id;
+        this.name = name;
+        this.artist = artist;
+        this.albumCover = albumCover;
+        this.mediaSource = mediaSource;
+        this.clickCnt = clickCnt;
+    }
+
     public int getRanking() {
     	return ranking;
     }
@@ -68,6 +81,14 @@ public class Song {
 
     public byte[] getAlbumCover() {
         return albumCover;
+    }
+
+    public String getMediaSource() {
+        return mediaSource;
+    }
+
+    public void setMediaSource(String mediaSource) {
+        this.mediaSource = mediaSource;
     }
 
     //    public long getLikeCnt() {
