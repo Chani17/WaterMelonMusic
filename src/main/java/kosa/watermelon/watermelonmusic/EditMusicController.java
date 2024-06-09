@@ -10,10 +10,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.io.*;
 import java.net.URL;
 
+import java.nio.channels.FileChannel;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ResourceBundle;
 
 public class EditMusicController implements Initializable {
@@ -33,8 +36,10 @@ public class EditMusicController implements Initializable {
     @FXML private Button playButtonEnd;
     @FXML private Button pauseButtonEnd;
     @FXML private Button stopButtonEnd;
+    @FXML private Button saveButton;
     private MediaPlayer mediaPlayer;
     private Song song;
+    private Member currentMember;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -50,11 +55,14 @@ public class EditMusicController implements Initializable {
         playButtonEnd.setOnAction(e -> playFromEnd());
         pauseButtonEnd.setOnAction(e -> pause());
         stopButtonEnd.setOnAction(e -> stop());
+
+        saveButton.setOnAction(e -> saveMusic("example"));
     }
 
     public void setSong(Song song) {
         this.song = song;
         System.out.println("editmusic : " + song.getName());
+        setMember(currentMember);
         setEditView();
         initializeMediaPlayer();
     }
@@ -106,5 +114,76 @@ public class EditMusicController implements Initializable {
     private void playFromStart() {
         mediaPlayer.seek(mediaPlayer.getTotalDuration().multiply(startPointSlider.getValue() / 100.0));
         mediaPlayer.play();
+    }
+
+    private void saveMusic(String name) {
+        double start = startPointSlider.getValue();
+        double end = endPointSlider.getValue();
+        String sourceFilePath = song.getMediaSource();
+        String destinationFilePath = "C:\\dev\\resources\\music\\" + name + ".mp3";
+
+        try {
+            slice(sourceFilePath, destinationFilePath, start, end);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement countPstmt = conn.prepareStatement("SELECT COUNT(*) FROM EDITSONG WHERE MEMBER_ID=?");
+            countPstmt.setString(1, currentMember.getId());
+            ResultSet rsCount = countPstmt.executeQuery();
+
+            long editSongId = 0L;
+            if (rsCount.next()) {
+                editSongId = rsCount.getLong(1) + 1;  // Assuming you want to use the next ID
+            }
+
+            PreparedStatement savePstmt = conn.prepareStatement("INSERT INTO EDITSONG (EDITSONG_ID, EDITSONG_NAME, SONG_FILE, SONG_ID, MEMBER_ID) VALUES (?,?,?,?,?)");
+
+            savePstmt.setLong(1, editSongId);
+            savePstmt.setString(2, name);
+            savePstmt.setString(3, destinationFilePath);
+            savePstmt.setLong(4, song.getId());
+            savePstmt.setString(5, currentMember.getId());
+
+            savePstmt.executeUpdate();
+            System.out.println("음악이 성공적으로 저장되었습니다.");
+
+            savePstmt.close();
+            DBUtil.close(rsCount, countPstmt, conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void slice(String sourceFilePath, String destinationFilePath, double startPoint, double endPoint) {
+        try {
+            File sourceFile = new File(sourceFilePath);
+            FileInputStream fis = new FileInputStream(sourceFile);
+            FileOutputStream fos = new FileOutputStream(destinationFilePath);
+
+            long fileLength = sourceFile.length();
+            long startByte = (long) (startPoint / 100.0 * fileLength);
+            long endByte = (long) (endPoint / 100.0 * fileLength);
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            long totalBytesRead = 0;
+
+            fis.skip(startByte);
+            while ((bytesRead = fis.read(buffer)) != -1 && totalBytesRead < (endByte - startByte)) {
+                if (totalBytesRead + bytesRead > (endByte - startByte)) {
+                    bytesRead = (int) ((endByte - startByte) - totalBytesRead);
+                }
+                fos.write(buffer, 0, bytesRead);
+                totalBytesRead += bytesRead;
+            }
+
+            fis.close();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void setMember(Member member) {
+        this.currentMember = member;
     }
 }

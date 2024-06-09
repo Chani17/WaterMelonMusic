@@ -334,6 +334,7 @@ public class SongChartController implements Initializable {
 								FXMLLoader loader = new FXMLLoader(getClass().getResource("editMusic.fxml"));
 								Parent playView = loader.load();
 								EditMusicController controller = loader.getController();
+								controller.setMember(currentMember);
 								controller.setSong(selectedSong);
 
 								Scene scene = new Scene(playView);
