@@ -1,6 +1,5 @@
 package kosa.watermelon.watermelonmusic;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +7,6 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -22,15 +20,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
@@ -62,7 +55,9 @@ public class SongChartController implements Initializable {
 	private TableColumn<Song, Void> addBtn;
 
 	@FXML
-	private TableColumn<Song, Void> likebtn;
+	private TableColumn<Song, Void> likeBtn;
+
+	@FXML private TableColumn<Song, Void> editBtn;
 
 	@FXML
 	private Button goToDashboard_BTN;
@@ -137,21 +132,41 @@ public class SongChartController implements Initializable {
             conn = DBUtil.getConnection();
 			pstmt = conn.prepareStatement(
 				"SELECT " +
-		        "ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
-		        "s.song_id, a.artist_name, s.song_name, s.click_count " +
-		        "FROM Song s " +
-		        "LEFT OUTER JOIN Artist a " +
-		        "ON s.artist_id = a.artist_id " +
-		        "ORDER BY click_count DESC"
+						"ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
+						"s.song_id, s.song_name, s.song_file, s.click_count, a.album_cover, ar.artist_name " +
+						"FROM Song s " +
+						"LEFT OUTER JOIN Album a " +
+						"ON s.album_id = a.album_id " +
+						"LEFT OUTER JOIN Artist ar " +
+						"ON ar.artist_id = a.artist_id"
 		    );
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
+				System.out.println("id : " + rs.getLong("song_id"));
+				BFILE bfile = ((OracleResultSet) rs).getBFILE("album_cover");
+
+				System.out.println("album : " + bfile.getName() );
+				bfile.openFile(); // BFILE 열기
+				InputStream inputStream = bfile.getBinaryStream();
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				byte[] buffer = new byte[4096];
+				int bytesRead;
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);
+				}
+				byte[] imageData = outputStream.toByteArray();
+				outputStream.close();
+				inputStream.close();
+				bfile.closeFile(); // 자원 누수 방지를 위함
+
 				Song song = new Song(
 						rs.getInt("ranking"),
 						rs.getLong("song_id"),
 						rs.getString("song_name"),
 						rs.getString("artist_name"),
+						imageData,
+						rs.getString("song_file"),
 						rs.getLong("click_count")
 				);
 
@@ -274,7 +289,7 @@ public class SongChartController implements Initializable {
 			}
 		});
 
-		likebtn.setCellFactory(new Callback<>() {
+		likeBtn.setCellFactory(new Callback<>() {
             @Override
             public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
                 return new TableCell<>() {
@@ -300,6 +315,52 @@ public class SongChartController implements Initializable {
                 };
             }
         });
+
+		editBtn.setCellFactory(new Callback<>() {
+			@Override
+			public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
+				return new TableCell<>() {
+					private final Button editButton = new Button("✂");
+					{
+						// 버튼 클릭 시 이벤트 처리
+						editButton.setOnAction(event -> {
+							Song selectedSong = getTableView().getItems().get(getIndex());
+							System.out.println("selectedSong.getName() = " + selectedSong.getName());
+
+							try {
+								Stage newStage = new Stage();
+								//Stage currentStage = (Stage) playButton.getScene().getWindow();
+
+								FXMLLoader loader = new FXMLLoader(getClass().getResource("editMusic.fxml"));
+								Parent playView = loader.load();
+								EditMusicController controller = loader.getController();
+								controller.setSong(selectedSong);
+
+								Scene scene = new Scene(playView);
+
+								newStage.setTitle("Edit Music!");
+								newStage.setScene(scene);
+								newStage.showAndWait();
+								//stage.hide();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						});
+					}
+
+					// 셸 Rendering
+					@Override
+					protected void updateItem(Void item, boolean empty) {
+						super.updateItem(item, empty);
+						if(empty) setGraphic(null);
+						else {
+							setGraphic(editButton);
+							setAlignment(Pos.CENTER);
+						}
+					}
+				};
+			}
+		});
 	}
 
 	// 존재하는 재생목록 가져오기

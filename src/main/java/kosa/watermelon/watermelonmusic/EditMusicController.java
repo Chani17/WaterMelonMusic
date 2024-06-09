@@ -51,8 +51,9 @@ public class EditMusicController implements Initializable {
         stopButtonEnd.setOnAction(e -> stop());
     }
 
-    public void setSongId(Song song) {
+    public void setSong(Song song) {
         this.song = song;
+        System.out.println("editmusic : " + song.getName());
         setEditView();
         initializeMediaPlayer();
     }
