@@ -70,7 +70,7 @@ public class SongChartController implements Initializable {
 	private Member currentMember;
 	
 	//private Playlist playlist;
-
+	
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		this.currentMember = SessionManager.getInstance().getCurrentMember();
@@ -84,19 +84,19 @@ public class SongChartController implements Initializable {
 		songName.setCellValueFactory(new PropertyValueFactory<>("name"));
 		artistName.setCellValueFactory(new PropertyValueFactory<>("artistName"));
 		
-		// 검색 컴포넌트 로드
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("search.fxml"));
-			HBox searchBox = loader.load();
-			SearchController searchController = loader.getController();
-			searchController.setTableView(tableView);
-			searchContainer.getChildren().add(searchBox);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		setListView();
+	    // 검색 컴포넌트 로드
+	    try {
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("search.fxml"));
+	        HBox searchBox = loader.load();
+	        SearchController searchController = loader.getController();
+	        searchController.setTableView(tableView);
+	        searchContainer.getChildren().add(searchBox);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    setListView();
 	}
+
 
 	public void setMember(Member member) {
 		this.currentMember = member;

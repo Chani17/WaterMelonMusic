@@ -5,7 +5,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -16,8 +15,8 @@
 	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="kosa.watermelon.watermelonmusic.SongChartController">
 	<children>
-		<Label text="▶ 인기 차트" GridPane.columnIndex="0"
-			GridPane.rowIndex="0">
+		<Label prefHeight="20.0" prefWidth="83.0" text="▶ 검색"
+			GridPane.columnIndex="0" GridPane.rowIndex="0">
 			<font>
 				<Font name="D2Coding" size="18.0" />
 			</font>
@@ -27,14 +26,14 @@
 		</Label>
 		<HBox fx:id="searchContainer" alignment="CENTER"
 			prefWidth="392.0" spacing="10" GridPane.columnIndex="1"
-			GridPane.rowIndex="0" visible="false">
+			GridPane.rowIndex="0" visible="true">
 			<!-- Search TextField and Button will be loaded here from search.fxml -->
 		</HBox>
 
 		<Button fx:id="goToDashboard_BTN" mnemonicParsing="false"
 			onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="50.0"
-			GridPane.columnIndex="2" GridPane.halignment="RIGHT"
-			GridPane.rowIndex="0" text="◀◀">
+			text="◀◀" GridPane.columnIndex="2" GridPane.halignment="RIGHT"
+			GridPane.rowIndex="0">
 			<GridPane.margin>
 				<Insets right="10.0" top="20.0" />
 			</GridPane.margin>
