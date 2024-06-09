@@ -11,6 +11,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.net.URL;
 
 import java.util.ResourceBundle;
@@ -59,7 +60,9 @@ public class EditMusicController implements Initializable {
     }
 
     private void initializeMediaPlayer() {
-        Media media = new Media(song.getMediaSource());
+        File file = new File(song.getMediaSource());
+        String uriString = file.toURI().toString();
+        Media media = new Media(uriString);
         mediaPlayer = new MediaPlayer(media);
     }
 
