@@ -145,10 +145,17 @@ public class SongChartController implements Initializable {
 
 		try {
 			// DBUtil 클래스를 사용하여 데이터베이스 연결
-			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("SELECT " + "ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, "
-					+ "s.song_id, a.artist_name, s.song_name, s.click_count " + "FROM Song s "
-					+ "LEFT OUTER JOIN Artist a " + "ON s.artist_id = a.artist_id " + "ORDER BY click_count DESC");
+      conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(
+				"SELECT " +
+		        "ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
+		        "s.song_id, a.artist_name, s.song_name, s.click_count " +
+		        "FROM Song s " +
+		        "LEFT OUTER JOIN Artist a " +
+		        "ON s.artist_id = a.artist_id " +
+		        "ORDER BY s.click_count DESC, s.song_name ASC"
+		    );
+
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -180,6 +187,18 @@ public class SongChartController implements Initializable {
 							selectedSong.setClickCnt();
 
 							try {
+								Connection conn = DBUtil.getConnection();
+								PreparedStatement pstmt = conn.prepareStatement("SELECT click_count FROM Song WHERE song_id=?");
+								pstmt.setLong(1, selectedSong.getId());
+								ResultSet rs = pstmt.executeQuery();
+
+								if(rs.next()) {
+									PreparedStatement updatePstmt = conn.prepareStatement("UPDATE Song SET click_count=? WHERE song_id=?");
+									updatePstmt.setInt(1, rs.getInt("click_count")+1);
+									updatePstmt.setLong(2, selectedSong.getId());
+									updatePstmt.executeUpdate();
+								}
+
 								Stage newStage = new Stage();
 								// Stage currentStage = (Stage) playButton.getScene().getWindow();
 
@@ -195,7 +214,7 @@ public class SongChartController implements Initializable {
 								newStage.showAndWait();
 								// stage.hide();
 
-							} catch (IOException e) {
+							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						});
