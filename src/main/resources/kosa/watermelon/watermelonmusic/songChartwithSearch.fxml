@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -15,32 +16,30 @@
 	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="kosa.watermelon.watermelonmusic.SongChartController">
 	<children>
-		<Label prefHeight="20.0" prefWidth="83.0" text="▶ 검색"
-			GridPane.columnIndex="0" GridPane.rowIndex="0">
+		<Label text="▶ 검색" GridPane.columnIndex="0"
+			GridPane.rowIndex="0">
 			<font>
 				<Font name="D2Coding" size="18.0" />
 			</font>
 			<GridPane.margin>
-				<Insets left="10.0" top="25.0" />
+				<Insets left="18.0" top="6.0" />
 			</GridPane.margin>
 		</Label>
 		<HBox fx:id="searchContainer" alignment="CENTER"
-			prefWidth="392.0" spacing="10" GridPane.columnIndex="1"
-			GridPane.rowIndex="0" visible="true">
+			prefHeight="83.0" prefWidth="605.0" spacing="10" visible="true"
+			GridPane.columnIndex="1" GridPane.rowIndex="0">
 			<!-- Search TextField and Button will be loaded here from search.fxml -->
 		</HBox>
 
-		<Button fx:id="goToDashboard_BTN" mnemonicParsing="false"
-			onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="50.0"
-			text="◀◀" GridPane.columnIndex="2" GridPane.halignment="RIGHT"
-			GridPane.rowIndex="0">
-			<GridPane.margin>
-				<Insets right="10.0" top="20.0" />
-			</GridPane.margin>
-			<font>
-				<Font name="D2Coding" size="12.0" />
-			</font>
-		</Button>
+		<AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="0">
+			<Button fx:id="goToDashboard_BTN"
+				onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="99.0"
+				text="◀◀" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="35.0">
+				<font>
+					<Font name="D2Coding" size="12.0" />
+				</font>
+			</Button>
+		</AnchorPane>
 		<TableView fx:id="tableView" prefHeight="377.0"
 			prefWidth="643.0" GridPane.columnSpan="3" GridPane.rowIndex="2"
 			GridPane.vgrow="ALWAYS">
@@ -65,10 +64,10 @@
 	<columnConstraints>
 		<ColumnConstraints hgrow="ALWAYS"
 			maxWidth="228.599951171875" minWidth="68.80000000000001"
-			prefWidth="118.40003662109376" />
+			prefWidth="105.66665903727215" />
 		<ColumnConstraints halignment="CENTER"
-			hgrow="ALWAYS" maxWidth="485.6000000000001"
-			minWidth="324.800048828125" prefWidth="392.00000000000006" />
+			hgrow="ALWAYS" maxWidth="604.0000076293945"
+			minWidth="324.800048828125" prefWidth="604.0000076293945" />
 		<ColumnConstraints halignment="RIGHT" hgrow="NEVER"
 			maxWidth="120.79999999999995" minWidth="49.599987792968705"
 			prefWidth="88.79999999999995" />

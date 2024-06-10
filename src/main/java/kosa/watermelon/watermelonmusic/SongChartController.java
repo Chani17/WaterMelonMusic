@@ -26,10 +26,12 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -114,6 +116,9 @@ public class SongChartController implements Initializable {
 			newStage.initModality(Modality.APPLICATION_MODAL);
 			newStage.setTitle("메인 화면");
 			newStage.setScene(new Scene(parent, 800, 600));
+			Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+			newStage.getIcons().add(icon);
 			newStage.show();
 			currentStage.close();
         } catch (IOException e) {
@@ -193,6 +198,8 @@ public class SongChartController implements Initializable {
 								e.printStackTrace();
 							}
 						});
+						Font font = Font.font("D2Coding Bold", 18);
+						playButton.setFont(font);
 					}
 
 					// 셸 Rendering
@@ -250,6 +257,8 @@ public class SongChartController implements Initializable {
 								DBUtil.close(conn); // 연결 종료
 	                        }
 						});
+						Font font = Font.font("D2Coding Bold", 18);
+						addButton.setFont(font);
 					}
 
 					// 셸 Rendering
@@ -289,6 +298,8 @@ public class SongChartController implements Initializable {
                                 System.out.println("로그인이 필요합니다.");
                             }
                         });
+                        Font font = Font.font("D2Coding Bold", 18);
+                        likeButton.setFont(font);
                     }
 
                     // 셸 Rendering

@@ -227,6 +227,9 @@ public class PlaylistController implements Initializable {
 			newStage.initModality(Modality.APPLICATION_MODAL);
 			newStage.setTitle("메인 화면");
 			newStage.setScene(new Scene(parent, 800, 600));
+			Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+			newStage.getIcons().add(icon);
 			newStage.show();
 			currentStage.close();
 		} catch (IOException e) {

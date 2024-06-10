@@ -1,45 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
 <GridPane prefHeight="600.0" prefWidth="800.0"
-	xmlns="http://javafx.com/javafx/17.0.2-ea"
-	xmlns:fx="http://javafx.com/fxml/1"
+	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="kosa.watermelon.watermelonmusic.PlaylistController">
 	<children>
-		<ImageView fitHeight="32.0" fitWidth="32.0"
-			pickOnBounds="true" preserveRatio="true" GridPane.hgrow="ALWAYS"
-			GridPane.vgrow="ALWAYS">
-			<GridPane.margin>
-				<Insets left="20.0" top="40.0" />
-			</GridPane.margin>
-			<image>
-				<Image url="@playButton.png" />
-			</image>
-		</ImageView>
-		<Label text="My Playlist" GridPane.columnIndex="0"
-			GridPane.halignment="LEFT" GridPane.rowIndex="0">
-			<font>
-				<Font name="D2Coding" size="18.0" />
-			</font>
-			<GridPane.margin>
-				<Insets left="60.0" top="40.0" />
-			</GridPane.margin>
-		</Label>
-		<Button fx:id="goToDashboard_BTN" mnemonicParsing="false" text="◀◀"
-			textAlignment="CENTER" onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="50.0">
-			<GridPane.margin>
-				<Insets bottom="35.0" left="536.0" />
-			</GridPane.margin>
-			<font>
-				<Font name="D2Coding" size="14.0" />
-			</font>
-		</Button>
-		<TableView fx:id="playlistView" GridPane.rowIndex="2">
+		<AnchorPane prefWidth="762.0" GridPane.rowIndex="1">
+			<Button fx:id="goToDashboard_BTN" layoutX="685.0"
+				layoutY="4.0" onAction="#goToDashboard_Action" prefHeight="30.0"
+				prefWidth="99.0" text="◀◀"
+				AnchorPane.rightAnchor="14.333333333333258"
+				AnchorPane.topAnchor="4.0">
+				<font>
+					<Font name="D2Coding" size="12.0" />
+				</font>
+			</Button>
+			<Button fx:id="delete" layoutX="21.0" layoutY="51.0"
+				mnemonicParsing="false" prefHeight="22.0" prefWidth="42.0" text="삭제">
+				<font>
+					<Font name="D2Coding" size="12.0" />
+				</font>
+			</Button>
+			<Button fx:id="deleteAll" layoutX="73.0" layoutY="51.0"
+				mnemonicParsing="false" prefHeight="22.0" prefWidth="70.0"
+				text="전체 삭제">
+				<font>
+					<Font name="D2Coding" size="12.0" />
+				</font>
+			</Button>
+			<Label layoutX="73.0" layoutY="4.0" text="My Playlist">
+				<font>
+					<Font name="D2Coding" size="18.0" />
+				</font>
+			</Label>
+			<ImageView fitHeight="32.0" fitWidth="32.0" layoutX="26.0"
+				layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+				<image>
+					<Image url="@playButton.png" />
+				</image>
+			</ImageView>
+		</AnchorPane>
+		<TableView fx:id="playlistView" prefHeight="487.0"
+			prefWidth="797.0" GridPane.rowIndex="2">
 			<columns>
 				<TableColumn fx:id="check" prefWidth="39.0"
 					resizable="false" />
@@ -55,32 +69,23 @@
 				<Insets top="40.0" />
 			</GridPane.margin>
 		</TableView>
-		<Button fx:id="delete" mnemonicParsing="false"
-			prefHeight="22.0" prefWidth="42.0" text="삭제" GridPane.rowIndex="2">
-			<GridPane.margin>
-				<Insets bottom="340.0" left="5.0" />
-			</GridPane.margin>
-			<font>
-				<Font name="D2Coding" size="12.0" />
-			</font>
-		</Button>
-		<Button fx:id="deleteAll" mnemonicParsing="false"
-			prefHeight="22.0" prefWidth="70.0" text="전체 삭제" GridPane.rowIndex="2">
-			<font>
-				<Font name="D2Coding" size="12.0" />
-			</font>
-			<GridPane.margin>
-				<Insets bottom="340.0" left="50.0" />
-			</GridPane.margin>
-		</Button>
 	</children>
 	<columnConstraints>
-		<ColumnConstraints hgrow="ALWAYS" />
+		<ColumnConstraints hgrow="ALWAYS"
+			maxWidth="798.6666666666666" minWidth="729.0"
+			prefWidth="798.6666666666666" />
+		<ColumnConstraints maxWidth="98.6666259765625"
+			minWidth="0.0" prefWidth="0.0" />
+		<ColumnConstraints maxWidth="114.66666666666663"
+			minWidth="0.0" prefWidth="0.0" />
 	</columnConstraints>
 	<rowConstraints>
-		<RowConstraints vgrow="NEVER" />
-		<RowConstraints vgrow="NEVER" />
-		<RowConstraints maxHeight="397.00000381469727"
-			minHeight="259.99999237060547" prefHeight="363.0" vgrow="ALWAYS" />
+		<RowConstraints maxHeight="195.0"
+			minHeight="16.333333015441895" prefHeight="35.0000057220459"
+			vgrow="NEVER" />
+		<RowConstraints maxHeight="186.00000031789145"
+			minHeight="0.0" prefHeight="69.33333333333331" vgrow="NEVER" />
+		<RowConstraints maxHeight="526.6666666666667"
+			minHeight="259.99999237060547" prefHeight="496.0" vgrow="ALWAYS" />
 	</rowConstraints>
 </GridPane>

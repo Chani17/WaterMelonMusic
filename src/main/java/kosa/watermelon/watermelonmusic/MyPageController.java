@@ -29,6 +29,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -111,6 +112,8 @@ public class MyPageController implements Initializable {
 								System.out.println("로그인이 필요합니다.");
 							}
 						});
+						Font font = Font.font("D2Coding Bold", 18);
+						likeButton.setFont(font);
 					}
 
 					// 셸 Rendering
@@ -165,6 +168,8 @@ public class MyPageController implements Initializable {
 								e.printStackTrace();
 							}
 						});
+						Font font = Font.font("D2Coding Bold", 18);
+						playButton.setFont(font);
 					}
 
 					// 셸 Rendering
@@ -276,6 +281,9 @@ public class MyPageController implements Initializable {
 			newStage.initModality(Modality.APPLICATION_MODAL); // 새로운 Stage를 모달로 설정
 			newStage.setTitle("프로필 편집");
 			newStage.setScene(new Scene(parent, 300, 200));
+			Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+			newStage.getIcons().add(icon);
 			newStage.showAndWait();
 
 			// 프로필 수정 후 업데이트
@@ -301,6 +309,9 @@ public class MyPageController implements Initializable {
 			newStage.setTitle("메인 화면");
 			newStage.setScene(new Scene(parent, 800, 600));
 			newStage.show();
+			Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+			newStage.getIcons().add(icon);
 			currentStage.close();
 		} catch (IOException e) {
 			e.printStackTrace();
