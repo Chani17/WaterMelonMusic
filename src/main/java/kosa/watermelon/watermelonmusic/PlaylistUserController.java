@@ -168,11 +168,11 @@ public class PlaylistUserController implements Initializable {
             PlaylistController controller = loader.getController();
             controller.setMember(currentMember);
             controller.setPlaylist(playlist);
-
+            Playlist selectedPlaylist = playlistTable.getSelectionModel().getSelectedItem();
             Stage newStage = new Stage();
             Stage currentStage = (Stage) goToDashboard_BTN.getScene().getWindow();
             newStage.initModality(Modality.APPLICATION_MODAL);
-            newStage.setTitle("플레이리스트 상세 정보");
+            newStage.setTitle(selectedPlaylist.getPlaylistName());
             newStage.setScene(new Scene(parent, 800, 600));
             Image icon = new Image(
                     getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정

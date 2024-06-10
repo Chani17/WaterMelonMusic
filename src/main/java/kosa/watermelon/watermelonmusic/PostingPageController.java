@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -49,6 +50,9 @@ public class PostingPageController {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("postDate"));
 
         playlistTableView.setItems(playlists);
+        
+        // 데이터베이스에서 플레이리스트 불러오기
+        loadPlaylistsFromDatabase();
     }
 
     public void addSelectedPlaylist(Playlist selectedPlaylist) {
@@ -72,6 +76,9 @@ public class PostingPageController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("플레이리스트 선택");
             stage.setScene(new Scene(parent, 400, 300));
+			Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+			stage.getIcons().add(icon);
             stage.showAndWait();
 
         } catch (IOException e) {
@@ -150,6 +157,31 @@ public class PostingPageController {
         return newId;
     }
 
+    private void loadPlaylistsFromDatabase() {
+        String sql = "SELECT p.PLAYLIST_ID, p.PLAYLIST_NAME, m.MEMBER_ID, po.POST_DATE FROM PLAYLIST p " +
+                     "JOIN MPP mp ON p.PLAYLIST_ID = mp.PLAYLIST_ID " +
+                     "JOIN POSTING po ON mp.POST_ID = po.POST_ID " +
+                     "JOIN MEMBER m ON mp.MEMBER_ID = m.MEMBER_ID";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                long playlistId = rs.getLong("PLAYLIST_ID");
+                String playlistName = rs.getString("PLAYLIST_NAME");
+                String memberId = rs.getString("MEMBER_ID");
+                LocalDate postDate = rs.getDate("POST_DATE").toLocalDate();
+
+                Playlist playlist = new Playlist(playlistId, playlistName, new ArrayList<>(), memberId, 0, postDate);
+                playlists.add(playlist);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
     @FXML // 포스팅 → DashBoard 페이지 이동 이벤트 처리
     private void goToDashboard_Action(ActionEvent event)  {
         try {
