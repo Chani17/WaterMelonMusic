@@ -5,7 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -22,26 +22,24 @@
 				<Font name="D2Coding" size="18.0" />
 			</font>
 			<GridPane.margin>
-				<Insets left="10.0" top="25.0" />
+				<Insets left="18.0" top="6.0" />
 			</GridPane.margin>
 		</Label>
 		<HBox fx:id="searchContainer" alignment="CENTER"
-			prefWidth="392.0" spacing="10" GridPane.columnIndex="1"
-			GridPane.rowIndex="0" visible="false">
+			prefHeight="83.0" prefWidth="605.0" spacing="10" visible="false"
+			GridPane.columnIndex="1" GridPane.rowIndex="0">
 			<!-- Search TextField and Button will be loaded here from search.fxml -->
 		</HBox>
 
-		<Button fx:id="goToDashboard_BTN" mnemonicParsing="false"
-			onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="50.0"
-			GridPane.columnIndex="2" GridPane.halignment="RIGHT"
-			GridPane.rowIndex="0" text="◀◀">
-			<GridPane.margin>
-				<Insets right="10.0" top="20.0" />
-			</GridPane.margin>
-			<font>
-				<Font name="D2Coding" size="12.0" />
-			</font>
-		</Button>
+		<AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="0">
+			<Button fx:id="goToDashboard_BTN"
+				onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="99.0"
+				text="◀◀" AnchorPane.topAnchor="35.0" AnchorPane.rightAnchor="15.0">
+				<font>
+					<Font name="D2Coding" size="12.0" />
+				</font>
+			</Button>
+		</AnchorPane>
 		<TableView fx:id="tableView" prefHeight="377.0"
 			prefWidth="643.0" GridPane.columnSpan="3" GridPane.rowIndex="2"
 			GridPane.vgrow="ALWAYS">

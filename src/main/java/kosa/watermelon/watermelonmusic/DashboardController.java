@@ -144,6 +144,9 @@ public class DashboardController implements Initializable {
 
 			// MainApplicatin의 Scene 설정
 			currentStage.setScene(scene);
+			Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+	        currentStage.getIcons().add(icon);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

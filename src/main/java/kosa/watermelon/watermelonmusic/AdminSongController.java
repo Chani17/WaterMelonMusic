@@ -12,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -215,6 +216,9 @@ public class AdminSongController implements Initializable {
             Stage currentStage = (Stage) logout_BTN.getScene().getWindow();
 
             // MainApplicatin의 Scene 설정
+            Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+            currentStage.getIcons().add(icon);
             currentStage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();

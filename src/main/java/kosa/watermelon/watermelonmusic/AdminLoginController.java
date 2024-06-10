@@ -10,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.BFILE;
@@ -51,6 +52,9 @@ public class AdminLoginController {
                 Stage stage = new Stage();
                 stage.setTitle("관리자 페이지");
                 stage.setScene(new Scene(root));
+                Image icon = new Image(
+    	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+    			stage.getIcons().add(icon);
                 stage.show();
                 
                 adminID.getScene().getWindow().hide();
