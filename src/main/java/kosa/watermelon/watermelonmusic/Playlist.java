@@ -18,6 +18,13 @@ public class Playlist {
         this.number = number;
     }
 
+    // 새로운 생성자 추가
+    public Playlist(Long playlistId, String playlistName, String memberId) {
+        this.playlistId = playlistId;
+        this.playlistName = playlistName;
+        this.memberId = memberId;
+    }
+    
     public String getPlaylistName() {
         return playlistName;
     }

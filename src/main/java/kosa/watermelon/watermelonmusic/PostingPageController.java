@@ -1,14 +1,25 @@
 package kosa.watermelon.watermelonmusic;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -22,16 +33,100 @@ public class PostingPageController {
     private Button addPlaylist_BTN;
 	
 	@FXML
-    private VBox playlistContainer;
-	
-	private List<Playlist> playlists; // 사용자가 올린 플레이리스트 목록
-	
+    private TableView<Playlist> playlistTableView;
+    @FXML
+    private TableColumn<Playlist, String> nameColumn;
+    @FXML
+    private TableColumn<Playlist, String> memberColumn;
+    @FXML
+    private TableColumn<Playlist, String> dateColumn;
+
+    private ObservableList<Playlist> playlists;
+
 	@FXML
     public void initialize() {
-        // 초기화 코드 (필요한 경우)
-		//loadPlaylists();
+		playlists = FXCollections.observableArrayList();
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("playlistName"));
+        memberColumn.setCellValueFactory(new PropertyValueFactory<>("memberId"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("postDate"));
+
+        playlistTableView.setItems(playlists);
     }
 	
+	@FXML
+    private void handleAddPlaylist(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlistDialog.fxml"));
+            Parent parent = loader.load();
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("플레이리스트 선택");
+            stage.setScene(new Scene(parent, 400, 300));
+            stage.showAndWait();
+
+            PlaylistDialogController controller = loader.getController();
+            Playlist selectedPlaylist = controller.getSelectedPlaylist();
+            if (selectedPlaylist != null) {
+            	playlists.add(selectedPlaylist);
+                savePlaylistToPostAndMpp(selectedPlaylist); // 플레이리스트를 POST와 MPP 테이블에 저장
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+	private void savePlaylistToPostAndMpp(Playlist playlist) {
+	    Member currentMember = SessionManager.getInstance().getCurrentMember();
+	    if (currentMember == null) {
+	        return; // 현재 사용자가 없으면 저장하지 않음
+	    }
+
+	    String memberId = currentMember.getId();
+	    String postSql = "INSERT INTO POSTING (POST_ID, POST_DATE) VALUES (?, ?)";
+	    String mppSql = "INSERT INTO MPP (PLAYLIST_ID, POST_ID, MEMBER_ID) VALUES (?, ?, ?)";
+
+	    try (Connection conn = DBUtil.getConnection();
+	         PreparedStatement postStmt = conn.prepareStatement(postSql);
+	         PreparedStatement mppStmt = conn.prepareStatement(mppSql)) {
+
+	        // POST 테이블에 데이터 삽입
+	        postStmt.setLong(1, generateNewId());
+	        postStmt.setDate(2, Date.valueOf(LocalDate.now())); // 현재 날짜 설정
+	        postStmt.executeUpdate();
+
+	        // MPP 테이블에 데이터 삽입
+	        mppStmt.setLong(1, playlist.getPlaylistId());
+	        mppStmt.setLong(2, generateNewId());
+	        mppStmt.setString(3, memberId);
+	        mppStmt.executeUpdate();
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+
+
+    private Long generateNewId() {
+    	Long newId = null;
+        String sql = "SELECT POSTING_SEQ.NEXTVAL FROM DUAL";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+        	
+            if (rs.next()) {
+                newId = rs.getLong(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(newId);
+        return newId;
+    }
+
 	@FXML // 포스팅 → DashBoard 페이지 이동 이벤트 처리
 	private void goToDashboard_Action(ActionEvent event)  {
 		try {

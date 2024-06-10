@@ -56,7 +56,7 @@ public class PlaylistSelectionController {
                             setText(null);
                         } else {
                             setText(item);
-                            setFont(Font.font("D2Coding", 15));
+                            setFont(Font.font("D2Coding", 13));
                         }
                     }
                 };
@@ -71,7 +71,7 @@ public class PlaylistSelectionController {
                     setText(null);
                 } else {
                     setText(item);
-                    setFont(Font.font("D2Coding", 15));
+                    setFont(Font.font("D2Coding", 13));
                 }
             }
         });
