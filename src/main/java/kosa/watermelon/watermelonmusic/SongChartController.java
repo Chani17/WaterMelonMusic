@@ -141,7 +141,7 @@ public class SongChartController implements Initializable {
 		        "FROM Song s " +
 		        "LEFT OUTER JOIN Artist a " +
 		        "ON s.artist_id = a.artist_id " +
-		        "ORDER BY click_count DESC"
+		        "ORDER BY s.click_count DESC, s.song_name ASC"
 		    );
 			rs = pstmt.executeQuery();
 
