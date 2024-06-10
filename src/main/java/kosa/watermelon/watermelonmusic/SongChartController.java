@@ -316,6 +316,7 @@ public class SongChartController implements Initializable {
 		PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Playlist WHERE member_id=?");
 		pstmt.setString(1, memberId);
 		ResultSet rs = pstmt.executeQuery();
+		int num = 0;
 
 		if (rs.next()) {
 			// 재생 목록이 존재하면 Playlist 객체를 만들어서 반환
@@ -326,7 +327,7 @@ public class SongChartController implements Initializable {
 				songList.add(bd.longValue());
 			}
 			return new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), songList,
-					rs.getString("member_id"));
+					rs.getString("member_id"), ++num);
 		} else {
 			return null;
 		}
@@ -358,7 +359,7 @@ public class SongChartController implements Initializable {
 				ArrayDescriptor desc = ArrayDescriptor.createDescriptor("SONG_ARRAY", conn);
 				ARRAY newSongArray = new ARRAY(desc, conn, newSongs);
 				pstmt.setArray(1, newSongArray);
-				pstmt.setLong(2, playlist.getPlaylistID());
+				pstmt.setLong(2, playlist.getPlaylistId());
 				pstmt.executeUpdate();
 				pstmt.close();
 				System.out.println("successful add!");
@@ -373,7 +374,7 @@ public class SongChartController implements Initializable {
 	private void insertPlayList(Playlist playlist, Connection conn) throws SQLException {
 		PreparedStatement pstmt = conn
 				.prepareStatement("INSERT INTO Playlist(playlist_id, playlist_name, member_id) VALUES (?, ?, ?)");
-		pstmt.setLong(1, playlist.getPlaylistID());
+		pstmt.setLong(1, playlist.getPlaylistId());
 		pstmt.setString(2, playlist.getPlaylistName());
 		pstmt.setString(3, playlist.getMemberId());
 		pstmt.executeQuery();

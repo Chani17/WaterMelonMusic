@@ -35,12 +35,11 @@ public class PlaylistController implements Initializable {
     @FXML private Label playlistName_Label;
     
     private SessionManager sessionManager;
-	  private Member currentMember;
+    private Member currentMember;
     private Playlist playlist;
     
     
     @FXML private Button goToDashboard_BTN;
-    private Member currentMember;
     private final Map<PlaylistSong, Boolean> selectedSongs = new HashMap<>();
 
     @Override
@@ -58,7 +57,7 @@ public class PlaylistController implements Initializable {
     
     public void setPlaylist(Playlist playlist) {
         this.playlist = playlist;
-        System.out.println("PlaylistController: Playlist set with ID - " + playlist.getPlaylistID());
+        System.out.println("PlaylistController: Playlist set with ID - " + playlist.getPlaylistId());
         setListView();
         
         // Playlist 이름을 Label에 설정
@@ -73,7 +72,7 @@ public class PlaylistController implements Initializable {
             return;
         }
 
-        System.out.println("Loading playlist for member ID - " + currentMember.getId() + " and playlist ID - " + playlist.getPlaylistID());
+        System.out.println("Loading playlist for member ID - " + currentMember.getId() + " and playlist ID - " + playlist.getPlaylistId());
         
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -82,12 +81,12 @@ public class PlaylistController implements Initializable {
 
         try {
             conn = DBUtil.getConnection();
-            pstmt = conn.prepareStatement("SELECT s.song_id, s.song_name, a.artist_name, p.playlist_id" +
+            pstmt = conn.prepareStatement("SELECT s.song_id, s.song_name, a.artist_name " +
                     "FROM Playlist p, TABLE(p.song) song " +
                     "LEFT OUTER JOIN Song s ON song.COLUMN_VALUE = s.song_id " +
                     "LEFT OUTER JOIN Artist a ON s.artist_id = a.artist_id " +
-                    "WHERE p.member_id=?");
-            pstmt.setString(1, currentMember.getId());
+                    "WHERE p.playlist_id=?");
+            pstmt.setLong(1, playlist.getPlaylistId());
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -191,9 +190,10 @@ public class PlaylistController implements Initializable {
                     System.out.println("result = " + song.getPlaylistId());
 
                     // Fetch the current SONG_ARRAY for the playlist
-                    pstmt = conn.prepareStatement("SELECT SONG FROM PLAYLIST WHERE MEMBER_ID = ? AND PLAYLIST_ID = ?");
-                    pstmt.setString(1, currentMember.getId());
-                    pstmt.setLong(2, song.getPlaylistId());
+                    pstmt = conn.prepareStatement("SELECT p.SONG FROM Playlist p WHERE p.playlist_id=? AND p.member_id=?");
+                    pstmt.setLong(1, song.getPlaylistId());
+                    pstmt.setString(2, currentMember.getId());
+
                     rs = pstmt.executeQuery();
 
                     if (rs.next()) {
@@ -205,7 +205,7 @@ public class PlaylistController implements Initializable {
                         songList.removeIf(id -> id == song.getPlaylistId());
 
                         // Update the playlist with the modified SONG_ARRAY
-                        Integer[] updatedSongArray = songList.toArray(new Integer[0]);
+                        Long[] updatedSongArray = songList.toArray(new Long[0]);
                         Array updatedArray = conn.createArrayOf("NUMBER", updatedSongArray);
 
                         pstmt = conn.prepareStatement("UPDATE PLAYLIST SET SONG = ? WHERE MEMBER_ID = ? AND PLAYLIST_ID = ?");

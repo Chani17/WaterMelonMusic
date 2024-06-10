@@ -183,6 +183,7 @@ public class PlaylistSelectionController {
             pstmt.setString(1, playlistName);
             pstmt.setString(2, currentMember.getId());
             ResultSet rs = pstmt.executeQuery();
+            int num = 0;
             if (rs.next()) {
                 Array songArray = rs.getArray("Song");
                 BigDecimal[] songs = (BigDecimal[]) songArray.getArray();
@@ -190,7 +191,7 @@ public class PlaylistSelectionController {
                 for (BigDecimal bd : songs) {
                     songList.add(bd.longValue());
                 }
-                return new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), songList, rs.getString("member_id"));
+                return new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), songList, rs.getString("member_id"), ++num);
             } else {
                 return null;
             }

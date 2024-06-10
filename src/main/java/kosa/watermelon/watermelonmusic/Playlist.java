@@ -18,10 +18,6 @@ public class Playlist {
         this.number = number;
     }
 
-    public Long getPlaylistID() {
-    	return playlistId;
-    }
-
     public String getPlaylistName() {
         return playlistName;
     }
@@ -40,5 +36,9 @@ public class Playlist {
     
     public void addSong(Long songId) {
         this.songList.add(songId);
+    }
+
+    public Long getPlaylistId() {
+        return playlistId;
     }
 }
