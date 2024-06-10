@@ -191,7 +191,7 @@ public class PlaylistUserController implements Initializable {
 
         try {
             // PlayView.fxml을 로드합니다.
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("playView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playview.fxml"));
             Parent parent = loader.load();
 
             // PlayViewController 인스턴스를 가져와서 재생할 노래 목록을 설정합니다.
