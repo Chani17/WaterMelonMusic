@@ -87,7 +87,7 @@ public class DashboardController implements Initializable {
 		PostingPage_ImageView.setOnMouseClicked(event -> goToPage("postingPage.fxml", PostingPage_ImageView));
 //	    MusicEdit_ImageView.setOnMouseClicked(event -> goToPage("musicEdit.fxml", MusicEdit_ImageView));
 		MyPage_ImageView.setOnMouseClicked(event -> goToPage("mypage.fxml", MyPage_ImageView));
-		Playlist_ImageView.setOnMouseClicked(event -> goToPage("playlist.fxml", Playlist_ImageView));
+		Playlist_ImageView.setOnMouseClicked(event -> goToPage("playlistUser.fxml", Playlist_ImageView));
 	}
 	
 	private void goToPage(String fxmlFile, ImageView sourceImageView) {
@@ -96,32 +96,23 @@ public class DashboardController implements Initializable {
 			Stage newStage = (Stage) sourceImageView.getScene().getWindow();
 			Scene scene = new Scene(loader.load());
 
+			Object controller = loader.getController();
 			// 컨트롤러에 현재 회원 정보 전달
-			if (loader.getController() instanceof SongChartController) {
-				if (fxmlFile.equals("songChart.fxml")) {
-					newStage.setTitle("인기 차트");
-				} else {
-					newStage.setTitle("검색");
-				}
-				SongChartController controller = loader.getController();
-				controller.setMember(currentMember);
-			} else if (loader.getController() instanceof SearchController) {
-	            if (fxmlFile.equals("songChartwithSearch.fxml")) {
-	            	newStage.setTitle("검색"); // 검색 페이지로 이동할 때 제목 설정
-	            } else {
-	            	newStage.setTitle("인기 차트"); // 다른 페이지인 경우 인기차트로 설정
-	            }
-	            SearchController controller = loader.getController();
-	            controller.setTableView(tableView); // 예시로 tableView를 전달하는 코드
-	            controller.setMember(currentMember);
-			} else if (loader.getController() instanceof MyPageController) {
+			if (controller instanceof SongChartController) {
+				newStage.setTitle(fxmlFile.equals("songChart.fxml") ? "인기 차트" : "검색");
+				((SongChartController) controller).setMember(currentMember);
+			} else if (controller instanceof SearchController) {
+				newStage.setTitle(fxmlFile.equals("songChartwithSearch.fxml") ? "검색" : "인기 차트");
+                ((SearchController) controller).setTableView(tableView);
+                ((SearchController) controller).setMember(currentMember);
+			} else if (controller instanceof MyPageController) {
 				newStage.setTitle("마이페이지");
-			} else if(loader.getController() instanceof PlaylistController) {
+				((MyPageController) controller).setMember(currentMember);
+			} else if(controller instanceof PlaylistUserController) {
 				newStage.setTitle("플레이리스트");
-				PlaylistController controller = loader.getController();
-				controller.setMember(currentMember);
-			} else if (loader.getController() instanceof PostingPageController) {
-				newStage.setTitle("게시판");
+                ((PlaylistUserController) controller).setMember(currentMember);
+			} else if (controller instanceof PostingPageController) {
+                newStage.setTitle("게시판");
 			}
 			newStage.setScene(scene);
 		} catch (IOException e) {

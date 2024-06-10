@@ -8,16 +8,14 @@ public class Playlist {
     private String playlistName;
     private List<Long> songList;
     private String memberId;
+    private int number;
 
-    public Playlist(Long playlistId, String playlistName, List<Long> songList, String memberId) {
+    public Playlist(Long playlistId, String playlistName, List<Long> songList, String memberId, int number) {
         this.playlistId = playlistId;
         this.playlistName = playlistName;
         this.songList = songList;
         this.memberId = memberId;
-    }
-
-    public Long getPlaylistID() {
-    	return playlistId;
+        this.number = number;
     }
 
     public String getPlaylistName() {
@@ -32,7 +30,15 @@ public class Playlist {
         return memberId;
     }
 
+    public int getNumber() {
+        return number;
+    }
+
     public void addSong(Long songId) {
         this.songList.add(songId);
+    }
+
+    public Long getPlaylistId() {
+        return playlistId;
     }
 }

@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
 import java.util.*;
@@ -31,22 +32,49 @@ public class PlaylistController implements Initializable {
     @FXML private TableColumn<PlaylistSong, Void> playBtn;
     @FXML private Button delete;
     @FXML private Button deleteAll;
-    @FXML private Button goToDashboard_BTN;
+    @FXML private Button goToPlaylistUser_BTN;
+    @FXML private Label playlistName_Label;
+    
+    private SessionManager sessionManager;
     private Member currentMember;
+    private Playlist playlist;
+    
+    
+    @FXML private Button goToDashboard_BTN;
     private final Map<PlaylistSong, Boolean> selectedSongs = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         delete.setOnAction(this::handleDeleteAction);
         deleteAll.setOnAction(this::handleDeleteAllAction);
+        sessionManager = SessionManager.getInstance();
     }
 
     public void setMember(Member member) {
         this.currentMember = member;
+        System.out.println("PlaylistController: Member set with ID - " + currentMember.getId());
         setListView();
     }
-
+    
+    public void setPlaylist(Playlist playlist) {
+        this.playlist = playlist;
+        System.out.println("PlaylistController: Playlist set with ID - " + playlist.getPlaylistId());
+        setListView();
+        
+        // Playlist 이름을 Label에 설정
+        if (playlist != null) {
+        	playlistName_Label.setText(playlist.getPlaylistName());
+        }
+    }
+    
     private void setListView() {
+        if (currentMember == null || playlist == null) {
+            System.out.println("Current member or playlist is null. Cannot load playlist.");
+            return;
+        }
+
+        System.out.println("Loading playlist for member ID - " + currentMember.getId() + " and playlist ID - " + playlist.getPlaylistId());
+        
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -54,12 +82,12 @@ public class PlaylistController implements Initializable {
 
         try {
             conn = DBUtil.getConnection();
-            pstmt = conn.prepareStatement("SELECT s.song_id, s.song_name, a.artist_name, p.playlist_id" +
+            pstmt = conn.prepareStatement("SELECT s.song_id, s.song_name, a.artist_name " +
                     "FROM Playlist p, TABLE(p.song) song " +
                     "LEFT OUTER JOIN Song s ON song.COLUMN_VALUE = s.song_id " +
                     "LEFT OUTER JOIN Artist a ON s.artist_id = a.artist_id " +
-                    "WHERE p.member_id=?");
-            pstmt.setString(1, currentMember.getId());
+                    "WHERE p.playlist_id=?");
+            pstmt.setLong(1, playlist.getPlaylistId());
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -160,30 +188,40 @@ public class PlaylistController implements Initializable {
             for (Map.Entry<PlaylistSong, Boolean> entry : selectedSongs.entrySet()) {
                 if (entry.getValue()) {
                     PlaylistSong song = entry.getKey();
-                    System.out.println("result = " + song.getPlaylistId());
+                    System.out.println("result = " + song.getSongId());
 
                     // Fetch the current SONG_ARRAY for the playlist
-                    pstmt = conn.prepareStatement("SELECT SONG FROM PLAYLIST WHERE MEMBER_ID = ? AND PLAYLIST_ID = ?");
-                    pstmt.setString(1, currentMember.getId());
-                    pstmt.setLong(2, song.getPlaylistId());
+                    pstmt = conn.prepareStatement("SELECT p.SONG FROM Playlist p WHERE p.playlist_id=? AND p.member_id=?");
+                    pstmt.setLong(1, playlist.getPlaylistId());
+                    pstmt.setString(2, currentMember.getId());
+
                     rs = pstmt.executeQuery();
 
                     if (rs.next()) {
                         Array songArray = rs.getArray("SONG");
-                        Long[] songIds = (Long[]) songArray.getArray();
-                        List<Long> songList = new ArrayList<>(Arrays.asList(songIds));
+                        BigDecimal[] songIds = (BigDecimal[]) songArray.getArray();
+                        List<Long> songList = new ArrayList<>();
+
+                        for (BigDecimal id : songIds) {
+                            songList.add(id.longValue());
+                        }
 
                         // Remove the song ID from the array
-                        songList.removeIf(id -> id == song.getPlaylistId());
+                        songList.removeIf(id -> Objects.equals(id, song.getSongId()));
 
                         // Update the playlist with the modified SONG_ARRAY
-                        Integer[] updatedSongArray = songList.toArray(new Integer[0]);
-                        Array updatedArray = conn.createArrayOf("NUMBER", updatedSongArray);
+                        StringBuilder updateQuery = new StringBuilder("UPDATE PLAYLIST SET SONG = SONG_ARRAY(");
+                        for (int i = 0; i < songList.size(); i++) {
+                            if (i > 0) {
+                                updateQuery.append(", ");
+                            }
+                            updateQuery.append(songList.get(i));
+                        }
+                        updateQuery.append(") WHERE MEMBER_ID = ? AND PLAYLIST_ID = ?");
 
-                        pstmt = conn.prepareStatement("UPDATE PLAYLIST SET SONG = ? WHERE MEMBER_ID = ? AND PLAYLIST_ID = ?");
-                        pstmt.setArray(1, updatedArray);
-                        pstmt.setString(2, currentMember.getId());
-                        pstmt.setLong(3, song.getPlaylistId());
+                        pstmt = conn.prepareStatement(updateQuery.toString());
+                        pstmt.setString(1, currentMember.getId());
+                        pstmt.setLong(2, playlist.getPlaylistId());
                         pstmt.executeUpdate();
                     }
                 }
@@ -203,8 +241,8 @@ public class PlaylistController implements Initializable {
 
         try {
             conn = DBUtil.getConnection();
-            pstmt = conn.prepareStatement("DELETE FROM Playlist WHERE member_id=?");
-            pstmt.setString(1, currentMember.getId());
+            pstmt = conn.prepareStatement("DELETE FROM Playlist WHERE playlist_id=?");
+            pstmt.setLong(1, playlist.getPlaylistId());
             pstmt.executeUpdate();
             setListView(); // Refresh the list view after deletion
         } catch (Exception e) {
@@ -214,28 +252,29 @@ public class PlaylistController implements Initializable {
         }
     }
 
-    @FXML // My Playlist → DashBoard 페이지 이동 이벤트 처리
-    private void goToDashboard_Action(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
-            Parent parent = loader.load();
-
-            // DashboardController 인스턴스를 가져와서 멤버 설정
-            DashboardController controller = loader.getController();
-            controller.setMember(currentMember);
-
-            Stage newStage = new Stage();
-            Stage currentStage = (Stage) goToDashboard_BTN.getScene().getWindow();
-
-            newStage.initModality(Modality.APPLICATION_MODAL);
-            newStage.setTitle("메인 화면");
-            newStage.setScene(new Scene(parent, 800, 600));
-            Image icon = new Image(getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
-            newStage.getIcons().add(icon);
-            newStage.show();
-            currentStage.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+  @FXML // My Playlist → PlaylistUser 페이지 이동 이벤트 처리
+	private void goToPlaylistUser_Action(ActionEvent event) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("playlistUser.fxml"));
+			Parent parent = loader.load();
+			
+			// PlaylistUserController 인스턴스를 가져와서 멤버 설정
+	        PlaylistUserController controller = loader.getController();
+	        controller.setMember(currentMember);
+			
+			Stage newStage = new Stage();
+			Stage currentStage = (Stage) goToPlaylistUser_BTN.getScene().getWindow();
+			
+			newStage.initModality(Modality.APPLICATION_MODAL);
+			newStage.setTitle("플레이리스트");
+			newStage.setScene(new Scene(parent, 800, 600));
+			Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+			newStage.getIcons().add(icon);
+			newStage.show();
+			currentStage.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
