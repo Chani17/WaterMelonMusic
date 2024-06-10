@@ -117,10 +117,15 @@ public class EditMusicController implements Initializable {
 
     private void initializeSliders() {
         // 슬라이더 초기값 설정 및 시간 업데이트
+        double durationInSeconds = mediaPlayer.getTotalDuration().toSeconds();
+        startPointSlider.setMax(durationInSeconds);
+        endPointSlider.setMax(durationInSeconds);
+
+        startPointSlider.setValueChanging(true);
+        endPointSlider.setValueChanging(true);
+
         startPointSlider.setValue(0);
-        endPointSlider.setValue(100); // Assuming you want the end slider to start at the end of the song
-        updateStartTime(0);
-        updateEndTime(100);
+        endPointSlider.setValue(0); // Assuming you want the end slider to start at the end of the song
     }
 
     private void setEditView() {
@@ -132,20 +137,22 @@ public class EditMusicController implements Initializable {
     }
 
     private void updateEndTime(double point) {
-        if (mediaPlayer != null && mediaPlayer.getTotalDuration() != null) {
-            int totalSeconds = (int) (mediaPlayer.getTotalDuration().toSeconds() * (point / 100.0));
-            int minutes = totalSeconds / 60;
-            int seconds = totalSeconds % 60;
+        if (mediaPlayer != null) {
+            int minutes = (int)point / 60;
+            int seconds = (int) point % 60;
+
+            endPointSlider.setValue(point);
             endTimeMinute.setText(String.format("%02d", minutes));
             endTimeSecond.setText(String.format("%02d", seconds));
         }
     }
 
     private void updateStartTime(double point) {
-        if (mediaPlayer != null && mediaPlayer.getTotalDuration() != null) {
-            int totalSeconds = (int) (mediaPlayer.getTotalDuration().toSeconds() * (point / 100.0));
-            int minutes = totalSeconds / 60;
-            int seconds = totalSeconds % 60;
+        if (mediaPlayer != null) {
+            int minutes = (int) point / 60;
+            int seconds = (int) point % 60;
+
+            startPointSlider.setValue(point);
             startTimeMinute.setText(String.format("%02d", minutes));
             startTimeSecond.setText(String.format("%02d", seconds));
         }
