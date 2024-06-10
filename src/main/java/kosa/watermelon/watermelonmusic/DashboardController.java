@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,29 +20,19 @@ import javafx.stage.Stage;
 
 public class DashboardController implements Initializable {
 	// 버튼 모아둔 페이지 (로그인 후 이동되는 페이지)
-	@FXML
-	private ImageView logo_ImageView;
-	@FXML
-	private ImageView logoText_ImageView;
-	@FXML
-	private ImageView SongChart_ImageView;
-	@FXML
-	private ImageView Search_ImageView;
-	@FXML
-	private ImageView PostingPage_ImageView;
-	@FXML
-	private ImageView MusicEdit_ImageView;
-	@FXML
-	private ImageView MyPage_ImageView;
-	@FXML
-	private ImageView Playlist_ImageView;
-	@FXML
-	private TextField userNAME_TextField;
-	@FXML
-	private Label focusLabel; // 대시보드 텍스트필드에 커서 깜빡이지 않도록 수정
-	@FXML
-	private Button logout_BTN;
+	@FXML private ImageView logo_ImageView;
+	@FXML private ImageView logoText_ImageView;
+	@FXML private ImageView SongChart_ImageView;
+	@FXML private ImageView Search_ImageView;
+	@FXML private ImageView PostingPage_ImageView;
+	@FXML private ImageView MusicEdit_ImageView;
+	@FXML private ImageView MyPage_ImageView;
+	@FXML private ImageView Playlist_ImageView;
+	@FXML private TextField userNAME_TextField;
+	@FXML private Label focusLabel; // 대시보드 텍스트필드에 커서 깜빡이지 않도록 수정
+	@FXML private Button logout_BTN;
 
+	@FXML private TableView<Song> tableView; // tableView 변수 정의
 	private Member currentMember;
 
 	@Override
@@ -54,13 +45,8 @@ public class DashboardController implements Initializable {
 			System.out.println("Error: currentMember is null.");
 		}
 
-		// Load images
 		loadImages();
-
-		// Set on mouse click events
 		setOnMouseClickEvents();
-
-		// TextField를 수정 불가능하게 설정
 		userNAME_TextField.setEditable(false);
 
 		// TextField에 포커스를 제거하고 다른 곳으로 포커스를 설정
@@ -97,13 +83,13 @@ public class DashboardController implements Initializable {
 
 	private void setOnMouseClickEvents() {
 		SongChart_ImageView.setOnMouseClicked(event -> goToPage("songChart.fxml", SongChart_ImageView));
-		Search_ImageView.setOnMouseClicked(event -> goToPage("songChart.fxml", Search_ImageView));
+		Search_ImageView.setOnMouseClicked(event -> goToPage("songChartwithSearch.fxml", Search_ImageView));
 		PostingPage_ImageView.setOnMouseClicked(event -> goToPage("postingPage.fxml", PostingPage_ImageView));
 //	    MusicEdit_ImageView.setOnMouseClicked(event -> goToPage("musicEdit.fxml", MusicEdit_ImageView));
 		MyPage_ImageView.setOnMouseClicked(event -> goToPage("mypage.fxml", MyPage_ImageView));
 		Playlist_ImageView.setOnMouseClicked(event -> goToPage("playlist.fxml", Playlist_ImageView));
 	}
-
+	
 	private void goToPage(String fxmlFile, ImageView sourceImageView) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
@@ -112,13 +98,31 @@ public class DashboardController implements Initializable {
 
 			// 컨트롤러에 현재 회원 정보 전달
 			if (loader.getController() instanceof SongChartController) {
+				if (fxmlFile.equals("songChart.fxml")) {
+					newStage.setTitle("인기 차트");
+				} else {
+					newStage.setTitle("검색");
+				}
 				SongChartController controller = loader.getController();
 				controller.setMember(currentMember);
-			} else if (loader.getController() instanceof PlaylistController) {
+			} else if (loader.getController() instanceof SearchController) {
+	            if (fxmlFile.equals("songChartwithSearch.fxml")) {
+	            	newStage.setTitle("검색"); // 검색 페이지로 이동할 때 제목 설정
+	            } else {
+	            	newStage.setTitle("인기 차트"); // 다른 페이지인 경우 인기차트로 설정
+	            }
+	            SearchController controller = loader.getController();
+	            controller.setTableView(tableView); // 예시로 tableView를 전달하는 코드
+	            controller.setMember(currentMember);
+			} else if (loader.getController() instanceof MyPageController) {
+				newStage.setTitle("마이페이지");
+			} else if(loader.getController() instanceof PlaylistController) {
+				newStage.setTitle("플레이리스트");
 				PlaylistController controller = loader.getController();
 				controller.setMember(currentMember);
+			} else if (loader.getController() instanceof PostingPageController) {
+				newStage.setTitle("게시판");
 			}
-
 			newStage.setScene(scene);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -133,7 +137,7 @@ public class DashboardController implements Initializable {
 		// 로그인 창 열기
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-			Scene scene = new Scene(loader.load(), 600, 464);
+			Scene scene = new Scene(loader.load(), 800, 600);
 
 			// 현재 Stage 찾기
 			Stage currentStage = (Stage) logout_BTN.getScene().getWindow();
@@ -160,5 +164,4 @@ public class DashboardController implements Initializable {
 			userNAME_TextField.setText(currentMember.getNickname());
 		}
 	}
-
 }

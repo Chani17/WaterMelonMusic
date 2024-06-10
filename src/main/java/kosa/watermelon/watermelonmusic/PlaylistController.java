@@ -226,7 +226,7 @@ public class PlaylistController implements Initializable {
 			
 			newStage.initModality(Modality.APPLICATION_MODAL);
 			newStage.setTitle("메인 화면");
-			newStage.setScene(new Scene(parent, 600, 464));
+			newStage.setScene(new Scene(parent, 800, 600));
 			newStage.show();
 			currentStage.close();
 		} catch (IOException e) {
