@@ -34,43 +34,65 @@ public class PlaylistController implements Initializable {
     @FXML private TableColumn<Song, Void> playBtn;
     @FXML private Button delete;
     @FXML private Button deleteAll;
-    @FXML private Button goToDashboard_BTN;
-    private Member currentMember;
-
+    @FXML private Button goToPlaylistUser_BTN;
+    @FXML private Label playlistName_Label;
+    
+    private SessionManager sessionManager;
+	private Member currentMember;
+    private Playlist playlist;
+    
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 //        delete.setOnAction(this::handleDeleteAction);
 //        deleteAll.setOnAction(this::handDeleteAllAction);
+    	sessionManager = SessionManager.getInstance();
     }
 
     public void setMember(Member member) {
         this.currentMember = member;
+        System.out.println("PlaylistController: Member set with ID - " + currentMember.getId());
         setListView();
     }
-
+    
+    public void setPlaylist(Playlist playlist) {
+        this.playlist = playlist;
+        System.out.println("PlaylistController: Playlist set with ID - " + playlist.getPlaylistID());
+        setListView();
+        
+        // Playlist 이름을 Label에 설정
+        if (playlist != null) {
+        	playlistName_Label.setText(playlist.getPlaylistName());
+        }
+    }
+    
     private void setListView() {
+        if (currentMember == null || playlist == null) {
+            System.out.println("Current member or playlist is null. Cannot load playlist.");
+            return;
+        }
+
+        System.out.println("Loading playlist for member ID - " + currentMember.getId() + " and playlist ID - " + playlist.getPlaylistID());
+        
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         List<PlaylistSong> playlistSongs = new ArrayList<>();
 
         try {
-        	conn = DBUtil.getConnection();
+            conn = DBUtil.getConnection();
             pstmt = conn.prepareStatement("SELECT s.song_name, a.artist_name \n" +
                     "FROM Playlist p, TABLE(p.song) song \n" +
                     "LEFT OUTER JOIN Song s ON song.COLUMN_VALUE = s.song_id \n" +
                     "LEFT OUTER JOIN Artist a ON s.artist_id = a.artist_id \n" +
-                    "WHERE p.member_id=?");
-            pstmt.setString(1, currentMember.getId());
+                    "WHERE p.playlist_id=?");
+            pstmt.setLong(1, playlist.getPlaylistID());
             rs = pstmt.executeQuery();
 
-            while(rs.next()) {
-               String name = rs.getString("song_name");
-               String artist = rs.getString("artist_name");
-               System.out.println(name);
-               System.out.println(artist);
-               playlistSongs.add(new PlaylistSong(name, artist));
-           }
+            while (rs.next()) {
+                String name = rs.getString("song_name");
+                String artist = rs.getString("artist_name");
+                playlistSongs.add(new PlaylistSong(name, artist));
+            }
             ObservableList<PlaylistSong> playlist = FXCollections.observableArrayList(playlistSongs);
             songName.setCellValueFactory(new PropertyValueFactory<PlaylistSong, String>("songName"));
             artist.setCellValueFactory(new PropertyValueFactory<PlaylistSong, String>("artistName"));
@@ -78,9 +100,9 @@ public class PlaylistController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-        	DBUtil.close(pstmt, rs, conn);
+            DBUtil.close(pstmt, rs, conn);
         }
-
+   
 //        check.setCellValueFactory(data -> {
 //            Song song = data.getValue();
 //            return new ObservableValue<Boolean>() {
@@ -211,21 +233,21 @@ public class PlaylistController implements Initializable {
         return null;
     }
 
-    @FXML // My Playlist → DashBoard 페이지 이동 이벤트 처리
-	private void goToDashboard_Action(ActionEvent event) {
+    @FXML // My Playlist → PlaylistUser 페이지 이동 이벤트 처리
+	private void goToPlaylistUser_Action(ActionEvent event) {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("playlistUser.fxml"));
 			Parent parent = loader.load();
 			
-			// DashboardController 인스턴스를 가져와서 멤버 설정
-			DashboardController controller = loader.getController();
-			controller.setMember(currentMember);
+			// PlaylistUserController 인스턴스를 가져와서 멤버 설정
+	        PlaylistUserController controller = loader.getController();
+	        controller.setMember(currentMember);
 			
 			Stage newStage = new Stage();
-			Stage currentStage = (Stage) goToDashboard_BTN.getScene().getWindow();
+			Stage currentStage = (Stage) goToPlaylistUser_BTN.getScene().getWindow();
 			
 			newStage.initModality(Modality.APPLICATION_MODAL);
-			newStage.setTitle("메인 화면");
+			newStage.setTitle("플레이리스트");
 			newStage.setScene(new Scene(parent, 800, 600));
 			Image icon = new Image(
 	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정

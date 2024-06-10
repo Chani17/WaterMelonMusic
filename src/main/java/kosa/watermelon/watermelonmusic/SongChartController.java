@@ -24,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -87,6 +88,16 @@ public class SongChartController implements Initializable {
 		songName.setCellValueFactory(new PropertyValueFactory<>("name"));
 		artistName.setCellValueFactory(new PropertyValueFactory<>("artistName"));
 
+		tableView.setStyle("-fx-font-family: 'D2Coding'; -fx-font-size: 10pt;");
+
+		// TableView의 각 행에 대한 폰트 설정
+		tableView.setRowFactory(tv -> {
+			TableRow<Song> row = new TableRow<>();
+			row.setStyle("-fx-font-family: 'D2Coding'; -fx-font-size: 10pt;");
+			return row;
+		});
+		
+		
 		// 검색 컴포넌트 로드
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("search.fxml"));
@@ -117,11 +128,7 @@ public class SongChartController implements Initializable {
 			newStage.setTitle("메인 화면");
 			newStage.setScene(new Scene(parent, 800, 600));
 			Image icon = new Image(
-					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고
-																													// 이미지
-																													// 파일
-																													// 경로
-																													// 지정
+					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png"));
 			newStage.getIcons().add(icon);
 			newStage.show();
 			currentStage.close();
@@ -230,6 +237,9 @@ public class SongChartController implements Initializable {
 		                        Stage stage = new Stage();
 		                        stage.initModality(Modality.APPLICATION_MODAL);
 		                        stage.setTitle("플레이리스트 선택");
+		                        Image icon = new Image(
+		            	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+		                        stage.getIcons().add(icon);
 		                        stage.setScene(new Scene(parent));
 		                        stage.showAndWait();
 		                    } catch (IOException e) {

@@ -18,8 +18,8 @@
 	fx:controller="kosa.watermelon.watermelonmusic.PlaylistController">
 	<children>
 		<AnchorPane prefWidth="762.0" GridPane.rowIndex="1">
-			<Button fx:id="goToDashboard_BTN" layoutX="685.0"
-				layoutY="4.0" onAction="#goToDashboard_Action" prefHeight="30.0"
+			<Button fx:id="goToPlaylistUser_BTN" layoutX="685.0"
+				layoutY="4.0" onAction="#goToPlaylistUser_Action" prefHeight="30.0"
 				prefWidth="99.0" text="◀◀"
 				AnchorPane.rightAnchor="14.333333333333258"
 				AnchorPane.topAnchor="4.0">
@@ -27,20 +27,20 @@
 					<Font name="D2Coding" size="12.0" />
 				</font>
 			</Button>
-			<Button fx:id="delete" layoutX="21.0" layoutY="51.0"
+			<Button fx:id="delete" layoutX="338.0" layoutY="48.0"
 				mnemonicParsing="false" prefHeight="22.0" prefWidth="42.0" text="삭제">
 				<font>
 					<Font name="D2Coding" size="12.0" />
 				</font>
 			</Button>
-			<Button fx:id="deleteAll" layoutX="73.0" layoutY="51.0"
+			<Button fx:id="deleteAll" layoutX="390.0" layoutY="48.0"
 				mnemonicParsing="false" prefHeight="22.0" prefWidth="70.0"
 				text="전체 삭제">
 				<font>
 					<Font name="D2Coding" size="12.0" />
 				</font>
 			</Button>
-			<Label layoutX="73.0" layoutY="4.0" text="My Playlist">
+			<Label fx:id="playlistName_Label" layoutX="73.0" layoutY="4.0" text="My Playlist">
 				<font>
 					<Font name="D2Coding" size="18.0" />
 				</font>
