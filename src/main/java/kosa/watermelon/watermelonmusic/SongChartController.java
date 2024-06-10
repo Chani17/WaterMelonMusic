@@ -179,6 +179,18 @@ public class SongChartController implements Initializable {
 							selectedSong.setClickCnt();
 
 							try {
+								Connection conn = DBUtil.getConnection();
+								PreparedStatement pstmt = conn.prepareStatement("SELECT click_count FROM Song WHERE song_id=?");
+								pstmt.setLong(1, selectedSong.getId());
+								ResultSet rs = pstmt.executeQuery();
+
+								if(rs.next()) {
+									PreparedStatement updatePstmt = conn.prepareStatement("UPDATE Song SET click_count=? WHERE song_id=?");
+									updatePstmt.setInt(1, rs.getInt("click_count")+1);
+									updatePstmt.setLong(2, selectedSong.getId());
+									updatePstmt.executeUpdate();
+								}
+
 								Stage newStage = new Stage();
 								//Stage currentStage = (Stage) playButton.getScene().getWindow();
 
@@ -194,7 +206,7 @@ public class SongChartController implements Initializable {
 								newStage.showAndWait();
                                 //stage.hide();
 
-							} catch (IOException e) {
+							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						});
