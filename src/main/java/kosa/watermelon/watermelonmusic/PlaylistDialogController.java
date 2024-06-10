@@ -6,9 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import java.sql.*;
-import java.time.LocalDate;
-
 
 public class PlaylistDialogController {
     @FXML
@@ -18,6 +15,7 @@ public class PlaylistDialogController {
 
     private PlaylistDAO playlistDAO;
     private Playlist selectedPlaylist;
+    private PostingPageController postingPageController; // Reference to the parent controller
 
     @FXML
     public void initialize() {
@@ -38,6 +36,10 @@ public class PlaylistDialogController {
         });
     }
 
+    public void setPostingPageController(PostingPageController postingPageController) {
+        this.postingPageController = postingPageController;
+    }
+
     private void loadPlaylists() {
         Member currentMember = SessionManager.getInstance().getCurrentMember();
         if (currentMember != null) {
@@ -48,9 +50,9 @@ public class PlaylistDialogController {
     @FXML
     private void handleOk() {
         selectedPlaylist = playlistListView.getSelectionModel().getSelectedItem();
-        // POST와 MPP 테이블에 저장하는 로직 추가
         if (selectedPlaylist != null) {
-            playlistDAO.savePlaylistToPostAndMpp(selectedPlaylist);
+            // Add selected playlist to the parent controller
+            postingPageController.addSelectedPlaylist(selectedPlaylist);
         }
         closeDialog();
     }

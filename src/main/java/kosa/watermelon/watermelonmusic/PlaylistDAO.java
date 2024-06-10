@@ -53,30 +53,4 @@ public class PlaylistDAO {
 
         return playlists;
     }
-
-    public void savePlaylistToPostAndMpp(Playlist playlist) {
-        String memberId = playlist.getMemberId();
-        String postSql = "INSERT INTO POSTING (POST_DATE) VALUES (?)";
-        String mppSql = "INSERT INTO MPP (PLAYLIST_ID, POST_ID, MEMBER_ID) VALUES (?, POSTING_SEQ.NEXTVAL, ?)"; // POST_ID는 시퀀스로 자동 생성
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement postStmt = conn.prepareStatement(postSql);
-             PreparedStatement mppStmt = conn.prepareStatement(mppSql)) {
-
-            // 현재 날짜 구하기
-            LocalDate currentDate = LocalDate.now();
-
-            // POST 테이블에 데이터 삽입
-            postStmt.setDate(1, Date.valueOf(currentDate)); // 현재 날짜 설정
-            postStmt.executeUpdate();
-
-            // MPP 테이블에 데이터 삽입
-            mppStmt.setLong(1, playlist.getPlaylistId());
-            mppStmt.setString(2, memberId);
-            mppStmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }

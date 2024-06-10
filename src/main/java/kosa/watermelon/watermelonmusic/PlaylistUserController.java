@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -145,7 +146,7 @@ public class PlaylistUserController implements Initializable {
                     String member = resultSet.getString("MEMBER_ID");
 
                     // Playlist 객체 생성 후 ObservableList에 추가
-                    Playlist playlist = new Playlist(playlistId, playlistName, new ArrayList<>(), member, number);
+                    Playlist playlist = new Playlist(playlistId, playlistName, new ArrayList<>(), member, number, LocalDate.now());
                     number++;  // 순번 증가
                     playlists.add(playlist);
                 }

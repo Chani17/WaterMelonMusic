@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,7 +192,7 @@ public class PlaylistSelectionController {
                 for (BigDecimal bd : songs) {
                     songList.add(bd.longValue());
                 }
-                return new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), songList, rs.getString("member_id"), ++num);
+                return new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), songList, rs.getString("member_id"), ++num, LocalDate.now());
             } else {
                 return null;
             }
