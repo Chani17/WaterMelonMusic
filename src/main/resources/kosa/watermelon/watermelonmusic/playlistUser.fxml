@@ -8,15 +8,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
 <GridPane prefHeight="600.0" prefWidth="800.0"
+	style="-fx-background-color: #FFFFFF;"
 	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="kosa.watermelon.watermelonmusic.SongChartController">
+	fx:controller="kosa.watermelon.watermelonmusic.PlaylistUserController">
 	<children>
-		<Label text="▶ 인기 차트" GridPane.columnIndex="0"
+		<Label text="▶ 플레이리스트 목록" GridPane.columnIndex="0"
 			GridPane.rowIndex="0">
 			<font>
 				<Font name="D2Coding" size="18.0" />
@@ -25,56 +25,53 @@
 				<Insets left="18.0" top="15.0" />
 			</GridPane.margin>
 		</Label>
-		<HBox fx:id="searchContainer" alignment="CENTER"
-			prefHeight="83.0" prefWidth="605.0" spacing="10" visible="false"
-			GridPane.columnIndex="1" GridPane.rowIndex="0">
-			<!-- Search TextField and Button will be loaded here from search.fxml -->
-		</HBox>
-
 		<AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="0">
 			<Button fx:id="goToDashboard_BTN"
 				onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="99.0"
-				text="◀◀" AnchorPane.topAnchor="35.0" AnchorPane.rightAnchor="15.0">
+				text="◀◀" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="35.0">
 				<font>
 					<Font name="D2Coding" size="12.0" />
 				</font>
 			</Button>
 		</AnchorPane>
-		<TableView fx:id="tableView" prefHeight="377.0"
-			prefWidth="643.0" GridPane.columnSpan="3" GridPane.rowIndex="2"
-			GridPane.vgrow="ALWAYS">
+		<TableView fx:id="playlistTable" layoutX="14.0"
+			layoutY="105.0" prefHeight="486.0" prefWidth="776.0"
+			GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
 			<columns>
-				<TableColumn fx:id="ranking"
-					prefWidth="42.333343505859375" text="순위" />
-				<TableColumn fx:id="songName" prefWidth="194.0"
-					text="곡 정보" />
-				<TableColumn fx:id="artistName" prefWidth="186.0"
-					text="아티스트" />
-				<TableColumn fx:id="playBtn"
-					prefWidth="57.33331298828125" text="듣기" />
-				<TableColumn fx:id="addBtn" prefWidth="58.0" text="담기" />
-				<TableColumn fx:id="likebtn"
-					prefWidth="61.33331298828125" text="좋아요" />
+				<TableColumn fx:id="numberColumn"
+					prefWidth="71.33331048488617" text="No" />
+				<TableColumn fx:id="nameColumn"
+					prefWidth="369.99999237060547" text="플레이리스트 이름" />
+				<TableColumn fx:id="memberColumn" minWidth="0.0"
+					prefWidth="170.00003051757812" text="사용자 닉네임" />
+				<TableColumn fx:id="playColumn" minWidth="0.0"
+					prefWidth="92.0" text="재생" />
+				<TableColumn fx:id="deleteColumn" minWidth="0.0"
+					prefWidth="91.333251953125" text="삭제" />
 			</columns>
 			<GridPane.margin>
 				<Insets top="40.0" />
 			</GridPane.margin>
 		</TableView>
+
 	</children>
 	<columnConstraints>
 		<ColumnConstraints hgrow="ALWAYS"
-			maxWidth="228.599951171875" minWidth="68.80000000000001"
-			prefWidth="118.40003662109376" />
+			maxWidth="283.6666514078776" minWidth="68.80000000000001"
+			prefWidth="271.33336893717444" />
 		<ColumnConstraints halignment="CENTER"
 			hgrow="ALWAYS" maxWidth="485.6000000000001"
-			minWidth="324.800048828125" prefWidth="392.00000000000006" />
+			minWidth="324.800048828125" prefWidth="439.99996439615893" />
 		<ColumnConstraints halignment="RIGHT" hgrow="NEVER"
 			maxWidth="120.79999999999995" minWidth="49.599987792968705"
 			prefWidth="88.79999999999995" />
 	</columnConstraints>
 	<rowConstraints>
-		<RowConstraints vgrow="NEVER" />
-		<RowConstraints vgrow="NEVER" />
-		<RowConstraints vgrow="ALWAYS" />
+		<RowConstraints maxHeight="95.33333333333333"
+			minHeight="69.99998982747395" prefHeight="84.6666768391927" />
+		<RowConstraints maxHeight="29.333343505859375"
+			minHeight="0.0" prefHeight="10.666656494140625" />
+		<RowConstraints maxHeight="534.0"
+			minHeight="504.6666564941407" prefHeight="504.6666564941407" />
 	</rowConstraints>
 </GridPane>

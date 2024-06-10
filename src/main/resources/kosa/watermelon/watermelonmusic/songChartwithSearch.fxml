@@ -22,7 +22,7 @@
 				<Font name="D2Coding" size="18.0" />
 			</font>
 			<GridPane.margin>
-				<Insets left="18.0" top="6.0" />
+				<Insets left="18.0" top="15.0" />
 			</GridPane.margin>
 		</Label>
 		<HBox fx:id="searchContainer" alignment="CENTER"

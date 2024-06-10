@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -83,6 +84,15 @@ public class MyPageController implements Initializable {
 		songName.setCellValueFactory(new PropertyValueFactory<>("name"));
 		artistName.setCellValueFactory(new PropertyValueFactory<>("artistName"));
 
+		likedSongsTableView.setStyle("-fx-font-family: 'D2Coding'; -fx-font-size: 10pt;");
+
+		// TableView의 각 행에 대한 폰트 설정
+		likedSongsTableView.setRowFactory(tv -> {
+			TableRow<Song> row = new TableRow<>();
+			row.setStyle("-fx-font-family: 'D2Coding'; -fx-font-size: 10pt;");
+			return row;
+		});
+		
 		initializeTableView();
 	}
 
