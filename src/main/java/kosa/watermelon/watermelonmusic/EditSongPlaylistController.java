@@ -1,0 +1,277 @@
+package kosa.watermelon.watermelonmusic;
+
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.*;
+
+public class EditSongPlaylistController implements Initializable {
+
+    @FXML
+    private TableView<EditSongPlaylist> editSongPlaylistTableView;
+    @FXML private TableColumn<EditSongPlaylist, Boolean> check;
+    @FXML private TableColumn<EditSongPlaylist, String> songName;
+    @FXML private TableColumn<EditSongPlaylist, String> artist;
+    @FXML private TableColumn<EditSongPlaylist, Void> playBtn;
+    @FXML private Button delete;
+    @FXML private Button deleteAll;
+    @FXML private Button goToDashboard;
+    private SessionManager sessionManager;
+    private Member currentMember;
+    private EditSongPlaylist editSongPlaylist;
+    private final Map<EditSongPlaylist, Boolean> selectedSongs = new HashMap<>();
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        delete.setOnAction(this::handleDeleteAction);
+        deleteAll.setOnAction(this::handleDeleteAllAction);
+        sessionManager = SessionManager.getInstance();
+    }
+
+    public void setMember(Member member) {
+        this.currentMember = member;
+        System.out.println("PlaylistController: Member set with ID - " + currentMember.getId());
+        setListView();
+    }
+
+    public void setPlaylist(EditSongPlaylist playlist) {
+        this.editSongPlaylist = playlist;
+        setListView();
+    }
+
+    private void setListView() {
+        if (currentMember == null || editSongPlaylist == null) {
+            System.out.println("Current member or playlist is null. Cannot load playlist.");
+            return;
+        }
+
+        System.out.println("Loading playlist for member ID - " + currentMember.getId());
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<EditSongPlaylist> playlistSongs = new ArrayList<>();
+
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement("SELECT e.editsong_id, e.song_id, e.editsong_name, e.song_file, a.artist_name " +
+                    "FROM EditSong e " +
+                    "LEFT OUTER JOIN Song s ON e.song_id = s.song_id " +
+                    "LEFT OUTER JOIN Artist a ON s.artist_id = a.artist_id " +
+                    "WHERE e.member_id=?");
+            pstmt.setString(1, currentMember.getId());
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Long id = rs.getLong("editsong_id");
+                Long songId = rs.getLong("song_id");
+                String editSongName = rs.getString("editsong_name");
+                String songFile = rs.getString("song_file");
+                String artistName = rs.getString("artist_name");
+                EditSongPlaylist song = new EditSongPlaylist(id, songId, editSongName, artistName);
+                playlistSongs.add(song);
+                selectedSongs.put(song, false);
+            }
+            ObservableList<EditSongPlaylist> playlist = FXCollections.observableArrayList(playlistSongs);
+            songName.setCellValueFactory(new PropertyValueFactory<>("songName"));
+            artist.setCellValueFactory(new PropertyValueFactory<>("artistName"));
+            editSongPlaylistTableView.setItems(playlist);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(pstmt, rs, conn);
+        }
+
+        check.setCellValueFactory(data -> {
+            EditSongPlaylist song = data.getValue();
+            SimpleBooleanProperty property = new SimpleBooleanProperty(selectedSongs.get(song));
+            property.addListener((observable, oldValue, newValue) -> selectedSongs.put(song, newValue));
+            return property;
+        });
+
+        check.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<EditSongPlaylist, Boolean> call(TableColumn<EditSongPlaylist, Boolean> param) {
+                return new TableCell<>() {
+                    private final CheckBox checkBox = new CheckBox();
+
+                    {
+                        checkBox.setOnAction(event -> {
+                            EditSongPlaylist song = getTableView().getItems().get(getIndex());
+                            selectedSongs.put(song, checkBox.isSelected());
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Boolean item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            EditSongPlaylist song = getTableView().getItems().get(getIndex());
+                            checkBox.setSelected(selectedSongs.get(song));
+                            setGraphic(checkBox);
+                        }
+                    }
+                };
+            }
+        });
+
+        playBtn.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<EditSongPlaylist, Void> call(TableColumn<EditSongPlaylist, Void> param) {
+                return new TableCell<>() {
+                    private final Button playButton = new Button();
+
+                    {
+                        Image btnImg = new Image(getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/playButton.png"));
+                        ImageView imageView = new ImageView(btnImg);
+                        imageView.setFitHeight(20);
+                        imageView.setFitWidth(20);
+                        playButton.setGraphic(imageView);
+                        playButton.setOnAction(event -> {
+                            EditSongPlaylist selectedSong = getTableView().getItems().get(getIndex());
+                            playSelectedSong(selectedSong);
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(playButton);
+                        }
+                    }
+                };
+            }
+        });
+
+        loadPlaylists();
+    }
+
+    private void loadPlaylists() {
+        // Implement loading logic for playlists and set items to playlistView
+    }
+
+    private void playSelectedSong(EditSongPlaylist selectedSong) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playview.fxml"));
+            Parent parent = loader.load();
+
+            PlayViewController controller = loader.getController();
+            Queue<Long> songQueue = new ArrayDeque<>();
+            songQueue.add(selectedSong.getSongId()); // Assuming PlaylistSong has getSongId method
+            controller.setSongQueue(songQueue);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Playing Song");
+            stage.setScene(new Scene(parent, 357, 432));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDeleteAction(ActionEvent event) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBUtil.getConnection();
+            for (Map.Entry<EditSongPlaylist, Boolean> entry : selectedSongs.entrySet()) {
+                if (entry.getValue()) {
+                    EditSongPlaylist song = entry.getKey();
+                    System.out.println("result = " + song.getSongId());
+
+                    // Fetch the current SONG_ARRAY for the playlist
+                    pstmt = conn.prepareStatement("SELECT editsong_id FROM EditSong WHERE member_id=?");
+                    pstmt.setString(1, currentMember.getId());
+
+                    rs = pstmt.executeQuery();
+
+                    if (rs.next()) {
+                        pstmt = conn.prepareStatement("DELETE FROM EditSong WHERE editsong_id=?");
+                        pstmt.setLong(1, rs.getLong(1));
+                        pstmt.executeUpdate();
+                    }
+                }
+            }
+            setListView(); // Refresh the list view after deletion
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(pstmt, rs, conn);
+        }
+    }
+
+    @FXML
+    private void handleDeleteAllAction(ActionEvent event) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement("DELETE FROM EditSong WHERE member_id=?");
+            pstmt.setString(1, currentMember.getId());
+            pstmt.executeUpdate();
+            setListView(); // Refresh the list view after deletion
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(pstmt, null, conn);
+        }
+    }
+
+    @FXML // My Playlist → PlaylistUser 페이지 이동 이벤트 처리
+    private void goToPlaylistUser_Action(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlistUser.fxml"));
+            Parent parent = loader.load();
+
+            // PlaylistUserController 인스턴스를 가져와서 멤버 설정
+            PlaylistUserController controller = loader.getController();
+            controller.setMember(currentMember);
+
+            Stage newStage = new Stage();
+            Stage currentStage = (Stage) goToDashboard.getScene().getWindow();
+
+            newStage.initModality(Modality.APPLICATION_MODAL);
+            newStage.setTitle("플레이리스트");
+            newStage.setScene(new Scene(parent, 800, 600));
+            Image icon = new Image(
+                    getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+            newStage.getIcons().add(icon);
+            newStage.show();
+            currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
