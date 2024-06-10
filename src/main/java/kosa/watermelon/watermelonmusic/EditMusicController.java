@@ -46,9 +46,12 @@ public class EditMusicController implements Initializable {
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
     private MediaPlayer mediaPlayer;
+    private MediaPlayer startMediaPlayer;
+    private MediaPlayer endMediaPlayer;
     private Song song;
     private Member currentMember;
     private boolean isSliderChanging = false;
+    private boolean isPlaying = true;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -80,12 +83,12 @@ public class EditMusicController implements Initializable {
 
         // 플레이어 제어 버튼에 대한 이벤트 핸들러 설정
         playButtonStart.setOnAction(e -> playFromStart());
-        pauseButtonStart.setOnAction(e -> pause());
-        stopButtonStart.setOnAction(e -> stop());
+        pauseButtonStart.setOnAction(e -> pauseStart());
+        stopButtonStart.setOnAction(e -> stopStart());
 
         playButtonEnd.setOnAction(e -> playFromEnd());
-        pauseButtonEnd.setOnAction(e -> pause());
-        stopButtonEnd.setOnAction(e -> stop());
+        pauseButtonEnd.setOnAction(e -> pauseEnd());
+        stopButtonEnd.setOnAction(e -> stopEnd());
 
         saveButton.setOnAction(e -> saveMusic());
     }
@@ -113,6 +116,10 @@ public class EditMusicController implements Initializable {
         mediaPlayer.setOnReady(() -> {
             initializeSliders();
         });
+
+        // Separate media players for start and end
+        startMediaPlayer = new MediaPlayer(media);
+        endMediaPlayer = new MediaPlayer(media);
     }
 
     private void initializeSliders() {
@@ -134,6 +141,8 @@ public class EditMusicController implements Initializable {
         albumCover.setImage(image);
         songTitle.setText(song.getName());
         artistName.setText(song.getArtist());
+
+//        mediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updateStartPlayTime());
     }
 
     private void updateEndTime(double point) {
@@ -158,29 +167,45 @@ public class EditMusicController implements Initializable {
         }
     }
 
-    private void stop() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
+    private void stopStart() {
+        if (startMediaPlayer != null) {
+            startMediaPlayer.stop();
         }
     }
 
-    private void pause() {
-        if (mediaPlayer != null) {
-            mediaPlayer.pause();
+    private void pauseStart() {
+        if (startMediaPlayer != null) {
+            startMediaPlayer.pause();
+        }
+    }
+
+    private void stopEnd() {
+        if (endMediaPlayer != null) {
+            endMediaPlayer.stop();
+        }
+    }
+
+    private void pauseEnd() {
+        if (endMediaPlayer != null) {
+            endMediaPlayer.pause();
         }
     }
 
     private void playFromEnd() {
-        if (mediaPlayer != null) {
-            mediaPlayer.seek(mediaPlayer.getTotalDuration().multiply(endPointSlider.getValue() / 100.0));
-            mediaPlayer.play();
+        if (endMediaPlayer != null) {
+//            stopStart();
+            endMediaPlayer.seek(endMediaPlayer.getTotalDuration().multiply(endPointSlider.getValue() / 100.0));
+            endMediaPlayer.play();
+            endMediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updateEndPlayTime());
         }
     }
 
     private void playFromStart() {
-        if (mediaPlayer != null) {
-            mediaPlayer.seek(mediaPlayer.getTotalDuration().multiply(startPointSlider.getValue() / 100.0));
-            mediaPlayer.play();
+        if (startMediaPlayer != null) {
+//            stopEnd();
+            startMediaPlayer.seek(startMediaPlayer.getTotalDuration().multiply(startPointSlider.getValue() / 100.0));
+            startMediaPlayer.play();
+            startMediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updateStartPlayTime());
         }
     }
 
@@ -263,6 +288,30 @@ public class EditMusicController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateStartPlayTime() {
+        if (startMediaPlayer == null || isSliderChanging) return;
+
+        long currentTime = (long) startMediaPlayer.getCurrentTime().toSeconds();
+        long currentTimeMinute = currentTime / 60;
+        long currentTimeSecond = currentTime % 60;
+
+        startPointSlider.setValue(currentTime);
+        startTimeMinute.setText(String.format("%02d", currentTimeMinute));
+        startTimeSecond.setText(String.format("%02d", currentTimeSecond));
+    }
+
+    private void updateEndPlayTime() {
+        if (endMediaPlayer == null || isSliderChanging) return;
+
+        long currentTime = (long) endMediaPlayer.getCurrentTime().toSeconds();
+        long currentTimeMinute = currentTime / 60;
+        long currentTimeSecond = currentTime % 60;
+
+        endPointSlider.setValue(currentTime);
+        endTimeMinute.setText(String.format("%02d", currentTimeMinute));
+        endTimeSecond.setText(String.format("%02d", currentTimeSecond));
     }
 
     public void setMember(Member member) {
