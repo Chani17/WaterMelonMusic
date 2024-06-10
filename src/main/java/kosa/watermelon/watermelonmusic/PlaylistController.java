@@ -241,8 +241,8 @@ public class PlaylistController implements Initializable {
 
         try {
             conn = DBUtil.getConnection();
-            pstmt = conn.prepareStatement("DELETE FROM Playlist WHERE member_id=?");
-            pstmt.setString(1, currentMember.getId());
+            pstmt = conn.prepareStatement("DELETE FROM Playlist WHERE playlist_id=?");
+            pstmt.setLong(1, playlist.getPlaylistId());
             pstmt.executeUpdate();
             setListView(); // Refresh the list view after deletion
         } catch (Exception e) {
