@@ -157,7 +157,7 @@ public class PlaylistController implements Initializable {
                         playButton.setGraphic(imageView);
                         playButton.setOnAction(event -> {
                             PlaylistSong selectedSong = getTableView().getItems().get(getIndex());
-                            System.out.println(selectedSong.getSongName() + "를 재생합니다.");
+                            playSelectedSong(selectedSong);
                         });
                     }
 
@@ -174,7 +174,32 @@ public class PlaylistController implements Initializable {
             }
         });
 
-        playlistView.setItems(FXCollections.observableArrayList(playlistSongs));
+        loadPlaylists();
+    }
+
+    private void loadPlaylists() {
+        // Implement loading logic for playlists and set items to playlistView
+    }
+
+    private void playSelectedSong(PlaylistSong selectedSong) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playview.fxml"));
+            Parent parent = loader.load();
+
+            PlayViewController controller = loader.getController();
+            Queue<Long> songQueue = new ArrayDeque<>();
+            songQueue.add(selectedSong.getSongId()); // Assuming PlaylistSong has getSongId method
+            controller.setSongQueue(songQueue);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Playing Song");
+            stage.setScene(new Scene(parent, 357, 432));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
