@@ -33,7 +33,7 @@ public class Playlist {
     public int getNumber() {
         return number;
     }
-    
+
     public void addSong(Long songId) {
         this.songList.add(songId);
     }

@@ -2,12 +2,12 @@ package kosa.watermelon.watermelonmusic;
 
 public class PlaylistSong {
 
-    private Long playlistId;
+    private Long songId;
     private String songName;
     private String artistName;
 
-    public PlaylistSong(Long playlistId, String song_name, String artistName) {
-        this.playlistId = playlistId;
+    public PlaylistSong(Long songId, String song_name, String artistName) {
+        this.songId = songId;
         this.songName = song_name;
         this.artistName = artistName;
     }
@@ -28,7 +28,7 @@ public class PlaylistSong {
         this.artistName = artistName;
     }
 
-    public Long getPlaylistId() {
-        return playlistId;
+    public Long getSongId() {
+        return songId;
     }
 }

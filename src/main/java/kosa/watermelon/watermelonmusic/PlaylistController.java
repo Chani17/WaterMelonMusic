@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
 import java.util.*;
@@ -187,31 +188,40 @@ public class PlaylistController implements Initializable {
             for (Map.Entry<PlaylistSong, Boolean> entry : selectedSongs.entrySet()) {
                 if (entry.getValue()) {
                     PlaylistSong song = entry.getKey();
-                    System.out.println("result = " + song.getPlaylistId());
+                    System.out.println("result = " + song.getSongId());
 
                     // Fetch the current SONG_ARRAY for the playlist
                     pstmt = conn.prepareStatement("SELECT p.SONG FROM Playlist p WHERE p.playlist_id=? AND p.member_id=?");
-                    pstmt.setLong(1, song.getPlaylistId());
+                    pstmt.setLong(1, playlist.getPlaylistId());
                     pstmt.setString(2, currentMember.getId());
 
                     rs = pstmt.executeQuery();
 
                     if (rs.next()) {
                         Array songArray = rs.getArray("SONG");
-                        Long[] songIds = (Long[]) songArray.getArray();
-                        List<Long> songList = new ArrayList<>(Arrays.asList(songIds));
+                        BigDecimal[] songIds = (BigDecimal[]) songArray.getArray();
+                        List<Long> songList = new ArrayList<>();
+
+                        for (BigDecimal id : songIds) {
+                            songList.add(id.longValue());
+                        }
 
                         // Remove the song ID from the array
-                        songList.removeIf(id -> id == song.getPlaylistId());
+                        songList.removeIf(id -> Objects.equals(id, song.getSongId()));
 
                         // Update the playlist with the modified SONG_ARRAY
-                        Long[] updatedSongArray = songList.toArray(new Long[0]);
-                        Array updatedArray = conn.createArrayOf("NUMBER", updatedSongArray);
+                        StringBuilder updateQuery = new StringBuilder("UPDATE PLAYLIST SET SONG = SONG_ARRAY(");
+                        for (int i = 0; i < songList.size(); i++) {
+                            if (i > 0) {
+                                updateQuery.append(", ");
+                            }
+                            updateQuery.append(songList.get(i));
+                        }
+                        updateQuery.append(") WHERE MEMBER_ID = ? AND PLAYLIST_ID = ?");
 
-                        pstmt = conn.prepareStatement("UPDATE PLAYLIST SET SONG = ? WHERE MEMBER_ID = ? AND PLAYLIST_ID = ?");
-                        pstmt.setArray(1, updatedArray);
-                        pstmt.setString(2, currentMember.getId());
-                        pstmt.setLong(3, song.getPlaylistId());
+                        pstmt = conn.prepareStatement(updateQuery.toString());
+                        pstmt.setString(1, currentMember.getId());
+                        pstmt.setLong(2, playlist.getPlaylistId());
                         pstmt.executeUpdate();
                     }
                 }
