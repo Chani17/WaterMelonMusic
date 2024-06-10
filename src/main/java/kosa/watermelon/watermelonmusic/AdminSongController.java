@@ -209,7 +209,7 @@ public class AdminSongController implements Initializable {
         // 로그인 창 열기
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Scene scene = new Scene(loader.load(), 600, 464);
+            Scene scene = new Scene(loader.load(), 800, 600);
 
             // 현재 Stage 찾기
             Stage currentStage = (Stage) logout_BTN.getScene().getWindow();

@@ -21,8 +21,7 @@
 	xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="kosa.watermelon.watermelonmusic.LoginController">
 	<children>
-		<HBox alignment="CENTER_LEFT" prefHeight="464.0"
-			prefWidth="600.0" spacing="20">
+		<HBox alignment="CENTER_LEFT" prefHeight="600.0" prefWidth="800.0" spacing="20">
 			<children>
 				<!-- Left VBox for Image -->
 				<VBox alignment="CENTER_LEFT" prefHeight="400.0"
