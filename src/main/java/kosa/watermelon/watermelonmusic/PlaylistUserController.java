@@ -1,5 +1,8 @@
 package kosa.watermelon.watermelonmusic;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.*;
+import javafx.util.Callback;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,10 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
@@ -23,8 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class PlaylistUserController implements Initializable {
 
@@ -42,17 +40,17 @@ public class PlaylistUserController implements Initializable {
     private TableColumn<Playlist, String> playColumn; // 전체 재생 버튼 컬럼
     @FXML
     private TableColumn<Playlist, String> deleteColumn; // 삭제 버튼 컬럼
-
+    @FXML
+    private Button deleteButton;
     @FXML
     private Button goToDashboard_BTN;
-
     private SessionManager sessionManager;
     private Member currentMember;
+    private final Map<Playlist, Boolean> selectedPlaylist = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         numberColumn.setCellValueFactory(new PropertyValueFactory<>("number")); // 플레이리스트 순번 컬럼 설정
-        // idColumn.setCellValueFactory(new PropertyValueFactory<>("playlistID"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("playlistName"));
         memberColumn.setCellValueFactory(new PropertyValueFactory<>("memberId"));
 
@@ -81,6 +79,44 @@ public class PlaylistUserController implements Initializable {
                 }
             }
         });
+
+        deleteColumn.setCellValueFactory(data -> {
+            Playlist playlist = data.getValue();
+            SimpleBooleanProperty property = new SimpleBooleanProperty(selectedPlaylist.getOrDefault(playlist, false));
+            property.addListener((observable, oldValue, newValue) -> selectedPlaylist.put(playlist, newValue));
+            return property.asString();
+        });
+
+        deleteColumn.setCellFactory(new Callback<TableColumn<Playlist, String>, TableCell<Playlist, String>>() {
+            @Override
+            public TableCell<Playlist, String> call(TableColumn<Playlist, String> playlistStringTableColumn) {
+                return new TableCell<>() {
+                    private final CheckBox checkBox = new CheckBox();
+
+                    {
+                        checkBox.setOnAction(event -> {
+                            Playlist playlist = getTableView().getItems().get(getIndex());
+                            selectedPlaylist.put(playlist, checkBox.isSelected());
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            Playlist playlist = getTableView().getItems().get(getIndex());
+                            checkBox.setSelected(selectedPlaylist.getOrDefault(playlist, false));
+                            setGraphic(checkBox);
+                        }
+                    }
+                };
+            }
+        });
+
+        // 삭제 버튼 클릭 이벤트 설정
+        deleteButton.setOnAction(this::deletePlaylist);
     }
 
     @FXML // 플레이리스트 → DashBoard 페이지 이동 이벤트 처리
@@ -113,8 +149,27 @@ public class PlaylistUserController implements Initializable {
 
     // 삭제 버튼 클릭 이벤트 핸들러
     @FXML
-    private void deletePlaylist() {
-        // 선택한 플레이리스트를 삭제합니다.
+    private void deletePlaylist(ActionEvent event) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DBUtil.getConnection();
+            for (Map.Entry<Playlist, Boolean> entry : selectedPlaylist.entrySet()) {
+                if (entry.getValue()) {
+                    Playlist playlist = entry.getKey();
+                    pstmt = conn.prepareStatement("DELETE FROM PLAYLIST WHERE PLAYLIST_ID = ? AND MEMBER_ID = ?");
+                    pstmt.setLong(1, playlist.getPlaylistId());
+                    pstmt.setString(2, currentMember.getId());
+                    pstmt.executeUpdate();
+                }
+            }
+            loadPlaylists(currentMember.getId()); // Refresh the list view after deletion
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(pstmt, null, conn);
+        }
     }
 
     public void setMember(Member member) {
