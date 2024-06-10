@@ -1,5 +1,6 @@
 package kosa.watermelon.watermelonmusic;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,10 +16,11 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.URL;
-
-import java.nio.channels.FileChannel;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,26 +33,50 @@ public class EditMusicController implements Initializable {
     @FXML private Label artistName;
     @FXML private Slider startPointSlider;
     @FXML private Slider endPointSlider;
-    @FXML private Label startTimeHour;
     @FXML private Label startTimeMinute;
+    @FXML private Label startTimeSecond;
     @FXML private Button playButtonStart;
     @FXML private Button pauseButtonStart;
     @FXML private Button stopButtonStart;
-    @FXML private Label endTimeHour;
     @FXML private Label endTimeMinute;
+    @FXML private Label endTimeSecond;
     @FXML private Button playButtonEnd;
     @FXML private Button pauseButtonEnd;
     @FXML private Button stopButtonEnd;
     @FXML private Button saveButton;
+    @FXML private Button cancelButton;
     private MediaPlayer mediaPlayer;
     private Song song;
     private Member currentMember;
+    private boolean isSliderChanging = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // slider listener를 추가하여 시작 시간과 끝 시간을 update
-        startPointSlider.valueProperty().addListener((music, startPoint, endPoint) -> updateStartTime(endPoint.doubleValue()));
-        endPointSlider.valueProperty().addListener((music, startPoint, endPoint) -> updateEndTime(endPoint.doubleValue()));
+        // 슬라이더 리스너를 추가하여 시작 시간과 끝 시간을 업데이트
+        startPointSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isSliderChanging) {
+                updateStartTime(newValue.doubleValue());
+            }
+        });
+
+        endPointSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isSliderChanging) {
+                updateEndTime(newValue.doubleValue());
+            }
+        });
+
+        // 슬라이더 조작 이벤트 핸들러 설정
+        startPointSlider.setOnMousePressed(event -> isSliderChanging = true);
+        startPointSlider.setOnMouseReleased(event -> {
+            isSliderChanging = false;
+            updateStartTime(startPointSlider.getValue());
+        });
+
+        endPointSlider.setOnMousePressed(event -> isSliderChanging = true);
+        endPointSlider.setOnMouseReleased(event -> {
+            isSliderChanging = false;
+            updateEndTime(endPointSlider.getValue());
+        });
 
         // 플레이어 제어 버튼에 대한 이벤트 핸들러 설정
         playButtonStart.setOnAction(e -> playFromStart());
@@ -64,12 +90,18 @@ public class EditMusicController implements Initializable {
         saveButton.setOnAction(e -> saveMusic());
     }
 
+    @FXML
+    private void backToPage(ActionEvent event) {
+        Stage currentStage = (Stage) cancelButton.getScene().getWindow();
+        currentStage.close();
+    }
+
     public void setSong(Song song) {
         this.song = song;
         System.out.println("editmusic : " + song.getName());
         setMember(currentMember);
-        setEditView();
         initializeMediaPlayer();
+        setEditView();
     }
 
     private void initializeMediaPlayer() {
@@ -77,6 +109,18 @@ public class EditMusicController implements Initializable {
         String uriString = file.toURI().toString();
         Media media = new Media(uriString);
         mediaPlayer = new MediaPlayer(media);
+
+        mediaPlayer.setOnReady(() -> {
+            initializeSliders();
+        });
+    }
+
+    private void initializeSliders() {
+        // 슬라이더 초기값 설정 및 시간 업데이트
+        startPointSlider.setValue(0);
+        endPointSlider.setValue(100); // Assuming you want the end slider to start at the end of the song
+        updateStartTime(0);
+        updateEndTime(100);
     }
 
     private void setEditView() {
@@ -88,37 +132,49 @@ public class EditMusicController implements Initializable {
     }
 
     private void updateEndTime(double point) {
-        int totalSeconds = (int) (mediaPlayer.getTotalDuration().toSeconds() * (point / 100.0));
-        int hours = totalSeconds / 3600;
-        int minutes = (totalSeconds % 3600) / 60;
-        endTimeHour.setText(String.valueOf(hours));
-        endTimeMinute.setText(String.format("%02d", minutes));
+        if (mediaPlayer != null && mediaPlayer.getTotalDuration() != null) {
+            int totalSeconds = (int) (mediaPlayer.getTotalDuration().toSeconds() * (point / 100.0));
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+            endTimeMinute.setText(String.format("%02d", minutes));
+            endTimeSecond.setText(String.format("%02d", seconds));
+        }
     }
 
     private void updateStartTime(double point) {
-        int totalSeconds = (int) (mediaPlayer.getTotalDuration().toSeconds() * (point / 100.0));
-        int hours = totalSeconds / 3600;
-        int minutes = (totalSeconds % 3600) / 60;
-        startTimeHour.setText(String.valueOf(hours));
-        startTimeMinute.setText(String.format("%02d", minutes));
+        if (mediaPlayer != null && mediaPlayer.getTotalDuration() != null) {
+            int totalSeconds = (int) (mediaPlayer.getTotalDuration().toSeconds() * (point / 100.0));
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+            startTimeMinute.setText(String.format("%02d", minutes));
+            startTimeSecond.setText(String.format("%02d", seconds));
+        }
     }
 
     private void stop() {
-        mediaPlayer.stop();
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
     }
 
     private void pause() {
-        mediaPlayer.pause();
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+        }
     }
 
     private void playFromEnd() {
-        mediaPlayer.seek(mediaPlayer.getTotalDuration().multiply(endPointSlider.getValue() / 100));
-        mediaPlayer.play();
+        if (mediaPlayer != null) {
+            mediaPlayer.seek(mediaPlayer.getTotalDuration().multiply(endPointSlider.getValue() / 100.0));
+            mediaPlayer.play();
+        }
     }
 
     private void playFromStart() {
-        mediaPlayer.seek(mediaPlayer.getTotalDuration().multiply(startPointSlider.getValue() / 100.0));
-        mediaPlayer.play();
+        if (mediaPlayer != null) {
+            mediaPlayer.seek(mediaPlayer.getTotalDuration().multiply(startPointSlider.getValue() / 100.0));
+            mediaPlayer.play();
+        }
     }
 
     private void saveMusic() {
@@ -201,7 +257,6 @@ public class EditMusicController implements Initializable {
             e.printStackTrace();
         }
     }
-
 
     public void setMember(Member member) {
         this.currentMember = member;
