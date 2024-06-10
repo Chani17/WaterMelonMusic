@@ -2,10 +2,12 @@ package kosa.watermelon.watermelonmusic;
 
 public class PlaylistSong {
 
+    private Long playlistId;
     private String songName;
     private String artistName;
 
-    public PlaylistSong(String song_name, String artistName) {
+    public PlaylistSong(Long playlistId, String song_name, String artistName) {
+        this.playlistId = playlistId;
         this.songName = song_name;
         this.artistName = artistName;
     }
@@ -24,5 +26,9 @@ public class PlaylistSong {
 
     public void setArtistName(String artistName) {
         this.artistName = artistName;
+    }
+
+    public Long getPlaylistId() {
+        return playlistId;
     }
 }

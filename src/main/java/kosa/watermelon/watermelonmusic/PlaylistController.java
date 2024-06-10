@@ -1,9 +1,6 @@
 package kosa.watermelon.watermelonmusic;
 
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,24 +25,29 @@ import java.util.*;
 public class PlaylistController implements Initializable {
 
     @FXML private TableView<PlaylistSong> playlistView;
-    @FXML private TableColumn<Song, Boolean> check;
+    @FXML private TableColumn<PlaylistSong, Boolean> check;
     @FXML private TableColumn<PlaylistSong, String> songName;
     @FXML private TableColumn<PlaylistSong, String> artist;
-    @FXML private TableColumn<Song, Void> playBtn;
+    @FXML private TableColumn<PlaylistSong, Void> playBtn;
     @FXML private Button delete;
     @FXML private Button deleteAll;
     @FXML private Button goToPlaylistUser_BTN;
     @FXML private Label playlistName_Label;
     
     private SessionManager sessionManager;
-	private Member currentMember;
+	  private Member currentMember;
     private Playlist playlist;
     
+    
+    @FXML private Button goToDashboard_BTN;
+    private Member currentMember;
+    private final Map<PlaylistSong, Boolean> selectedSongs = new HashMap<>();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        delete.setOnAction(this::handleDeleteAction);
-//        deleteAll.setOnAction(this::handDeleteAllAction);
-    	sessionManager = SessionManager.getInstance();
+        delete.setOnAction(this::handleDeleteAction);
+        deleteAll.setOnAction(this::handleDeleteAllAction);
+        sessionManager = SessionManager.getInstance();
     }
 
     public void setMember(Member member) {
@@ -80,98 +82,73 @@ public class PlaylistController implements Initializable {
 
         try {
             conn = DBUtil.getConnection();
-            pstmt = conn.prepareStatement("SELECT s.song_name, a.artist_name \n" +
-                    "FROM Playlist p, TABLE(p.song) song \n" +
-                    "LEFT OUTER JOIN Song s ON song.COLUMN_VALUE = s.song_id \n" +
-                    "LEFT OUTER JOIN Artist a ON s.artist_id = a.artist_id \n" +
-                    "WHERE p.playlist_id=?");
-            pstmt.setLong(1, playlist.getPlaylistID());
+            pstmt = conn.prepareStatement("SELECT s.song_id, s.song_name, a.artist_name, p.playlist_id" +
+                    "FROM Playlist p, TABLE(p.song) song " +
+                    "LEFT OUTER JOIN Song s ON song.COLUMN_VALUE = s.song_id " +
+                    "LEFT OUTER JOIN Artist a ON s.artist_id = a.artist_id " +
+                    "WHERE p.member_id=?");
+            pstmt.setString(1, currentMember.getId());
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
+                Long id = rs.getLong("song_id");
                 String name = rs.getString("song_name");
-                String artist = rs.getString("artist_name");
-                playlistSongs.add(new PlaylistSong(name, artist));
+                String artistName = rs.getString("artist_name");
+                PlaylistSong playlistSong = new PlaylistSong(id, name, artistName);
+                playlistSongs.add(playlistSong);
+                selectedSongs.put(playlistSong, false);
             }
             ObservableList<PlaylistSong> playlist = FXCollections.observableArrayList(playlistSongs);
-            songName.setCellValueFactory(new PropertyValueFactory<PlaylistSong, String>("songName"));
-            artist.setCellValueFactory(new PropertyValueFactory<PlaylistSong, String>("artistName"));
+            songName.setCellValueFactory(new PropertyValueFactory<>("songName"));
+            artist.setCellValueFactory(new PropertyValueFactory<>("artistName"));
             playlistView.setItems(playlist);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             DBUtil.close(pstmt, rs, conn);
         }
-   
-//        check.setCellValueFactory(data -> {
-//            Song song = data.getValue();
-//            return new ObservableValue<Boolean>() {
-//                @Override
-//                public void addListener(ChangeListener<? super Boolean> changeListener) {
-//                    selectedSong.put(song, !selectedSong.get(song));
-//                    System.out.println(selectedSong.get(song));
-//                }
-//
-//                @Override
-//                public void removeListener(ChangeListener<? super Boolean> changeListener) {
-//                    selectedSong.put(song, !selectedSong.get(song));
-//                    System.out.println(selectedSong.get(song));
-//                }
-//
-//                @Override
-//                public Boolean getValue() {
-//                    return selectedSong.get(song);
-//                }
-//
-//                @Override
-//                public void addListener(InvalidationListener invalidationListener) {
-//
-//                }
-//
-//                @Override
-//                public void removeListener(InvalidationListener invalidationListener) {
-//
-//                }
-//            };
-//        });
 
-//        check.setCellFactory(new Callback<TableColumn<Song, Boolean>, TableCell<Song, Boolean>>() {
-//            @Override
-//            public TableCell<Song, Boolean> call(TableColumn<Song, Boolean> param) {
-//                return new TableCell<Song, Boolean>() {
-//                    private final CheckBox checkBox = new CheckBox();
-//
-//                    {
-//                        checkBox.setOnAction(event -> {
-//                            Song song = getTableView().getItems().get(getIndex());
-//                            selectedSong.put(song, checkBox.isSelected());
-//                        });
-//                    }
-//
-//                    @Override
-//                    protected void updateItem(Boolean item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if (empty) {
-//                            setGraphic(null);
-//                        } else {
-//                            Song song = getTableView().getItems().get(getIndex());
-//                            checkBox.setSelected(selectedSong.get(song));
-//                            setGraphic(checkBox);
-//                        }
-//                    }
-//                };
-//            }
-//        });
+        check.setCellValueFactory(data -> {
+            PlaylistSong song = data.getValue();
+            SimpleBooleanProperty property = new SimpleBooleanProperty(selectedSongs.get(song));
+            property.addListener((observable, oldValue, newValue) -> selectedSongs.put(song, newValue));
+            return property;
+        });
 
+        check.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<PlaylistSong, Boolean> call(TableColumn<PlaylistSong, Boolean> param) {
+                return new TableCell<>() {
+                    private final CheckBox checkBox = new CheckBox();
 
+                    {
+                        checkBox.setOnAction(event -> {
+                            PlaylistSong song = getTableView().getItems().get(getIndex());
+                            selectedSongs.put(song, checkBox.isSelected());
+                        });
+                    }
 
-//        playlistView.setItems(playlist);
+                    @Override
+                    protected void updateItem(Boolean item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            PlaylistSong song = getTableView().getItems().get(getIndex());
+                            checkBox.setSelected(selectedSongs.get(song));
+                            setGraphic(checkBox);
+                        }
+                    }
+                };
+            }
+        });
 
         playBtn.setCellFactory(new Callback<>() {
             @Override
-            public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
+            public TableCell<PlaylistSong, Void> call(TableColumn<PlaylistSong, Void> param) {
                 return new TableCell<>() {
                     private final Button playButton = new Button();
+
                     {
                         Image btnImg = new Image(getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/playButton.png"));
                         ImageView imageView = new ImageView(btnImg);
@@ -179,8 +156,8 @@ public class PlaylistController implements Initializable {
                         imageView.setFitWidth(20);
                         playButton.setGraphic(imageView);
                         playButton.setOnAction(event -> {
-                            Song selectedSong = getTableView().getItems().get(getIndex());
-                            System.out.println(selectedSong.getName() + "를 재생합니다.");
+                            PlaylistSong selectedSong = getTableView().getItems().get(getIndex());
+                            System.out.println(selectedSong.getSongName() + "를 재생합니다.");
                         });
                     }
 
@@ -197,43 +174,75 @@ public class PlaylistController implements Initializable {
             }
         });
 
-//        playlistView.setItems(songList);
+        playlistView.setItems(FXCollections.observableArrayList(playlistSongs));
     }
 
-//    @FXML
-//    private void handleDeleteAction(ActionEvent event) {
-//        ObservableList<Song> songs = playlistView.getItems();
-//        songs.removeIf(song -> selectedSong.get(song));
-//        temporaryDB.getMyPlaylist().removeIf(song -> !songs.contains(song));
-//        selectedSong.keySet().removeIf(song -> !songs.contains(song));
-//        temporaryDB.updateMyPlaylist(songs);
-//    }
-//
-//    @FXML
-//    private void handDeleteAllAction(ActionEvent event) {
-//        ObservableList<Song> songs = playlistView.getItems();
-//
-//        songs.clear();
-//        selectedSong.clear();
-//        temporaryDB.clearMyPlaylist();
-//    }
+    @FXML
+    private void handleDeleteAction(ActionEvent event) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
 
-    private List<Song> getMyPlaylist(String memberId) {
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
-            pstmt = conn.prepareStatement("SELECT * FROM Playlist WHERE member_id=?");
-            pstmt.setString(1, memberId);
-            rs = pstmt.executeQuery();
-            return (List<Song>) rs.getArray("song");
+            conn = DBUtil.getConnection();
+            for (Map.Entry<PlaylistSong, Boolean> entry : selectedSongs.entrySet()) {
+                if (entry.getValue()) {
+                    PlaylistSong song = entry.getKey();
+                    System.out.println("result = " + song.getPlaylistId());
+
+                    // Fetch the current SONG_ARRAY for the playlist
+                    pstmt = conn.prepareStatement("SELECT SONG FROM PLAYLIST WHERE MEMBER_ID = ? AND PLAYLIST_ID = ?");
+                    pstmt.setString(1, currentMember.getId());
+                    pstmt.setLong(2, song.getPlaylistId());
+                    rs = pstmt.executeQuery();
+
+                    if (rs.next()) {
+                        Array songArray = rs.getArray("SONG");
+                        Long[] songIds = (Long[]) songArray.getArray();
+                        List<Long> songList = new ArrayList<>(Arrays.asList(songIds));
+
+                        // Remove the song ID from the array
+                        songList.removeIf(id -> id == song.getPlaylistId());
+
+                        // Update the playlist with the modified SONG_ARRAY
+                        Integer[] updatedSongArray = songList.toArray(new Integer[0]);
+                        Array updatedArray = conn.createArrayOf("NUMBER", updatedSongArray);
+
+                        pstmt = conn.prepareStatement("UPDATE PLAYLIST SET SONG = ? WHERE MEMBER_ID = ? AND PLAYLIST_ID = ?");
+                        pstmt.setArray(1, updatedArray);
+                        pstmt.setString(2, currentMember.getId());
+                        pstmt.setLong(3, song.getPlaylistId());
+                        pstmt.executeUpdate();
+                    }
+                }
+            }
+            setListView(); // Refresh the list view after deletion
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            DBUtil.close(pstmt, rs, conn);
         }
-        return null;
     }
 
-    @FXML // My Playlist → PlaylistUser 페이지 이동 이벤트 처리
+    @FXML
+    private void handleDeleteAllAction(ActionEvent event) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement("DELETE FROM Playlist WHERE member_id=?");
+            pstmt.setString(1, currentMember.getId());
+            pstmt.executeUpdate();
+            setListView(); // Refresh the list view after deletion
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(pstmt, null, conn);
+        }
+    }
+
+  @FXML // My Playlist → PlaylistUser 페이지 이동 이벤트 처리
 	private void goToPlaylistUser_Action(ActionEvent event) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("playlistUser.fxml"));
