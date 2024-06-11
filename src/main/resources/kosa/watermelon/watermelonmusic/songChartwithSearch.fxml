@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0"
+	style="-fx-background-color: #FFFFFF;"
+	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="kosa.watermelon.watermelonmusic.SongChartController">
+	<Label layoutY="24.0" text="▶ 검색">
+		<font>
+			<Font name="D2Coding" size="18.0" />
+		</font>
+		<padding>
+			<Insets left="18.0" top="15.0" />
+		</padding>
+	</Label>
+	<HBox fx:id="searchContainer" alignment="CENTER" layoutX="155.0"
+		prefHeight="83.0" prefWidth="503.0" spacing="10" visible="true">
+		<!-- Search TextField and Button will be loaded here from search.fxml -->
+	</HBox>
+	<AnchorPane layoutX="685.0" GridPane.columnIndex="2"
+		GridPane.rowIndex="0">
+		<Button fx:id="goToDashboard_BTN"
+			onAction="#goToDashboard_Action" prefHeight="30.0" prefWidth="99.0"
+			text="◀◀" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="35.0">
+			<font>
+				<Font name="D2Coding" size="12.0" />
+			</font>
+		</Button>
+	</AnchorPane>
+
+	<ScrollPane layoutX="18.0" layoutY="96.0" prefHeight="484.0"
+		prefWidth="764.0">
+		<content>
+			<TableView fx:id="tableView" prefHeight="497.0"
+				prefWidth="761.0">
+				<columns>
+					<TableColumn fx:id="ranking"
+						prefWidth="42.333343505859375" text="순위" />
+					<TableColumn fx:id="songName"
+						prefWidth="251.9999771118164" text="곡 정보" />
+					<TableColumn fx:id="artistName" prefWidth="186.0"
+						text="아티스트" />
+					<TableColumn fx:id="playBtn"
+						prefWidth="64.00006103515625" text="듣기" />
+					<TableColumn fx:id="addBtn"
+						prefWidth="63.99993896484375" text="담기" />
+					<TableColumn fx:id="likeBtn"
+						prefWidth="70.6666259765625" text="좋아요" />
+					<TableColumn fx:id="editBtn"
+						prefWidth="57.3333740234375" text="편집" />
+				</columns>
+			</TableView>
+		</content>
+		<!-- 수평 스크롤 비활성화 -->
+		<hbarPolicy>NEVER</hbarPolicy>
+		<!-- 수직 스크롤 필요에 따라 활성화 -->
+		<vbarPolicy>AS_NEEDED</vbarPolicy>
+	</ScrollPane>
+</AnchorPane>

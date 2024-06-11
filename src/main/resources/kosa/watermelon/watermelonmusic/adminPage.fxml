@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="800" prefWidth="1200" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosa.watermelon.watermelonmusic.AdminPageController">
+   <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logoutAction" text="로그아웃">
+      <font>
+         <Font name="D2Coding" size="12.0" />
+      </font>
+      <VBox.margin>
+         <Insets left="1130.0" top="5.0" />
+      </VBox.margin></Button>
+	<Button fx:id="addArtistButton" onAction="#handleAddNewArtist" text="Add Artist">
+      <VBox.margin>
+         <Insets bottom="10.0" left="5.0" top="10.0" />
+      </VBox.margin></Button>
+	<TableView fx:id="artistTableView" prefWidth="1016.0">
+		<columns>
+			<TableColumn fx:id="artistNameColumn" prefWidth="1198.66666162014" text="Artist Name" />
+		</columns>
+	</TableView>
+	<Button fx:id="addAlbumButton" onAction="#handleAddNewAlbum" text="Add Album">
+      <VBox.margin>
+         <Insets bottom="10.0" left="5.0" top="10.0" />
+      </VBox.margin></Button>
+	<TableView fx:id="albumTableView">
+		<columns>
+			<TableColumn fx:id="albumNameColumn" prefWidth="599.0000051259995" text="Album Name" />
+			<TableColumn fx:id="artistNameForAlbumColumn" prefWidth="600.3332824707031" text="Artist Name" />
+		</columns>
+	</TableView>
+	<Button fx:id="addSongButton" onAction="#handleAddNewSong" text="Add Song">
+      <VBox.margin>
+         <Insets bottom="10.0" left="5.0" top="10.0" />
+      </VBox.margin></Button>
+	<TableView fx:id="songTableView">
+		<columns>
+			<TableColumn fx:id="songNameColumn" prefWidth="336.9999746084213" text="Song Name" />
+			<TableColumn fx:id="albumNameForSongColumn" prefWidth="534.0000305175781" text="Album Name" />
+			<TableColumn fx:id="artistNameForSongColumn" prefWidth="329.33331298828125" text="Artist Name" />
+		</columns>
+	</TableView>
+</VBox>

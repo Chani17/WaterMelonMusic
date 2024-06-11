@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="300.0" prefWidth="400.0"
+	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="kosa.watermelon.watermelonmusic.PlaylistDialogController">
+	<ListView fx:id="playlistListView" layoutX="14.0"
+		layoutY="14.0" prefHeight="200.0" prefWidth="372.0" />
+	<HBox alignment="CENTER_RIGHT" layoutX="143.0" layoutY="242.0"
+		prefHeight="22.0" prefWidth="113.0" spacing="10.0">
+		<Button onAction="#handleOk" prefHeight="22.0" prefWidth="55.0"
+			text="확인">
+			<font>
+				<Font name="D2Coding" size="12.0" />
+			</font>
+		</Button>
+		<Button onAction="#handleCancel" prefHeight="22.0"
+			prefWidth="55.0" text="취소">
+			<font>
+				<Font name="D2Coding" size="12.0" />
+			</font>
+		</Button>
+	</HBox>
+</AnchorPane>

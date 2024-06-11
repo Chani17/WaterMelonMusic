@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<StackPane style="-fx-background-color: #FFFFFF;"
+	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="kosa.watermelon.watermelonmusic.LoginController">
+	<children>
+		<HBox alignment="CENTER_LEFT" prefHeight="600.0"
+			prefWidth="800.0" spacing="20">
+			<children>
+				<!-- Left VBox for Image -->
+				<VBox alignment="CENTER_LEFT" prefHeight="400.0"
+					prefWidth="315.0" spacing="10">
+					<children>
+						<StackPane prefHeight="150.0" prefWidth="200.0">
+							<children>
+								<Rectangle arcHeight="5.0" arcWidth="5.0"
+									height="600.0" stroke="#e0fbe2" strokeType="INSIDE"
+									width="333.0">
+									<fill>
+										<LinearGradient endX="1.0" endY="1.0"
+											startY="0.16403787895708055">
+											<stops>
+												<Stop>
+													<color>
+														<Color red="1.0" green="1.0" blue="1.0" />
+													</color>
+												</Stop>
+												<Stop offset="0.8004484304932737">
+													<color>
+														<Color red="0.8820000290870667"
+															green="0.9800000190734863" blue="0.888533353805542" />
+													</color>
+												</Stop>
+												<Stop offset="0.946188340807175">
+													<color>
+														<Color red="0.8820000290870667"
+															green="0.9800000190734863" blue="0.888533353805542" />
+													</color>
+												</Stop>
+												<Stop offset="1.0">
+													<color>
+														<Color red="0.8784313797950745"
+															green="0.9843137264251709" blue="0.886274516582489" />
+													</color>
+												</Stop>
+											</stops>
+										</LinearGradient>
+									</fill>
+								</Rectangle>
+								<ImageView fitHeight="184.0" fitWidth="189.0"
+									pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@watermelon_logo_only.png" />
+									</image>
+								</ImageView>
+							</children>
+						</StackPane>
+					</children>
+				</VBox>
+
+				<!-- Right VBox for Labels, TextFields and Button -->
+				<VBox alignment="CENTER" prefHeight="600.0" prefWidth="398.0"
+					spacing="10">
+					<children>
+						<ImageView fitHeight="46.0" fitWidth="255.0"
+							pickOnBounds="true" preserveRatio="true">
+							<image>
+								<Image url="@watermelon_logo_text.png" />
+							</image>
+						</ImageView>
+						<Label prefHeight="15.0" prefWidth="23.0" />
+						<HBox alignment="CENTER" spacing="10">
+							<children>
+								<Label text="ID ">
+									<font>
+										<Font name="D2Coding" size="18.0" />
+									</font>
+									<HBox.margin>
+										<Insets bottom="10.0" />
+									</HBox.margin>
+								</Label>
+								<TextField fx:id="userID" prefHeight="32.0"
+									prefWidth="225.0" promptText="아이디를 입력하세요">
+									<HBox.margin>
+										<Insets bottom="10.0" />
+									</HBox.margin>
+									<font>
+										<Font name="D2Coding" size="18.0" />
+									</font>
+								</TextField>
+							</children>
+						</HBox>
+						<HBox alignment="CENTER" spacing="10">
+							<children>
+								<Label text="PW ">
+									<font>
+										<Font name="D2Coding" size="18.0" />
+									</font>
+								</Label>
+								<PasswordField fx:id="userPW" prefHeight="32.0"
+									prefWidth="225.0" promptText="비밀번호를 입력하세요">
+									<font>
+										<Font name="D2Coding" size="18.0" />
+									</font>
+								</PasswordField>
+							</children>
+						</HBox>
+						<VBox alignment="CENTER" prefHeight="44.0" prefWidth="192.0">
+							<children>
+								<Button fx:id="loginBtn" alignment="CENTER"
+									contentDisplay="CENTER" mnemonicParsing="false"
+									onAction="#selectedLoginBtn" prefHeight="25.0"
+									prefWidth="141.0"
+									style="-fx-background-color: #E0FBE2; -fx-border-color: #F1F1F1; -fx-border-radius: 20%; -fx-background-radius: 20%;"
+									text="로그인" textAlignment="CENTER">
+									<font>
+										<Font name="D2Coding Bold" size="15.0" />
+									</font>
+									<VBox.margin>
+										<Insets left="10.0" top="20.0" />
+									</VBox.margin>
+								</Button>
+							</children>
+						</VBox>
+					</children>
+					<padding>
+						<Insets left="15.0" />
+					</padding>
+				</VBox>
+			</children>
+		</HBox>
+		<Button fx:id="adminLogin_BTN" alignment="CENTER"
+			contentDisplay="CENTER" mnemonicParsing="false" prefHeight="25.0"
+			prefWidth="141.0" text="관리자 계정 접속" textAlignment="CENTER"
+			StackPane.alignment="BOTTOM_RIGHT">
+			<font>
+				<Font name="D2Coding" size="13.0" />
+			</font>
+			<StackPane.margin>
+				<Insets bottom="20.0" right="20.0" />
+			</StackPane.margin>
+		</Button>
+	</children>
+</StackPane>

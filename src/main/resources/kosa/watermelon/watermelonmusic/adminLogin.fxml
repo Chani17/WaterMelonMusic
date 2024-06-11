@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="200.0" prefWidth="300.0"
+	spacing="10" xmlns="http://javafx.com/javafx/21"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="kosa.watermelon.watermelonmusic.AdminLoginController">
+	<Label layoutX="14.0" layoutY="14.0" prefHeight="24.0"
+		prefWidth="264.0" text="▶ 관리자 로그인">
+		<font>
+			<Font name="D2Coding" size="20.0" />
+		</font>
+	</Label>
+	<GridPane prefHeight="143.0" prefWidth="300.0">
+		<children>
+			<Label text="관리자 ID" GridPane.columnIndex="0"
+				GridPane.rowIndex="0">
+				<font>
+					<Font name="D2Coding" size="14.0" />
+				</font>
+			</Label>
+			<TextField fx:id="adminID" GridPane.columnIndex="1"
+				GridPane.rowIndex="0" />
+			<Label text="관리자 PW" GridPane.columnIndex="0"
+				GridPane.rowIndex="1">
+				<font>
+					<Font name="D2Coding" size="14.0" />
+				</font>
+			</Label>
+			<PasswordField fx:id="adminPW" GridPane.columnIndex="1"
+				GridPane.rowIndex="1" />
+			<Label text="관리자 Email" GridPane.columnIndex="0"
+				GridPane.rowIndex="2">
+				<font>
+					<Font name="D2Coding" size="14.0" />
+				</font>
+			</Label>
+			<TextField fx:id="adminEmail" GridPane.columnIndex="1"
+				GridPane.rowIndex="2" />
+			<Button onAction="#handleAdminLogin" text="Login"
+				GridPane.columnIndex="1" GridPane.rowIndex="4" />
+		</children>
+		<padding>
+			<Insets bottom="20" left="20" right="20" top="20" />
+		</padding>
+		<columnConstraints>
+			<ColumnConstraints maxWidth="94.6666259765625"
+				minWidth="88.6666259765625" prefWidth="92.0" />
+			<ColumnConstraints maxWidth="157.3333740234375"
+				minWidth="151.3333740234375" prefWidth="154.0" />
+		</columnConstraints>
+		<rowConstraints>
+			<RowConstraints maxHeight="31.33331298828125"
+				minHeight="22.66664632161458" prefHeight="24.66664632161458" />
+			<RowConstraints maxHeight="34.00002034505208"
+				minHeight="12.66668701171875" prefHeight="28.66666666666667" />
+			<RowConstraints maxHeight="35.33329264322917"
+				minHeight="8.666694641113281" prefHeight="27.0" />
+			<RowConstraints maxHeight="24.66666666666667"
+				minHeight="1.3333740234375" prefHeight="20.00004069010417" />
+			<RowConstraints maxHeight="16.66668701171875"
+				minHeight="0.0" prefHeight="4.6666259765625" />
+		</rowConstraints>
+	</GridPane>
+</VBox>
