@@ -49,6 +49,42 @@ public class LoginController implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		adminLogin_BTN.setOnAction(event -> openAdminLogin());
+		
+		userID.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);");
+		userPW.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);");
+		
+		userID.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+            	userID.setPromptText("아이디를 입력하세요");
+            } else {
+            	userID.setPromptText("");
+            }
+        });
+
+		userID.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+            	userID.setPromptText("아이디를 입력하세요");
+            } else if (userID.getText().isEmpty()) {
+            	userID.setPromptText("아이디를 입력하세요");
+            }
+        });
+		
+		userPW.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+            	userPW.setPromptText("비밀번호를 입력하세요");
+            } else {
+            	userPW.setPromptText("");
+            }
+        });
+
+		userPW.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+            	userPW.setPromptText("비밀번호를 입력하세요");
+            } else if (userPW.getText().isEmpty()) {
+            	userPW.setPromptText("비밀번호를 입력하세요");
+            }
+        });
+
 	}
 
 	@FXML

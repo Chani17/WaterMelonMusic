@@ -214,6 +214,7 @@ public class AdminSongController implements Initializable {
 
             // 현재 Stage 찾기
             Stage currentStage = (Stage) logout_BTN.getScene().getWindow();
+            currentStage.setTitle("WaterMelon Music!");
 
             // MainApplicatin의 Scene 설정
             Image icon = new Image(

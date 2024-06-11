@@ -97,7 +97,6 @@ public class DashboardController implements Initializable {
         SongChart_ImageView.setOnMouseClicked(event -> goToPage("songChart.fxml", SongChart_ImageView));
         Search_ImageView.setOnMouseClicked(event -> goToPage("songChartwithSearch.fxml", Search_ImageView));
         PostingPage_ImageView.setOnMouseClicked(event -> goToPage("postingPage.fxml", PostingPage_ImageView));
-//        MusicEdit_ImageView.setOnMouseClicked(event -> goToPage("editMusic.fxml", MusicEdit_ImageView));
         EditSongPlaylist_ImageView.setOnMouseClicked(event -> goToPage("editSongPlaylist.fxml", EditSongPlaylist_ImageView));
         MyPage_ImageView.setOnMouseClicked(event -> goToPage("mypage.fxml", MyPage_ImageView));
         Playlist_ImageView.setOnMouseClicked(event -> goToPage("playlistUser.fxml", Playlist_ImageView));
@@ -107,7 +106,7 @@ public class DashboardController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Stage newStage = (Stage) sourceImageView.getScene().getWindow();
-            Scene scene = new Scene(loader.load());
+            Scene scene = new Scene(loader.load(), 800, 600);
 
             Object controller = loader.getController();
             // 컨트롤러에 현재 회원 정보 전달
@@ -118,6 +117,8 @@ public class DashboardController implements Initializable {
                 newStage.setTitle(fxmlFile.equals("songChartwithSearch.fxml") ? "검색" : "인기 차트");
                 ((SearchController) controller).setTableView(tableView);
                 ((SearchController) controller).setMember(currentMember);
+            } else if (controller instanceof EditSongPlaylistController) {
+            	newStage.setTitle("음악 편집 리스트");
             } else if (controller instanceof MyPageController) {
                 newStage.setTitle("마이페이지");
                 ((MyPageController) controller).setMember(currentMember);
@@ -129,6 +130,9 @@ public class DashboardController implements Initializable {
             } else if (controller instanceof EditSongPlaylistController) {
                 ((EditSongPlaylistController) controller).setMember(currentMember);
             }
+            Image icon = new Image(
+                    getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+            newStage.getIcons().add(icon);
             newStage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();
@@ -147,6 +151,7 @@ public class DashboardController implements Initializable {
 
             // 현재 Stage 찾기
             Stage currentStage = (Stage) logout_BTN.getScene().getWindow();
+            currentStage.setTitle("WaterMelon Music!");
 
             // MainApplicatin의 Scene 설정
             currentStage.setScene(scene);
