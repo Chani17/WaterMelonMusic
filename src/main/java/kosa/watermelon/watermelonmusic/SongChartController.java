@@ -241,7 +241,6 @@ public class SongChartController implements Initializable {
 								Parent playView = loader.load();
 								PlayViewController controller = loader.getController();
 								controller.setSongId(selectedSong.getId());
-
 								Scene scene = new Scene(playView);
 
 								newStage.setTitle("Play Music!");

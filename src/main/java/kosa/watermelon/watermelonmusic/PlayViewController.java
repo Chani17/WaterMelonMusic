@@ -53,7 +53,7 @@ public class PlayViewController implements Initializable {
     private long totalTimeMinute;
     private boolean isPlaying = true;
     private boolean isSliderChanging = false;
-    private String type;
+    private String type = "SONG";
     private Member currentMember;
 
     @Override
@@ -120,17 +120,8 @@ public class PlayViewController implements Initializable {
         try {
             conn = DBUtil.getConnection();
 
-            if (this.type.equals("SONG")) {
-                pstmt_song = conn.prepareStatement("SELECT s.song_name, s.song_file, a.album_cover, ar.artist_name " +
-                        "FROM Song s " +
-                        "LEFT OUTER JOIN Album a " +
-                        "ON s.album_id = a.album_id " +
-                        "LEFT OUTER JOIN Artist ar " +
-                        "ON ar.artist_id = a.artist_id " +
-                        "WHERE song_id=?");
-
-                pstmt_song.setLong(1, this.songId);
-            } else {
+            System.out.println("Type = " + this.type);
+            if (this.type.equals("EDIT")) {
                 pstmt_song = conn.prepareStatement("SELECT " +
                         "e.SONG_NAME, e.SONG_FILE, a.ALBUM_COVER, ar.ARTIST_NAME " +
                         "FROM EDITSONG e " +
@@ -138,6 +129,16 @@ public class PlayViewController implements Initializable {
                         "LEFT JOIN ALBUM a ON s.ALBUM_ID = a.ALBUM_ID " +
                         "LEFT JOIN ARTIST ar ON a.ARTIST_ID = ar.ARTIST_ID " +
                         "WHERE e.editsong_id=?");
+
+                pstmt_song.setLong(1, this.songId);
+            } else {
+                pstmt_song = conn.prepareStatement("SELECT s.song_name, s.song_file, a.album_cover, ar.artist_name " +
+                        "FROM Song s " +
+                        "LEFT OUTER JOIN Album a " +
+                        "ON s.album_id = a.album_id " +
+                        "LEFT OUTER JOIN Artist ar " +
+                        "ON ar.artist_id = a.artist_id " +
+                        "WHERE song_id=?");
 
                 pstmt_song.setLong(1, this.songId);
             }
