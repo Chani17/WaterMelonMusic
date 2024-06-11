@@ -198,7 +198,7 @@ public class PlaylistController implements Initializable {
             PlayViewController controller = loader.getController();
             Queue<Long> songQueue = new ArrayDeque<>();
             songQueue.add(selectedSong.getSongId()); // Assuming PlaylistSong has getSongId method
-            controller.setSongQueue(songQueue);
+            controller.setSongQueue(songQueue, "SONG");
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);

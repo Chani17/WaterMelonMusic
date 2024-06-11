@@ -23,17 +23,28 @@ import java.util.Queue;
 import java.util.ResourceBundle;
 
 public class PlayViewController implements Initializable {
-    @FXML private Label songTitle;
-    @FXML private Label artist;
-    @FXML private Button playButton;
-    @FXML private Button stopButton;
-    @FXML private Button pauseButton;
-    @FXML private ImageView albumCover;
-    @FXML private Slider playBar;
-    @FXML private Label playTimeHour;
-    @FXML private Label playTimeMinute;
-    @FXML private Label endTimeHour;
-    @FXML private Label endTimeMinute;
+    @FXML
+    private Label songTitle;
+    @FXML
+    private Label artist;
+    @FXML
+    private Button playButton;
+    @FXML
+    private Button stopButton;
+    @FXML
+    private Button pauseButton;
+    @FXML
+    private ImageView albumCover;
+    @FXML
+    private Slider playBar;
+    @FXML
+    private Label playTimeHour;
+    @FXML
+    private Label playTimeMinute;
+    @FXML
+    private Label endTimeHour;
+    @FXML
+    private Label endTimeMinute;
     private MediaPlayer mediaPlayer;
     private Queue<Long> songQueue = new ArrayDeque<>();
     private long songId;
@@ -42,6 +53,8 @@ public class PlayViewController implements Initializable {
     private long totalTimeMinute;
     private boolean isPlaying = true;
     private boolean isSliderChanging = false;
+    private String type;
+    private Member currentMember;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -74,8 +87,9 @@ public class PlayViewController implements Initializable {
         }
     }
 
-    public void setSongQueue(Queue<Long> songIds) {
+    public void setSongQueue(Queue<Long> songIds, String type) {
         this.songQueue = songIds; // 큐 초기화
+        this.type = type;
         playNextSong(); // 첫 번째 노래 재생
     }
 
@@ -94,23 +108,42 @@ public class PlayViewController implements Initializable {
         setPlayView();
     }
 
+    public void setMember(Member member) {
+        this.currentMember = member;
+    }
+
     private void setPlayView() {
         Connection conn = null;
         PreparedStatement pstmt_song = null;
         ResultSet res_song = null;
 
         try {
-        	  conn = DBUtil.getConnection();
+            conn = DBUtil.getConnection();
 
-            pstmt_song = conn.prepareStatement("SELECT s.song_name, s.song_file, a.album_cover, ar.artist_name\n" +
-                    "FROM Song s\n" +
-                    "LEFT OUTER JOIN Album a \n" +
-                    "ON s.album_id = a.album_id \n" +
-                    "LEFT OUTER JOIN Artist ar\n" +
-                    "ON ar.artist_id = a.artist_id\n" +
-                    "WHERE song_id=?");
-            pstmt_song.setLong(1, this.songId);
+            if (this.type.equals("SONG")) {
+                pstmt_song = conn.prepareStatement("SELECT s.song_name, s.song_file, a.album_cover, ar.artist_name " +
+                        "FROM Song s " +
+                        "LEFT OUTER JOIN Album a " +
+                        "ON s.album_id = a.album_id " +
+                        "LEFT OUTER JOIN Artist ar " +
+                        "ON ar.artist_id = a.artist_id " +
+                        "WHERE song_id=?");
+
+                pstmt_song.setLong(1, this.songId);
+            } else {
+                pstmt_song = conn.prepareStatement("SELECT " +
+                        "e.SONG_NAME, e.SONG_FILE, a.ALBUM_COVER, ar.ARTIST_NAME " +
+                        "FROM EDITSONG e " +
+                        "LEFT JOIN SONG s ON e.SONG_ID = s.SONG_ID " +
+                        "LEFT JOIN ALBUM a ON s.ALBUM_ID = a.ALBUM_ID " +
+                        "LEFT JOIN ARTIST ar ON a.ARTIST_ID = ar.ARTIST_ID " +
+                        "WHERE e.editsong_id=?");
+
+                pstmt_song.setLong(1, this.songId);
+            }
+
             res_song = pstmt_song.executeQuery();
+
 
             if (res_song.next()) {
                 String songName = res_song.getString("song_name");
@@ -163,7 +196,7 @@ public class PlayViewController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-        	DBUtil.close(pstmt_song, res_song, conn);
+            DBUtil.close(pstmt_song, res_song, conn);
         }
     }
 

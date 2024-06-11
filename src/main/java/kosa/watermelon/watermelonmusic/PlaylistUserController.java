@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
 
 public class PlaylistUserController implements Initializable {
@@ -196,7 +197,7 @@ public class PlaylistUserController implements Initializable {
 
             // PlayViewController 인스턴스를 가져와서 재생할 노래 목록을 설정합니다.
             PlayViewController playViewController = loader.getController();
-            playViewController.setSongQueue(new ArrayDeque<>(songIds));
+            playViewController.setSongQueue(new ArrayDeque<>(songIds), "SONG");
 
             // 새로운 스테이지를 생성하고 PlayView.fxml을 설정합니다.
             Stage stage = new Stage();

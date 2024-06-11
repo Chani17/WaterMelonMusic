@@ -156,13 +156,15 @@ public class SongChartController implements Initializable {
 			// DBUtil 클래스를 사용하여 데이터베이스 연결
       conn = DBUtil.getConnection();
 			pstmt = conn.prepareStatement(
-				"SELECT " +
-		        "ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
-		        "s.song_id, a.artist_name, s.song_name, s.click_count " +
-		        "FROM Song s " +
-		        "LEFT OUTER JOIN Artist a " +
-		        "ON s.artist_id = a.artist_id " +
-		        "ORDER BY s.click_count DESC, s.song_name ASC"
+					"SELECT " +
+							"ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
+							"s.song_id, s.song_name, s.song_file, s.click_count, a.album_cover, ar.artist_name " +
+							"FROM Song s " +
+							"LEFT OUTER JOIN Album a " +
+							"ON s.album_id = a.album_id " +
+							"LEFT OUTER JOIN Artist ar " +
+							"ON ar.artist_id = a.artist_id " +
+							"ORDER BY s.click_count DESC, s.song_name ASC"
 		    );
 
 			rs = pstmt.executeQuery();
@@ -315,7 +317,7 @@ public class SongChartController implements Initializable {
 		    }
 		});
 
-		likebtn.setCellFactory(new Callback<>() {
+		likeBtn.setCellFactory(new Callback<>() {
 			@Override
 			public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
 				return new TableCell<>() {

@@ -5,12 +5,14 @@ public class EditSongPlaylist {
     private Long songId;
     private String editSongName;
     private String artistName;
+    private String songFile;
 
-    public EditSongPlaylist(Long editId, Long songId, String editSongName, String artistName) {
+    public EditSongPlaylist(Long editId, Long songId, String editSongName, String artistName, String songFile) {
         this.editId = editId;
         this.songId = songId;
         this.editSongName = editSongName;
         this.artistName = artistName;
+        this.songFile = songFile;
     }
 
     public Long getEditId() {
@@ -43,5 +45,13 @@ public class EditSongPlaylist {
 
     public void setArtistName(String artistName) {
         this.artistName = artistName;
+    }
+
+    public String getSongFile() {
+        return songFile;
+    }
+
+    public void setSongFile(String songFile) {
+        this.songFile = songFile;
     }
 }

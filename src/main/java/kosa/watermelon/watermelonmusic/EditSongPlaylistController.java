@@ -76,7 +76,7 @@ public class EditSongPlaylistController implements Initializable {
 
         try {
             conn = DBUtil.getConnection();
-            pstmt = conn.prepareStatement("SELECT e.editsong_id, e.song_id, e.editsong_name, e.song_file, a.artist_name " +
+            pstmt = conn.prepareStatement("SELECT e.editsong_id, e.song_id, e.song_name, e.song_file, a.artist_name " +
                     "FROM EditSong e " +
                     "LEFT OUTER JOIN Song s ON e.song_id = s.song_id " +
                     "LEFT OUTER JOIN Artist a ON s.artist_id = a.artist_id " +
@@ -87,10 +87,10 @@ public class EditSongPlaylistController implements Initializable {
             while (rs.next()) {
                 Long id = rs.getLong("editsong_id");
                 Long songId = rs.getLong("song_id");
-                String editSongName = rs.getString("editsong_name");
+                String editSongName = rs.getString("song_name");
                 String artistName = rs.getString("artist_name");
                 String songFile = rs.getString("song_file");
-                EditSongPlaylist song = new EditSongPlaylist(id, songId, editSongName, artistName);
+                EditSongPlaylist song = new EditSongPlaylist(id, songId, editSongName, artistName, songFile);
                 playlistSongs.add(song);
                 selectedSongs.put(song, false);
             }
@@ -181,8 +181,9 @@ public class EditSongPlaylistController implements Initializable {
 
             PlayViewController controller = loader.getController();
             Queue<Long> songQueue = new ArrayDeque<>();
-            songQueue.add(selectedSong.getSongId());
-            controller.setSongQueue(songQueue);
+            songQueue.add(selectedSong.getEditId());
+            controller.setMember(currentMember);
+            controller.setSongQueue(songQueue, "EDIT");
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -311,7 +312,7 @@ public class EditSongPlaylistController implements Initializable {
                 DBUtil.close(pstmt, rs, conn);
             }
 
-            controller.setSongQueue(songQueue);
+            controller.setSongQueue(songQueue, "EDIT");
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);

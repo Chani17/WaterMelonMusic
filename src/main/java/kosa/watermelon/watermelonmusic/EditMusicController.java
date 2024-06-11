@@ -253,6 +253,8 @@ public class EditMusicController implements Initializable {
                 String sourceFilePath = song.getMediaSource();
                 String destinationFilePath = "C:\\dev\\resources\\music\\" + songName + ".mp3";
 
+                System.out.println("start = " + start + " end = " + end);
+
                 slice(sourceFilePath, destinationFilePath, start, end);
                 Connection conn = DBUtil.getConnection();
                 PreparedStatement countPstmt = conn.prepareStatement("SELECT COUNT(*) FROM EDITSONG WHERE MEMBER_ID=?");
@@ -262,11 +264,12 @@ public class EditMusicController implements Initializable {
                 long editSongId = 0L;
                 if (rsCount.next()) {
                     editSongId = rsCount.getLong(1) + 1;  // Assuming you want to use the next ID
+                    System.out.println("editSongId = " + editSongId);
                 }
 
-                PreparedStatement savePstmt = conn.prepareStatement("INSERT INTO EDITSONG (EDITSONG_ID, EDITSONG_NAME, SONG_FILE, SONG_ID, MEMBER_ID) VALUES (?,?,?,?,?)");
+                PreparedStatement savePstmt = conn.prepareStatement("INSERT INTO EDITSONG (EDITSONG_ID, SONG_NAME, SONG_FILE, SONG_ID, MEMBER_ID) VALUES (?,?,?,?,?)");
 
-                savePstmt.setLong(1, editSongId);
+                savePstmt.setLong(1, editSongId + 1);
                 savePstmt.setString(2, songName);
                 savePstmt.setString(3, destinationFilePath);
                 savePstmt.setLong(4, song.getId());
@@ -276,7 +279,7 @@ public class EditMusicController implements Initializable {
                 System.out.println("음악이 성공적으로 저장되었습니다.");
 
                 savePstmt.close();
-                DBUtil.close(rsCount, countPstmt, conn);
+                DBUtil.close(conn, countPstmt, rsCount);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -312,6 +315,7 @@ public class EditMusicController implements Initializable {
             e.printStackTrace();
         }
     }
+
 
     private void updateStartPlayTime() {
         if (startMediaPlayer == null || isSliderChanging) return;
