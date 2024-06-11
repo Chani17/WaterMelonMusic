@@ -261,7 +261,7 @@ public class PlaylistController implements Initializable {
         }
     }
 
-  @FXML // My Playlist → PlaylistUser 페이지 이동 이벤트 처리
+    @FXML // My Playlist → PlaylistUser 페이지 이동 이벤트 처리
 	private void goToPlaylistUser_Action(ActionEvent event) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("playlistUser.fxml"));

@@ -11,6 +11,7 @@ public class Playlist {
     private String memberId;
     private int number;
     private LocalDate postDate;
+    private String ownerName; // 소유자 이름 추가
 
     public Playlist(Long playlistId, String playlistName, List<Long> songList, String memberId, int number, LocalDate postDate) {
         this.playlistId = playlistId;
@@ -26,6 +27,15 @@ public class Playlist {
         this.playlistId = playlistId;
         this.playlistName = playlistName;
         this.memberId = memberId;
+    }
+    
+    
+    // 새로운 생성자 추가
+    public Playlist(Long playlistId, String playlistName, String memberId, String ownerName) {
+        this.playlistId = playlistId;
+        this.playlistName = playlistName;
+        this.memberId = memberId;
+        this.ownerName = ownerName;
     }
     
     public String getPlaylistName() {
@@ -58,5 +68,10 @@ public class Playlist {
 
     public void setPostDate(LocalDate postDate) {
         this.postDate = postDate;
+    }
+    
+    // 소유자 이름을 반환하는 메서드 추가
+    public String getOwnerName() {
+        return ownerName;
     }
 }

@@ -18,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -42,6 +43,14 @@ public class PostingPageController {
 
     private ObservableList<Playlist> playlists;
 
+    private Member currentMember;
+    
+    
+    public void setMember(Member member) {
+        this.currentMember = member;
+        System.out.println("PostingPageController: Member set with ID - " + currentMember.getId());
+    }
+    
     @FXML
     public void initialize() {
         playlists = FXCollections.observableArrayList();
@@ -51,10 +60,38 @@ public class PostingPageController {
 
         playlistTableView.setItems(playlists);
         
+        
+        playlistTableView.setStyle("-fx-font-family: 'D2Coding'; -fx-font-size: 10pt;");
+
+		// TableView의 각 행에 대한 폰트 설정
+        playlistTableView.setRowFactory(tv -> {
+			TableRow<Playlist> row = new TableRow<>();
+			row.setStyle("-fx-font-family: 'D2Coding'; -fx-font-size: 10pt;");
+			return row;
+		});
+        
+        // Row factory to handle double-click event
+        playlistTableView.setRowFactory(tv -> {
+            TableRow<Playlist> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Playlist rowData = row.getItem();
+                    openPlaylistDetail(rowData);
+                }
+            });
+            return row;
+        });
+        
+        this.currentMember = SessionManager.getInstance().getCurrentMember();
+        if (this.currentMember != null) {
+            System.out.println("PostingPageController: Member set with ID - " + currentMember.getId());
+        } else {
+            System.out.println("PostingPageController: No member set");
+        }
         // 데이터베이스에서 플레이리스트 불러오기
         loadPlaylistsFromDatabase();
     }
-
+    
     public void addSelectedPlaylist(Playlist selectedPlaylist) {
         if (selectedPlaylist != null) {
             selectedPlaylist.setPostDate(LocalDate.now());
@@ -158,7 +195,7 @@ public class PostingPageController {
     }
 
     private void loadPlaylistsFromDatabase() {
-        String sql = "SELECT p.PLAYLIST_ID, p.PLAYLIST_NAME, m.MEMBER_ID, po.POST_DATE FROM PLAYLIST p " +
+        String sql = "SELECT p.PLAYLIST_ID, p.PLAYLIST_NAME, m.NICKNAME, po.POST_DATE FROM PLAYLIST p " +
                      "JOIN MPP mp ON p.PLAYLIST_ID = mp.PLAYLIST_ID " +
                      "JOIN POSTING po ON mp.POST_ID = po.POST_ID " +
                      "JOIN MEMBER m ON mp.MEMBER_ID = m.MEMBER_ID";
@@ -170,7 +207,7 @@ public class PostingPageController {
             while (rs.next()) {
                 long playlistId = rs.getLong("PLAYLIST_ID");
                 String playlistName = rs.getString("PLAYLIST_NAME");
-                String memberId = rs.getString("MEMBER_ID");
+                String memberId = rs.getString("NICKNAME");
                 LocalDate postDate = rs.getDate("POST_DATE").toLocalDate();
 
                 Playlist playlist = new Playlist(playlistId, playlistName, new ArrayList<>(), memberId, 0, postDate);
@@ -199,6 +236,30 @@ public class PostingPageController {
             newStage.getIcons().add(icon);
             newStage.show();
             currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void openPlaylistDetail(Playlist playlist) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlistDetail.fxml"));
+            Parent parent = loader.load();
+
+            PlaylistDetailController controller = loader.getController();
+            controller.setPlaylistId(playlist.getPlaylistId());
+
+            Stage newStage = new Stage();
+            Stage currentStage = (Stage) goToDashboard_BTN.getScene().getWindow();
+            newStage.initModality(Modality.APPLICATION_MODAL);
+            newStage.setTitle("플레이리스트 상세보기 - " + playlist.getPlaylistName()); // 플레이리스트 이름을 추가하여 설정
+            newStage.setScene(new Scene(parent, 800, 600));
+            Image icon = new Image(
+                    getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+            newStage.getIcons().add(icon);
+            newStage.show();
+            currentStage.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
