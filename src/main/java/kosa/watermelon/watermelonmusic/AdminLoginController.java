@@ -47,7 +47,7 @@ public class AdminLoginController {
         	SessionManager.getInstance().setCurrentMember(adminMember);
             
         	try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("adminSong.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("adminPage.fxml"));
                 Parent root = loader.load();
                 Stage stage = new Stage();
                 stage.setTitle("관리자 페이지");
