@@ -35,6 +35,7 @@ public class EditSongPlaylistController implements Initializable {
     @FXML private Button delete;
     @FXML private Button deleteAll;
     @FXML private Button goToDashboard;
+    @FXML private Button playAllButton;
     private SessionManager sessionManager;
     private Member currentMember;
     private EditSongPlaylist editSongPlaylist;
@@ -44,6 +45,7 @@ public class EditSongPlaylistController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         delete.setOnAction(this::handleDeleteAction);
         deleteAll.setOnAction(this::handleDeleteAllAction);
+        playAllButton.setOnAction(this::playAllSongs);
         sessionManager = SessionManager.getInstance();
     }
 
@@ -276,6 +278,47 @@ public class EditSongPlaylistController implements Initializable {
                     getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
             newStage.getIcons().add(icon);
             currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void playAllSongs(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playview.fxml"));
+            Parent parent = loader.load();
+
+            PlayViewController controller = loader.getController();
+            Queue<Long> songQueue = new ArrayDeque<>();
+
+            Connection conn = null;
+            PreparedStatement pstmt = null;
+            ResultSet rs = null;
+
+            try {
+                conn = DBUtil.getConnection();
+                pstmt = conn.prepareStatement("SELECT song_id FROM EditSong WHERE member_id=?");
+                pstmt.setString(1, currentMember.getId());
+                rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    songQueue.add(rs.getLong("song_id"));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                DBUtil.close(pstmt, rs, conn);
+            }
+
+            controller.setSongQueue(songQueue);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Playing All Songs");
+            stage.setScene(new Scene(parent, 357, 432));
+            stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -174,12 +174,12 @@ public class PlaylistController implements Initializable {
             }
         });
 
-        loadPlaylists();
+//        loadPlaylists();
     }
 
-    private void loadPlaylists() {
-        // Implement loading logic for playlists and set items to playlistView
-    }
+//    private void loadPlaylists() {
+//        // Implement loading logic for playlists and set items to playlistView
+//    }
 
     private void playSelectedSong(PlaylistSong selectedSong) {
         try {
