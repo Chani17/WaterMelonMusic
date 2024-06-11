@@ -1,14 +1,17 @@
 package kosa.watermelon.watermelonmusic;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,9 +31,7 @@ public class AdminPageController implements Initializable {
     @FXML private TableColumn<SongFXModel, String> songNameColumn;
     @FXML private TableColumn<SongFXModel, String> albumNameForSongColumn;
     @FXML private TableColumn<SongFXModel, String> artistNameForSongColumn;
-    @FXML private Button addSongButton;
-    @FXML private Button addArtistButton;
-    @FXML private Button addAlbumButton;
+    @FXML private Button logoutButton;
 
     private List<Artist> artistList = new ArrayList<>();
     private List<Album> albumList = new ArrayList<>();
@@ -163,6 +164,29 @@ public class AdminPageController implements Initializable {
             // 창이 닫힌 후 데이터 다시 로드
             loadAlbums();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void logoutAction(ActionEvent event) {
+        // 세션 초기화
+        SessionManager.getInstance().clearSession();
+
+        // 로그인 창 열기
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+            Scene scene = new Scene(loader.load(), 800, 600);
+
+            // 현재 Stage 찾기
+            Stage currentStage = (Stage) logoutButton.getScene().getWindow();
+
+            // MainApplicatin의 Scene 설정
+            currentStage.setScene(scene);
+            Image icon = new Image(
+                    getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+            currentStage.getIcons().add(icon);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

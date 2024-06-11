@@ -3,8 +3,16 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <VBox prefHeight="800" prefWidth="1200" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosa.watermelon.watermelonmusic.AdminPageController">
+   <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logoutAction" text="로그아웃">
+      <font>
+         <Font name="D2Coding" size="12.0" />
+      </font>
+      <VBox.margin>
+         <Insets left="1130.0" top="5.0" />
+      </VBox.margin></Button>
 	<Button fx:id="addArtistButton" onAction="#handleAddNewArtist" text="Add Artist">
       <VBox.margin>
          <Insets bottom="10.0" left="5.0" top="10.0" />
