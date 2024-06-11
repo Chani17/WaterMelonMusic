@@ -4,55 +4,135 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <VBox alignment="CENTER" prefHeight="432.0" prefWidth="357.0"
-	spacing="10.0" xmlns="http://javafx.com/javafx/21"
-	xmlns:fx="http://javafx.com/fxml/1"
+	spacing="10.0" style="-fx-background-color: #FFFFFF;"
+	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="kosa.watermelon.watermelonmusic.PlayViewController">
 	<children>
-		<Label fx:id="songTitle" text="Song Title"
-			textAlignment="CENTER">
+		<StackPane alignment="TOP_LEFT" prefHeight="17.0"
+			prefWidth="317.0">
+			<children>
+				<ImageView fitHeight="29.0" fitWidth="31.0"
+					pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="@watermelon_logo_only.png" />
+					</image>
+				</ImageView>
+				<VBox alignment="CENTER" prefHeight="55.0" prefWidth="357.0">
+					<children>
+						<Label fx:id="songTitle" alignment="CENTER"
+							prefHeight="24.0" prefWidth="327.0" text="Song Title"
+							textAlignment="CENTER">
+							<font>
+								<Font name="D2Coding" size="20.0" />
+							</font>
+						</Label>
+						<Label prefHeight="9.0" prefWidth="46.0">
+							<font>
+								<Font size="5.0" />
+							</font>
+						</Label>
+						<Label fx:id="artist" alignment="CENTER" prefHeight="16.0"
+							prefWidth="446.0" text="Artist" textAlignment="CENTER">
+							<font>
+								<Font name="D2Coding" size="14.0" />
+							</font>
+						</Label>
+					</children>
+				</VBox>
+			</children>
+		</StackPane>
+		<Label prefHeight="8.0" prefWidth="50.0" />
+		<StackPane alignment="CENTER">
+			<children>
+				<ImageView fx:id="albumCover" fitHeight="200.0"
+					fitWidth="200.0" pickOnBounds="true" preserveRatio="true"
+					style="-fx-effect: dropshadow(gaussian, lightgrey, 10, 0.5, 0, 0);">
+					<VBox.margin>
+						<Insets bottom="30.0" top="20.0" />
+					</VBox.margin>
+					<effect>
+						<InnerShadow />
+					</effect>
+				</ImageView>
+			</children>
+		</StackPane>
+		<Label prefHeight="66.0" prefWidth="79.0">
 			<font>
-				<Font name="D2Coding" size="20.0" />
+				<Font size="16.0" />
 			</font>
 		</Label>
-		<Label fx:id="artist" text="Artist" textAlignment="CENTER">
-			<font>
-				<Font name="D2Coding" size="14.0" />
-			</font>
-		</Label>
-		<ImageView fx:id="albumCover" fitHeight="200.0"
-			fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-			<VBox.margin>
-				<Insets bottom="30.0" top="20.0" />
-			</VBox.margin>
-		</ImageView>
 		<Slider fx:id="playBar" />
 		<HBox alignment="BASELINE_LEFT" prefHeight="10.0"
 			prefWidth="10.0">
 			<children>
-				<Label fx:id="playTimeHour" text="0" />
-				<Label text=":" />
-				<Label fx:id="playTimeMinute" text="00" />
+				<Label fx:id="playTimeHour" text="0">
+					<font>
+						<Font name="D2Coding" size="12.0" />
+					</font>
+				</Label>
+				<Label text=":">
+					<font>
+						<Font name="D2Coding" size="12.0" />
+					</font>
+				</Label>
+				<Label fx:id="playTimeMinute" text="00">
+					<font>
+						<Font name="D2Coding" size="12.0" />
+					</font>
+				</Label>
 				<HBox alignment="BASELINE_RIGHT" prefHeight="14.0"
 					prefWidth="294.0">
 					<children>
-						<Label fx:id="endTimeHour" text="0" />
-						<Label text=":" />
-						<Label fx:id="endTimeMinute" text="00" />
+						<Label fx:id="endTimeHour" text="0">
+							<font>
+								<Font name="D2Coding" size="12.0" />
+							</font>
+						</Label>
+						<Label text=":">
+							<font>
+								<Font name="D2Coding" size="12.0" />
+							</font>
+						</Label>
+						<Label fx:id="endTimeMinute" text="00">
+							<font>
+								<Font name="D2Coding" size="12.0" />
+							</font>
+						</Label>
 					</children>
 				</HBox>
 			</children>
 		</HBox>
+		<Label prefHeight="66.0" prefWidth="79.0">
+			<font>
+				<Font size="7.0" />
+			</font>
+		</Label>
 		<HBox alignment="CENTER" spacing="10.0">
 			<children>
-				<Button fx:id="stopButton" text="■" />
-				<Button fx:id="playButton" text="▶" />
-				<Button fx:id="pauseButton" text="||" />
+				<Button fx:id="stopButton" text="■">
+					<font>
+						<Font name="D2Coding" size="14.0" />
+					</font>
+				</Button>
+				<Button fx:id="playButton" text="▶">
+					<font>
+						<Font name="D2Coding" size="14.0" />
+					</font>
+				</Button>
+				<Button fx:id="pauseButton" text="||">
+					<font>
+						<Font size="14.0" />
+					</font>
+				</Button>
 			</children>
 		</HBox>
 	</children>

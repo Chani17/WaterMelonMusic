@@ -26,7 +26,7 @@
 			</font>
 		</TextField>
 		<Button fx:id="search_BTN" onAction="#search_Action"
-			prefHeight="30.0" prefWidth="55.0" text="검색">
+			prefHeight="30.0" prefWidth="65.0" text="검색">
 			<font>
 				<Font name="D2Coding" size="13.0" />
 			</font>

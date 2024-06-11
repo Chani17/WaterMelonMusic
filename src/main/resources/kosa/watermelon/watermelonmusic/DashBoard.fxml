@@ -114,15 +114,16 @@
 	<VBox layoutX="596.0" layoutY="222.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
-			<ImageView fx:id="EditSongPlaylist_ImageView" fitHeight="94.0"
-                       fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
+			<ImageView fx:id="EditSongPlaylist_ImageView"
+				fitHeight="94.0" fitWidth="99.0" pickOnBounds="true"
+				preserveRatio="true">
 				<image>
 					<Image
 						url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/editSong_icon.png" />
 				</image>
 			</ImageView>
-			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0"
-				text="음악 편집">
+			<Label alignment="CENTER" prefHeight="32.0" prefWidth="119.0"
+				text="편집 리스트">
 				<font>
 					<Font name="D2Coding" size="14.0" />
 				</font>

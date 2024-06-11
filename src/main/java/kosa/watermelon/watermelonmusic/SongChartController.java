@@ -243,7 +243,10 @@ public class SongChartController implements Initializable {
 								controller.setSongId(selectedSong.getId());
 								Scene scene = new Scene(playView);
 
-								newStage.setTitle("Play Music!");
+								newStage.setTitle(selectedSong.getName() + " - " + selectedSong.getArtist());
+								Image icon = new Image(
+						        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+								newStage.getIcons().add(icon);
 								newStage.setScene(scene);
 								newStage.showAndWait();
 								// stage.hide();
@@ -394,6 +397,8 @@ public class SongChartController implements Initializable {
 								e.printStackTrace();
 							}
 						});
+						Font font = Font.font("D2Coding Bold", 18);
+						editButton.setFont(font);
 					}
 
 					// 셸 Rendering

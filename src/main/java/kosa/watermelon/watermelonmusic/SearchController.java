@@ -76,11 +76,13 @@ public class SearchController {
         List<Song> result = new ArrayList<>();
         String query = "SELECT " +
                 "ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
-                "s.song_id, s.song_name, a.artist_name, s.click_count " +
+                "s.song_id, s.song_name, ar.artist_name, s.click_count, a.album_cover " +
                 "FROM Song s " +
-                "LEFT OUTER JOIN Artist a " +
-                "ON s.artist_id = a.artist_id " +
-                "WHERE LOWER(s.song_name) LIKE ? OR LOWER(a.artist_name) LIKE ? " +
+                "LEFT OUTER JOIN Album a " +
+                "ON s.album_id = a.album_id " +
+                "LEFT OUTER JOIN Artist ar " +
+                "ON ar.artist_id = s.artist_id " +
+                "WHERE LOWER(s.song_name) LIKE ? OR LOWER(ar.artist_name) LIKE ? " +
                 "ORDER BY s.click_count DESC";
 
         try (Connection conn = DBConnection();
