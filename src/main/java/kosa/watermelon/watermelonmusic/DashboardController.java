@@ -37,7 +37,7 @@ public class DashboardController implements Initializable {
     @FXML
     private ImageView Playlist_ImageView;
     @FXML
-    private TextField userNAME_TextField;
+    private Label username;
     @FXML
     private Label focusLabel; // 대시보드 텍스트필드에 커서 깜빡이지 않도록 수정
     @FXML
@@ -59,7 +59,7 @@ public class DashboardController implements Initializable {
 
         loadImages();
         setOnMouseClickEvents();
-        userNAME_TextField.setEditable(false);
+//        username.setEditable(false);
 
         // TextField에 포커스를 제거하고 다른 곳으로 포커스를 설정
         Platform.runLater(() -> focusLabel.requestFocus());
@@ -170,7 +170,7 @@ public class DashboardController implements Initializable {
 
     private void loadMemberInfo() {
         if (currentMember != null) {
-            userNAME_TextField.setText(currentMember.getNickname());
+            username.setText(currentMember.getNickname());
         }
     }
 }

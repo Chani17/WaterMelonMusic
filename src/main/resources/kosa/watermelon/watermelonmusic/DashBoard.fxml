@@ -35,13 +35,13 @@
 				url="@kosa/watermelon/watermelonmusic/watermelon_logo_text.png" />
 		</image>
 	</ImageView>
-	<TextField fx:id="userNAME_TextField"
+	<Label fx:id="username"
 		alignment="CENTER_RIGHT" layoutX="237.0" layoutY="117.0"
 		prefHeight="22.0" prefWidth="118.0" text="nickname_Text">
 		<font>
 			<Font name="D2Coding" size="13.0" />
 		</font>
-	</TextField>
+	</Label>
 	<Text layoutX="360.0" layoutY="133.0" strokeType="OUTSIDE"
 		strokeWidth="0.0" text="님 로그인해 주셔서 감사합니다."
 		wrappingWidth="201.89373779296875">
