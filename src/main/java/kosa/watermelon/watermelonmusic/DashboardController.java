@@ -25,7 +25,7 @@ public class DashboardController implements Initializable {
 	@FXML private ImageView SongChart_ImageView;
 	@FXML private ImageView Search_ImageView;
 	@FXML private ImageView PostingPage_ImageView;
-	@FXML private ImageView MusicEdit_ImageView;
+	@FXML private ImageView EditSongPlaylist_ImageView;
 	@FXML private ImageView MyPage_ImageView;
 	@FXML private ImageView Playlist_ImageView;
 	@FXML private TextField userNAME_TextField;
@@ -76,7 +76,7 @@ public class DashboardController implements Initializable {
 		SongChart_ImageView.setImage(SongChart_Icon);
 		Search_ImageView.setImage(Search_Icon);
 		PostingPage_ImageView.setImage(PostingPage_Icon);
-		MusicEdit_ImageView.setImage(MusicEdit_Icon);
+		EditSongPlaylist_ImageView.setImage(MusicEdit_Icon);
 		MyPage_ImageView.setImage(MyPage_Icon);
 		Playlist_ImageView.setImage(Playlist_Icon);
 	}
@@ -85,7 +85,7 @@ public class DashboardController implements Initializable {
 		SongChart_ImageView.setOnMouseClicked(event -> goToPage("songChart.fxml", SongChart_ImageView));
 		Search_ImageView.setOnMouseClicked(event -> goToPage("songChartwithSearch.fxml", Search_ImageView));
 		PostingPage_ImageView.setOnMouseClicked(event -> goToPage("postingPage.fxml", PostingPage_ImageView));
-//	    MusicEdit_ImageView.setOnMouseClicked(event -> goToPage("musicEdit.fxml", MusicEdit_ImageView));
+	    EditSongPlaylist_ImageView.setOnMouseClicked(event -> goToPage("editSongPlaylist.fxml", EditSongPlaylist_ImageView));
 		MyPage_ImageView.setOnMouseClicked(event -> goToPage("mypage.fxml", MyPage_ImageView));
 		Playlist_ImageView.setOnMouseClicked(event -> goToPage("playlistUser.fxml", Playlist_ImageView));
 	}
@@ -113,6 +113,8 @@ public class DashboardController implements Initializable {
                 ((PlaylistUserController) controller).setMember(currentMember);
 			} else if (controller instanceof PostingPageController) {
                 newStage.setTitle("게시판");
+			} else if (controller instanceof EditSongPlaylistController) {
+				((EditSongPlaylistController) controller).setMember(currentMember);
 			}
 			newStage.setScene(scene);
 		} catch (IOException e) {

@@ -10,12 +10,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.BFILE;
 
 import java.io.*;
 import java.net.URL;
 import java.sql.*;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.ResourceBundle;
 
 public class PlayViewController implements Initializable {
@@ -31,6 +35,7 @@ public class PlayViewController implements Initializable {
     @FXML private Label endTimeHour;
     @FXML private Label endTimeMinute;
     private MediaPlayer mediaPlayer;
+    private Queue<Long> songQueue = new ArrayDeque<>();
     private long songId;
     private long totalTime;
     private long totalTimeHour;
@@ -55,6 +60,33 @@ public class PlayViewController implements Initializable {
         playButton.setOnAction(event -> togglePlayPause());
         stopButton.setOnAction(event -> stopSong());
         pauseButton.setOnAction(event -> pauseSong());
+
+        // 창 닫힘 이벤트 핸들러 추가
+        Platform.runLater(() -> {
+            Stage stage = (Stage) playButton.getScene().getWindow();
+            stage.setOnCloseRequest(this::handleWindowClose);
+        });
+    }
+
+    private void handleWindowClose(WindowEvent event) {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+    }
+
+    public void setSongQueue(Queue<Long> songIds) {
+        this.songQueue = songIds; // 큐 초기화
+        playNextSong(); // 첫 번째 노래 재생
+    }
+
+    private void playNextSong() {
+        if (songQueue.isEmpty()) {
+            System.out.println("No more songs to play.");
+            return;
+        }
+
+        Long nextSongId = songQueue.poll(); // 큐에서 다음 노래 ID 가져오기
+        setSongId(nextSongId); // 다음 노래 재생
     }
 
     public void setSongId(long id) {
@@ -65,9 +97,7 @@ public class PlayViewController implements Initializable {
     private void setPlayView() {
         Connection conn = null;
         PreparedStatement pstmt_song = null;
-        PreparedStatement pstmt_album = null;
         ResultSet res_song = null;
-        ResultSet res_album = null;
 
         try {
         	  conn = DBUtil.getConnection();
@@ -104,7 +134,7 @@ public class PlayViewController implements Initializable {
                 inputStream.close();
                 PlaylistView playlistView = new PlaylistView(songName, artistName, imageData);
                 bfile.closeFile(); // 자원 누수 방지를 위함
-                
+
                 // 이미지 데이터를 이용하여 Image 객체 생성
                 Image image = new Image(new ByteArrayInputStream(playlistView.getAlbumCover()));
 
@@ -125,7 +155,8 @@ public class PlayViewController implements Initializable {
                 });
                 mediaPlayer.setAutoPlay(true);
                 mediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updatePlayTime());
-                mediaPlayer.setOnEndOfMedia(this::resetMediaPlayer);
+//                mediaPlayer.setOnEndOfMedia(this::resetMediaPlayer);
+                mediaPlayer.setOnEndOfMedia(this::onSongEnd);
             } else {
                 System.out.println("No song found with id = " + this.songId);
             }
@@ -134,6 +165,11 @@ public class PlayViewController implements Initializable {
         } finally {
         	DBUtil.close(pstmt_song, res_song, conn);
         }
+    }
+
+    private void onSongEnd() {
+        resetMediaPlayer(); // 미디어 플레이어 재설정
+        playNextSong(); // 다음 노래 재생
     }
 
     private void togglePlayPause() {

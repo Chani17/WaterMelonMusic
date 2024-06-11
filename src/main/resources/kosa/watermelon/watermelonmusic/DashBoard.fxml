@@ -114,8 +114,8 @@
 	<VBox layoutX="596.0" layoutY="222.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
-			<ImageView fx:id="MusicEdit_ImageView" fitHeight="94.0"
-				fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
+			<ImageView fx:id="EditSongPlaylist_ImageView" fitHeight="94.0"
+                       fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
 				<image>
 					<Image
 						url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/editSong_icon.png" />
