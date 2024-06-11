@@ -8,39 +8,41 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;"
-	prefHeight="200.0" prefWidth="300.0"
-	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
+<VBox alignment="CENTER" prefHeight="200.0" prefWidth="300.0"
+	spacing="10" style="-fx-padding: 20;"
+	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="kosa.watermelon.watermelonmusic.PlaylistSelectionController">
-	<Label text="플레이리스트 선택">
-		<font>
-			<Font name="D2Coding Bold" size="15.0" />
-		</font>
-	</Label>
-	<ComboBox fx:id="playlistComboBox" prefWidth="200"/>
-	<Label prefHeight="10.0" />
-	<Label text="새로운 플레이리스트 생성">
-		<font>
-			<Font name="D2Coding Bold" size="15.0" />
-		</font>
-	</Label>
-	<TextField fx:id="newPlaylistName" promptText="새 플레이리스트 이름">
+	<Label prefHeight="18.0" prefWidth="355.0" text="▶ 플레이리스트 선택">
 		<font>
 			<Font name="D2Coding" size="15.0" />
 		</font>
+	</Label>
+	<ComboBox fx:id="playlistComboBox" prefHeight="22.0"
+		prefWidth="294.0" />
+	<Label prefHeight="10.0" />
+	<Label prefHeight="18.0" prefWidth="332.0" text="▶ 새로운 플레이리스트 생성">
+		<font>
+			<Font name="D2Coding" size="15.0" />
+		</font>
+	</Label>
+	<TextField fx:id="newPlaylistName" promptText="생성할 플레이리스트 이름">
+		<font>
+			<Font name="D2Coding" size="13.0" />
+		</font>
 	</TextField>
+
 	<Label prefHeight="10.0" />
 	<HBox alignment="CENTER" prefHeight="0.0" prefWidth="200.0">
 		<children>
 			<Button onAction="#handleConfirm" text="확인">
 				<font>
-					<Font name="D2Coding Bold" size="13.0" />
+					<Font name="D2Coding" size="13.0" />
 				</font>
 			</Button>
 			<Label prefWidth="10.0" />
 			<Button onAction="#handleCancel" text="취소">
 				<font>
-					<Font name="D2Coding Bold" size="13.0" />
+					<Font name="D2Coding" size="13.0" />
 				</font>
 			</Button>
 		</children>

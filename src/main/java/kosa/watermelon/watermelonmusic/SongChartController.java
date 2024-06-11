@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -346,7 +347,7 @@ public class SongChartController implements Initializable {
 				songList.add(bd.longValue());
 			}
 			return new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), songList,
-					rs.getString("member_id"), ++num);
+					rs.getString("member_id"), ++num, LocalDate.now());
 		} else {
 			return null;
 		}

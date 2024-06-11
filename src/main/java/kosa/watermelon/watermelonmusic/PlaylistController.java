@@ -48,6 +48,15 @@ public class PlaylistController implements Initializable {
         delete.setOnAction(this::handleDeleteAction);
         deleteAll.setOnAction(this::handleDeleteAllAction);
         sessionManager = SessionManager.getInstance();
+        
+        playlistView.setStyle("-fx-font-family: 'D2Coding'; -fx-font-size: 10pt;");
+
+		// TableView의 각 행에 대한 폰트 설정
+        playlistView.setRowFactory(tv -> {
+			TableRow<PlaylistSong> row = new TableRow<>();
+			row.setStyle("-fx-font-family: 'D2Coding'; -fx-font-size: 10pt;");
+			return row;
+		});
     }
 
     public void setMember(Member member) {
@@ -277,7 +286,7 @@ public class PlaylistController implements Initializable {
         }
     }
 
-  @FXML // My Playlist → PlaylistUser 페이지 이동 이벤트 처리
+    @FXML // My Playlist → PlaylistUser 페이지 이동 이벤트 처리
 	private void goToPlaylistUser_Action(ActionEvent event) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("playlistUser.fxml"));
