@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane alignment="CENTER" hgap="10" prefHeight="464.0" prefWidth="600.0" vgap="10" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosa.watermelon.watermelonmusic.EditMusicController">
+    <!-- 상단에 앨범 커버 사진, 음악 제목, 아티스트 이름 -->
+    <VBox alignment="CENTER" prefHeight="241.0" prefWidth="513.0" spacing="10">
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Button fx:id="saveButton" mnemonicParsing="false" text="저장" textAlignment="CENTER">
+               <font>
+                  <Font name="D2Coding" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#backToPage" text="취소">
+               <font>
+                  <Font name="D2Coding" size="12.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="433.0" />
+               </HBox.margin></Button>
+         </children>
+      </HBox>
+        <ImageView fx:id="albumCover" fitHeight="121.0" fitWidth="113.0">
+        </ImageView>
+        <Label fx:id="songTitle" text="Song Title">
+            <font>
+                <Font name="D2Coding" size="20.0" />
+            </font>
+        </Label>
+        <Label fx:id="artistName" text="Artist Name">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+      <Label prefHeight="14.0" prefWidth="524.0" text="시작점">
+         <font>
+            <Font name="D2Coding" size="12.0" />
+         </font>
+      </Label>
+    </VBox>
+
+    <!-- 시작점 슬라이드바와 버튼 -->
+    <VBox alignment="CENTER" prefHeight="87.0" prefWidth="513.0" spacing="10" GridPane.rowIndex="1">
+        <Slider fx:id="startPointSlider" max="100" min="0" value="0" />
+        <HBox alignment="BASELINE_LEFT" prefHeight="14.0" prefWidth="556.0">
+            <children>
+                <Label fx:id="startTimeMinute" text="0" />
+                <Label text=":" />
+                <Label fx:id="startTimeSecond" prefHeight="14.0" prefWidth="28.0" text="00" />
+            </children>
+        </HBox>
+        <HBox alignment="CENTER" prefHeight="42.0" prefWidth="513.0" spacing="10">
+            <Button fx:id="playButtonStart" text="▶" />
+            <Button fx:id="pauseButtonStart" text="||" />
+            <Button fx:id="stopButtonStart" text="■" />
+        </HBox>
+
+    </VBox>
+
+    <!-- 끝점 슬라이드바와 버튼 -->
+    <VBox alignment="CENTER" prefHeight="82.0" prefWidth="513.0" spacing="10" GridPane.rowIndex="2">
+      <Label prefHeight="14.0" prefWidth="513.0" text="끝점">
+         <font>
+            <Font name="D2Coding" size="12.0" />
+         </font>
+      </Label>
+        <Slider fx:id="endPointSlider" max="100" min="0" value="100" />
+        <HBox alignment="BASELINE_LEFT" prefHeight="10.0" prefWidth="10.0">
+            <children>
+                <Label fx:id="endTimeMinute" text="0" />
+                <Label text=":" />
+                <Label fx:id="endTimeSecond" prefHeight="14.0" prefWidth="28.0" text="00" />
+            </children>
+        </HBox>
+        <HBox alignment="CENTER" spacing="10">
+            <Button fx:id="playButtonEnd" text="▶" />
+            <Button fx:id="pauseButtonEnd" text="||" />
+            <Button fx:id="stopButtonEnd" text="■">
+                <font>
+                    <Font name="D2Coding" size="12.0" />
+                </font>
+            </Button>
+        </HBox>
+    </VBox>
+    <columnConstraints>
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+    </rowConstraints>
+</GridPane>

@@ -36,6 +36,7 @@ javafx {
 
 dependencies {
     implementation 'com.oracle.database.jdbc:ojdbc11:21.11.0.0'
+
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }

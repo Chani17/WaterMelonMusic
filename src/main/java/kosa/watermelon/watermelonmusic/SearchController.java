@@ -1,5 +1,8 @@
 package kosa.watermelon.watermelonmusic;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,6 +19,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import oracle.jdbc.OracleResultSet;
+import oracle.sql.BFILE;
 
 public class SearchController {
 
@@ -87,17 +92,34 @@ public class SearchController {
             ResultSet rs = pstmt.executeQuery();
             
             while (rs.next()) {
+                BFILE bfile = ((OracleResultSet) rs).getBFILE("album_cover");
+                bfile.openFile(); // BFILE 열기
+                InputStream inputStream = bfile.getBinaryStream();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                byte[] imageData = outputStream.toByteArray();
+                outputStream.close();
+                inputStream.close();
+                bfile.closeFile(); // 자원 누수 방지를 위함
+
             	Song song = new Song(
                     rs.getInt("ranking"), 
                     rs.getLong("song_id"), 
                     rs.getString("song_name"), 
-                    rs.getString("artist_name"), 
+                    rs.getString("artist_name"),
+                    imageData,
                     rs.getLong("click_count")
                 );
                 result.add(song);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return result;
     }

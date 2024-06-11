@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="kosa.watermelon.watermelonmusic.SaveEditSongController">
+    <children>
+        <VBox alignment="CENTER" layoutX="49.0" layoutY="22.0" spacing="10.0">
+            <Label text="Enter Song Name:" />
+            <TextField fx:id="songNameField" />
+            <Button fx:id="saveButton" text="Save" onAction="#save" />
+        </VBox>
+    </children>
+</AnchorPane>
