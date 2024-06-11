@@ -320,11 +320,12 @@ public class EditMusicController implements Initializable {
     private void updateStartPlayTime() {
         if (startMediaPlayer == null || isSliderChanging) return;
 
+        long totalTime = (long) startMediaPlayer.getTotalDuration().toSeconds();
         long currentTime = (long) startMediaPlayer.getCurrentTime().toSeconds();
         long currentTimeMinute = currentTime / 60;
         long currentTimeSecond = currentTime % 60;
 
-        startPointSlider.setValue(currentTime);
+        startPointSlider.setValue((double) currentTime / totalTime * 100);
         startTimeMinute.setText(String.format("%02d", currentTimeMinute));
         startTimeSecond.setText(String.format("%02d", currentTimeSecond));
     }
@@ -332,11 +333,12 @@ public class EditMusicController implements Initializable {
     private void updateEndPlayTime() {
         if (endMediaPlayer == null || isSliderChanging) return;
 
+        long totalTime = (long) endMediaPlayer.getTotalDuration().toSeconds();
         long currentTime = (long) endMediaPlayer.getCurrentTime().toSeconds();
         long currentTimeMinute = currentTime / 60;
         long currentTimeSecond = currentTime % 60;
 
-        endPointSlider.setValue(currentTime);
+        endPointSlider.setValue((double) currentTime / totalTime * 100);
         endTimeMinute.setText(String.format("%02d", currentTimeMinute));
         endTimeSecond.setText(String.format("%02d", currentTimeSecond));
     }
