@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -20,12 +21,23 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -69,8 +81,8 @@ public class SongChartController implements Initializable {
 	private HBox searchContainer;
 
 	private Member currentMember;
-	
-	//private Playlist playlist;
+
+	// private Playlist playlist;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -80,10 +92,20 @@ public class SongChartController implements Initializable {
 		} else {
 			System.out.println("Error: currentMember is null.");
 		}
-		
+
 		ranking.setCellValueFactory(new PropertyValueFactory<>("id"));
 		songName.setCellValueFactory(new PropertyValueFactory<>("name"));
 		artistName.setCellValueFactory(new PropertyValueFactory<>("artistName"));
+
+		tableView.setStyle("-fx-font-family: 'D2Coding'; -fx-font-size: 10pt;");
+
+		// TableView의 각 행에 대한 폰트 설정
+		tableView.setRowFactory(tv -> {
+			TableRow<Song> row = new TableRow<>();
+			row.setStyle("-fx-font-family: 'D2Coding'; -fx-font-size: 10pt;");
+			return row;
+		});
+		
 		
 		// 검색 컴포넌트 로드
 		try {
@@ -95,7 +117,6 @@ public class SongChartController implements Initializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		setListView();
 	}
 
@@ -104,23 +125,27 @@ public class SongChartController implements Initializable {
 	}
 
 	@FXML // 인기차트 → DashBoard 페이지 이동 이벤트 처리
-	private void goToDashboard_Action(ActionEvent event)  {
+	private void goToDashboard_Action(ActionEvent event) {
 		try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
-            Parent parent = loader.load();
-            
-            Stage newStage = new Stage();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
+			Parent parent = loader.load();
+
+			Stage newStage = new Stage();
 			Stage currentStage = (Stage) goToDashboard_BTN.getScene().getWindow();
-			
+
 			newStage.initModality(Modality.APPLICATION_MODAL);
 			newStage.setTitle("메인 화면");
-			newStage.setScene(new Scene(parent, 600, 464));
+			newStage.setScene(new Scene(parent, 800, 600));
+			Image icon = new Image(
+					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png"));
+			newStage.getIcons().add(icon);
 			newStage.show();
 			currentStage.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void setListView() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -129,17 +154,17 @@ public class SongChartController implements Initializable {
 
 		try {
 			// DBUtil 클래스를 사용하여 데이터베이스 연결
-            conn = DBUtil.getConnection();
+      conn = DBUtil.getConnection();
 			pstmt = conn.prepareStatement(
 				"SELECT " +
-						"ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
-						"s.song_id, s.song_name, s.song_file, s.click_count, a.album_cover, ar.artist_name " +
-						"FROM Song s " +
-						"LEFT OUTER JOIN Album a " +
-						"ON s.album_id = a.album_id " +
-						"LEFT OUTER JOIN Artist ar " +
-						"ON ar.artist_id = a.artist_id"
+		        "ROW_NUMBER() OVER (ORDER BY s.click_count DESC) AS ranking, " +
+		        "s.song_id, a.artist_name, s.song_name, s.click_count " +
+		        "FROM Song s " +
+		        "LEFT OUTER JOIN Artist a " +
+		        "ON s.artist_id = a.artist_id " +
+		        "ORDER BY s.click_count DESC, s.song_name ASC"
 		    );
+
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -169,7 +194,6 @@ public class SongChartController implements Initializable {
 						rs.getString("song_file"),
 						rs.getLong("click_count")
 				);
-
 				songs.add(song);
 			}
 			ObservableList<Song> songList = FXCollections.observableArrayList(songs);
@@ -177,7 +201,7 @@ public class SongChartController implements Initializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(rs, pstmt, conn); // 연결 닫기
+			DBUtil.close(pstmt, rs, conn); // 연결 닫기
 		}
 
 		ranking.setCellValueFactory(new PropertyValueFactory<Song, Integer>("ranking"));
@@ -196,8 +220,20 @@ public class SongChartController implements Initializable {
 							selectedSong.setClickCnt();
 
 							try {
+								Connection conn = DBUtil.getConnection();
+								PreparedStatement pstmt = conn.prepareStatement("SELECT click_count FROM Song WHERE song_id=?");
+								pstmt.setLong(1, selectedSong.getId());
+								ResultSet rs = pstmt.executeQuery();
+
+								if(rs.next()) {
+									PreparedStatement updatePstmt = conn.prepareStatement("UPDATE Song SET click_count=? WHERE song_id=?");
+									updatePstmt.setInt(1, rs.getInt("click_count")+1);
+									updatePstmt.setLong(2, selectedSong.getId());
+									updatePstmt.executeUpdate();
+								}
+
 								Stage newStage = new Stage();
-								//Stage currentStage = (Stage) playButton.getScene().getWindow();
+								// Stage currentStage = (Stage) playButton.getScene().getWindow();
 
 								FXMLLoader loader = new FXMLLoader(getClass().getResource("playview.fxml"));
 								Parent playView = loader.load();
@@ -209,12 +245,14 @@ public class SongChartController implements Initializable {
 								newStage.setTitle("Play Music!");
 								newStage.setScene(scene);
 								newStage.showAndWait();
-                                //stage.hide();
+								// stage.hide();
 
-							} catch (IOException e) {
+							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						});
+						Font font = Font.font("D2Coding Bold", 18);
+						playButton.setFont(font);
 					}
 
 					// 셸 Rendering
@@ -238,40 +276,69 @@ public class SongChartController implements Initializable {
 				return new TableCell<>() {
 					private final Button addButton = new Button("+");
 					{
-						// 버튼 클릭 시 이벤트 처리
 						addButton.setOnAction(event -> {
 							Song selectedSong = getTableView().getItems().get(getIndex());
-							Connection conn = null;
-							try {
-								conn = DBUtil.getConnection();
-								Playlist playlist = getCurrentMemberPlaylist(currentMember.getId(), conn);
+		                    try {
+		                        FXMLLoader loader = new FXMLLoader(getClass().getResource("playlistSelection.fxml"));
+		                        Parent parent = loader.load();
 
-								if(playlist==null) System.out.println("null");
-								else System.out.println("not null");
+		                        PlaylistSelectionController controller = loader.getController();
+		                        controller.setSongId(selectedSong.getId());
+		                        controller.setCurrentMember(currentMember);  // 현재 멤버 설정
 
-								if (playlist != null) {
-									// 재생 목록에 노래 추가
-//									playlist.addSong(selectedSong.getId());
+		                        Stage stage = new Stage();
+		                        stage.initModality(Modality.APPLICATION_MODAL);
+		                        stage.setTitle("플레이리스트 선택");
+		                        Image icon = new Image(
+		            	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+		                        stage.getIcons().add(icon);
+		                        stage.setScene(new Scene(parent));
+		                        stage.showAndWait();
+		                    } catch (IOException e) {
+		                        e.printStackTrace();
+		                    }
+		                });
+		                Font font = Font.font("D2Coding Bold", 18);
+		                addButton.setFont(font);
+		            }
 
-									// 데이터베이스 update
-									updatePlaylist(playlist, selectedSong, conn);
+		            @Override
+		            protected void updateItem(Void item, boolean empty) {
+		                super.updateItem(item, empty);
+		                if (empty) setGraphic(null);
+		                else {
+		                    setGraphic(addButton);
+		                    setAlignment(Pos.CENTER);
+		                }
+		            }
+		        };
+		    }
+		});
+
+		likebtn.setCellFactory(new Callback<>() {
+			@Override
+			public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
+				return new TableCell<>() {
+					private final Button likeButton = new Button();
+					{
+						// 버튼 클릭 시 이벤트 처리
+						likeButton.setOnAction(event -> {
+							Song selectedSong = getTableView().getItems().get(getIndex());
+							if (currentMember != null) {
+								if (likeButton.getText().equals("♡")) {
+									likeButton.setText("❤");
+									likeSong(selectedSong.getId(), currentMember.getId());
+									System.out.println("selectedSong.getName() = " + selectedSong.getName());
 								} else {
-									// 새로운 재생목록 생성
-									playlist = new Playlist(generateNewPlaylistId(conn), "Default Playlist", new ArrayList<Long>(),
-											currentMember.getId());
-
-									insertPlayList(playlist, conn);
-//									playlist.addSong(selectedSong.getId());
-
-									// 데이터베이스 update
-									updatePlaylist(playlist, selectedSong, conn);
+									likeButton.setText("♡");
+									cancelLike(selectedSong.getId(), currentMember.getId());
 								}
-							} catch (Exception e) {
-								e.printStackTrace();
-							} finally {
-								DBUtil.close(conn); // 연결 종료
-	                        }
+							} else {
+								System.out.println("로그인이 필요합니다.");
+							}
 						});
+						Font font = Font.font("D2Coding Bold", 18);
+						likeButton.setFont(font);
 					}
 
 					// 셸 Rendering
@@ -281,40 +348,19 @@ public class SongChartController implements Initializable {
 						if (empty)
 							setGraphic(null);
 						else {
-							setGraphic(addButton);
+							Song selectedSong = getTableView().getItems().get(getIndex());
+							if (isSongLikedByUser(selectedSong.getId(), currentMember.getId())) {
+								likeButton.setText("❤");
+							} else {
+								likeButton.setText("♡");
+							}
+							setGraphic(likeButton);
 							setAlignment(Pos.CENTER);
 						}
 					}
 				};
 			}
 		});
-
-		likeBtn.setCellFactory(new Callback<>() {
-            @Override
-            public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
-                return new TableCell<>() {
-                    private final Button likeButton = new Button("❤");
-                    {
-                        // 버튼 클릭 시 이벤트 처리
-                        likeButton.setOnAction(event -> {
-                            Song selectedSong = getTableView().getItems().get(getIndex());
-                            System.out.println("selectedSong.getName() = " + selectedSong.getName());
-                        });
-                    }
-
-                    // 셸 Rendering
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if(empty) setGraphic(null);
-                        else {
-                            setGraphic(likeButton);
-                            setAlignment(Pos.CENTER);
-                        }
-                    }
-                };
-            }
-        });
 
 		editBtn.setCellFactory(new Callback<>() {
 			@Override
@@ -369,6 +415,7 @@ public class SongChartController implements Initializable {
 		PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Playlist WHERE member_id=?");
 		pstmt.setString(1, memberId);
 		ResultSet rs = pstmt.executeQuery();
+		int num = 0;
 
 		if (rs.next()) {
 			// 재생 목록이 존재하면 Playlist 객체를 만들어서 반환
@@ -378,7 +425,8 @@ public class SongChartController implements Initializable {
 			for (BigDecimal bd : songs) {
 				songList.add(bd.longValue());
 			}
-			return new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), songList, rs.getString("member_id"));
+			return new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), songList,
+					rs.getString("member_id"), ++num, LocalDate.now());
 		} else {
 			return null;
 		}
@@ -402,7 +450,7 @@ public class SongChartController implements Initializable {
 		try {
 			PreparedStatement pstmt = conn.prepareStatement("UPDATE Playlist SET Song = ? WHERE playlist_id = ?");
 
-			if(!playlist.getSongList().contains(selectedSong.getId())) {
+			if (!playlist.getSongList().contains(selectedSong.getId())) {
 				playlist.getSongList().add(selectedSong.getId());
 
 				Long[] newSongs = playlist.getSongList().toArray(new Long[0]);
@@ -410,12 +458,12 @@ public class SongChartController implements Initializable {
 				ArrayDescriptor desc = ArrayDescriptor.createDescriptor("SONG_ARRAY", conn);
 				ARRAY newSongArray = new ARRAY(desc, conn, newSongs);
 				pstmt.setArray(1, newSongArray);
-				pstmt.setLong(2, playlist.getPlaylistID());
+				pstmt.setLong(2, playlist.getPlaylistId());
 				pstmt.executeUpdate();
 				pstmt.close();
 				System.out.println("successful add!");
 			}
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			System.out.println("Playlist not updated successfully");
 			e.printStackTrace();
 		}
@@ -425,9 +473,80 @@ public class SongChartController implements Initializable {
 	private void insertPlayList(Playlist playlist, Connection conn) throws SQLException {
 		PreparedStatement pstmt = conn
 				.prepareStatement("INSERT INTO Playlist(playlist_id, playlist_name, member_id) VALUES (?, ?, ?)");
-		pstmt.setLong(1, playlist.getPlaylistID());
+		pstmt.setLong(1, playlist.getPlaylistId());
 		pstmt.setString(2, playlist.getPlaylistName());
 		pstmt.setString(3, playlist.getMemberId());
 		pstmt.executeQuery();
+	}
+
+	// 좋아요 취소 로직 추가
+	private void cancelLike(long songId, String memberId) {
+		try {
+			Connection conn = DBUtil.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement("DELETE FROM LIKES WHERE SONG_ID = ? AND MEMBER_ID = ?");
+			pstmt.setLong(1, songId);
+			pstmt.setString(2, memberId);
+			int deletedRows = pstmt.executeUpdate();
+
+			if (deletedRows > 0) {
+				// DB에서 좋아요 정보 삭제 성공
+				System.out.println("좋아요 취소 성공");
+			} else {
+				// DB에서 좋아요 정보 삭제 실패
+				System.out.println("좋아요 취소 실패");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void likeSong(long songId, String memberId) {
+		try {
+			Connection conn = DBUtil.getConnection();
+			PreparedStatement pstmt;
+			ResultSet rs;
+
+			// 현재 사용자가 해당 곡에 좋아요를 눌렀는지 확인
+			pstmt = conn.prepareStatement("SELECT * FROM LIKES WHERE SONG_ID = ? AND MEMBER_ID = ?");
+			pstmt.setLong(1, songId);
+			pstmt.setString(2, memberId);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				// 좋아요를 이미 누른 경우, 좋아요를 취소하고 DB에서 해당 정보 삭제
+				cancelLike(songId, memberId);
+			} else {
+				// 좋아요를 누르지 않은 경우, 좋아요 정보를 추가하고 DB에 저장
+				pstmt = conn.prepareStatement("INSERT INTO LIKES (SONG_ID, MEMBER_ID) VALUES (?, ?)");
+				pstmt.setLong(1, songId);
+				pstmt.setString(2, memberId);
+				int insertedRows = pstmt.executeUpdate();
+
+				if (insertedRows > 0) {
+					// DB에 좋아요 정보 추가 성공
+					System.out.println("좋아요 추가 성공");
+				} else {
+					// DB에 좋아요 정보 추가 실패
+					System.out.println("좋아요 추가 실패");
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	// 좋아요 상태 확인 메서드 추가
+	private boolean isSongLikedByUser(long songId, String memberId) {
+		try (Connection conn = DBUtil.getConnection();
+				PreparedStatement pstmt = conn
+						.prepareStatement("SELECT * FROM LIKES WHERE SONG_ID = ? AND MEMBER_ID = ?")) {
+			pstmt.setLong(1, songId);
+			pstmt.setString(2, memberId);
+			ResultSet rs = pstmt.executeQuery();
+			return rs.next(); // 좋아요가 존재하면 true를 반환
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

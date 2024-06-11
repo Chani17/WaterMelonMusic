@@ -11,39 +11,53 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="464.0" prefWidth="600.0"
+<AnchorPane prefHeight="600.0" prefWidth="800.0"
 	style="-fx-background-color: #FFFFFF;"
 	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="kosa.watermelon.watermelonmusic.DashboardController">
 	<Label fx:id="focusLabel" layoutX="19.0" layoutY="1.0"
 		prefHeight="0.0" prefWidth="0.0" />
 	<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d8ffd5"
-		height="127.0" stroke="#d8ffd5" strokeType="INSIDE" width="600.0" />
-	<ImageView fx:id="logo_ImageView" fitHeight="173.0"
-		fitWidth="219.0" layoutX="-7.0" layoutY="-18.0" pickOnBounds="true"
+		height="164.0" stroke="#d8ffd5" strokeType="INSIDE" width="800.0" />
+	<ImageView fx:id="logo_ImageView" fitHeight="127.0"
+		fitWidth="129.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true"
 		preserveRatio="true">
 		<image>
 			<Image
-				url="@kosa/watermelon/watermelonmusic/watermelon_logo.png" />
+				url="@kosa/watermelon/watermelonmusic/watermelon_logo_only.png" />
 		</image>
 	</ImageView>
-	<TextField fx:id="userNAME_TextField" layoutX="190.0"
-		layoutY="76.0" prefHeight="22.0" prefWidth="134.0" />
-	<Text layoutX="330.0" layoutY="91.0" strokeType="OUTSIDE"
-		strokeWidth="0.0" text="님 로그인해주셔서 감사합니다."
-		wrappingWidth="218.6937255859375">
+	<ImageView fx:id="logoText_ImageView" fitHeight="46.0"
+		fitWidth="390.0" layoutX="230.0" layoutY="30.0" pickOnBounds="true"
+		preserveRatio="true">
+		<image>
+			<Image
+				url="@kosa/watermelon/watermelonmusic/watermelon_logo_text.png" />
+		</image>
+	</ImageView>
+	<TextField fx:id="userNAME_TextField"
+		alignment="CENTER_RIGHT" layoutX="237.0" layoutY="117.0"
+		prefHeight="22.0" prefWidth="118.0" text="nickname_Text">
+		<font>
+			<Font name="D2Coding" size="13.0" />
+		</font>
+	</TextField>
+	<Text layoutX="360.0" layoutY="133.0" strokeType="OUTSIDE"
+		strokeWidth="0.0" text="님 로그인해 주셔서 감사합니다."
+		wrappingWidth="201.89373779296875">
 		<font>
 			<Font name="D2Coding" size="13.0" />
 		</font>
 	</Text>
-	<Button fx:id="logout_BTN" layoutX="510.0" layoutY="22.0"
+
+	<Button fx:id="logout_BTN" layoutX="686.0" layoutY="38.0"
 		mnemonicParsing="false" onAction="#logout_Action" prefHeight="30.0"
-		prefWidth="80.0" text="로그아웃">
+		prefWidth="99.0" text="로그아웃">
 		<font>
 			<Font name="D2Coding" size="12.0" />
 		</font>
 	</Button>
-	<VBox layoutX="90.0" layoutY="168.0" prefHeight="127.0"
+	<VBox layoutX="106.0" layoutY="222.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
 			<ImageView fx:id="SongChart_ImageView" fitHeight="94.0"
@@ -61,7 +75,7 @@
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="250.0" layoutY="168.0" prefHeight="127.0"
+	<VBox layoutX="350.0" layoutY="222.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
 			<ImageView fx:id="Search_ImageView" fitHeight="94.0"
@@ -79,7 +93,7 @@
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="410.0" layoutY="315.0" prefHeight="127.0"
+	<VBox layoutX="596.0" layoutY="411.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
 			<ImageView fx:id="PostingPage_ImageView" fitHeight="94.0"
@@ -97,11 +111,11 @@
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="410.0" layoutY="168.0" prefHeight="127.0"
+	<VBox layoutX="596.0" layoutY="222.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
-			<ImageView fx:id="MusicEdit_ImageView" fitHeight="94.0"
-				fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
+			<ImageView fx:id="EditSongPlaylist_ImageView" fitHeight="94.0"
+                       fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
 				<image>
 					<Image
 						url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/editSong_icon.png" />
@@ -115,7 +129,7 @@
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="90.0" layoutY="315.0" prefHeight="127.0"
+	<VBox layoutX="106.0" layoutY="411.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
 			<ImageView fx:id="MyPage_ImageView" fitHeight="94.0"
@@ -133,7 +147,7 @@
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="250.0" layoutY="315.0" prefHeight="127.0"
+	<VBox layoutX="350.0" layoutY="411.0" prefHeight="127.0"
 		prefWidth="82.0">
 		<children>
 			<ImageView fx:id="Playlist_ImageView" fitHeight="94.0"

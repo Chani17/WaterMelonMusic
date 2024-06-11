@@ -30,12 +30,19 @@ public class SearchController {
     
     @FXML private ImageView search_ImageView;
 
-    private TableView<Song> tableView;
-
+    @FXML
+    private TableView<Song> tableView; // tableView 변수 선언
+    
     public void setTableView(TableView<Song> tableView) {
-        this.tableView = tableView;
+        this.tableView = tableView; // tableView 설정 메서드 정의
     }
-
+    
+    private Member currentMember;
+ 
+    public void setMember(Member member) {
+		this.currentMember = member;
+    }
+    
     @FXML
     public void initialize() {
         search_TextField.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);");
@@ -64,8 +71,7 @@ public class SearchController {
         tableView.setItems(searchResults);
 		System.out.println("검색된 단어 : " + searchSong);
 	}
-    
-    // TemporaryDB.java에 있던 searchSongs 메서드를 옮김
+
     private List<Song> searchSongs(String keyword) {
         List<Song> result = new ArrayList<>();
         String query = "SELECT " +

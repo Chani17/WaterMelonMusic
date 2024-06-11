@@ -75,13 +75,12 @@ public class LoginController implements Initializable {
 
 				// DashboardController 인스턴스를 가져와서 멤버 설정
 				DashboardController controller = loader.getController();
-				//SongChartController controller = loader.getController();
-				//controller.setMember(member);
-				//Scene scene = new Scene(songChart);
-
-				//newStage.setTitle("인기 차트!");
+				controller.setMember(member);
 				newStage.setTitle("메인 화면");
 				newStage.setScene(scene);
+				Image icon = new Image(
+		        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+				newStage.getIcons().add(icon);
 				newStage.show();
 
 				stage.close();
@@ -104,10 +103,18 @@ public class LoginController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("adminLogin.fxml"));
             Parent root = loader.load();
+            
+            // Get the AdminLoginController
+            AdminLoginController adminLoginController = loader.getController();
+            adminLoginController.setLoginControllerStage((Stage) loginBtn.getScene().getWindow());
+            
             Stage newStage = new Stage();
             newStage.initModality(Modality.APPLICATION_MODAL); // 새로운 Stage를 모달로 설정
             newStage.setTitle("관리자 로그인");
             newStage.setScene(new Scene(root));
+            Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+            newStage.getIcons().add(icon);
             newStage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
