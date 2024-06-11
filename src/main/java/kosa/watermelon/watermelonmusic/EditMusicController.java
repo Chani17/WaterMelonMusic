@@ -241,6 +241,9 @@ public class EditMusicController implements Initializable {
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setTitle("Enter Song Name");
+            Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+			popupStage.getIcons().add(icon);
             popupStage.setScene(new Scene(root));
             popupStage.showAndWait();
 

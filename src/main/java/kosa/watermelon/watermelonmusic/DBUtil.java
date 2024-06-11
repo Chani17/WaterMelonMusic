@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBUtil {
-	private static final String URL = "jdbc:oracle:thin:@192.168.210.63:1521:xe"; // DB URL
+	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe"; // DB URL
 	private static final String USER = "admin"; // DB 사용자명
 	private static final String PASSWORD = "1234"; // DB 비밀번호
 

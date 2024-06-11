@@ -118,6 +118,7 @@ public class DashboardController implements Initializable {
                 ((SearchController) controller).setTableView(tableView);
                 ((SearchController) controller).setMember(currentMember);
             } else if (controller instanceof EditSongPlaylistController) {
+            	((EditSongPlaylistController) controller).setMember(currentMember);
             	newStage.setTitle("음악 편집 리스트");
             } else if (controller instanceof MyPageController) {
                 newStage.setTitle("마이페이지");
@@ -127,8 +128,6 @@ public class DashboardController implements Initializable {
                 ((PlaylistUserController) controller).setMember(currentMember);
             } else if (controller instanceof PostingPageController) {
                 newStage.setTitle("게시판");
-            } else if (controller instanceof EditSongPlaylistController) {
-                ((EditSongPlaylistController) controller).setMember(currentMember);
             }
             Image icon = new Image(
                     getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정

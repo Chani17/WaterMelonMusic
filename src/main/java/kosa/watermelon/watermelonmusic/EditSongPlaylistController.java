@@ -43,6 +43,7 @@ public class EditSongPlaylistController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+    	this.currentMember = SessionManager.getInstance().getCurrentMember();
         delete.setOnAction(this::handleDeleteAction);
         deleteAll.setOnAction(this::handleDeleteAllAction);
         playAllButton.setOnAction(this::playAllSongs);

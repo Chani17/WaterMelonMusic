@@ -186,6 +186,7 @@ public class AdminPageController implements Initializable {
             Image icon = new Image(
                     getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
             currentStage.getIcons().add(icon);
+            currentStage.setTitle("WaterMelon Music!");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -201,9 +201,11 @@ public class PlaylistUserController implements Initializable {
 
             // 새로운 스테이지를 생성하고 PlayView.fxml을 설정합니다.
             Stage stage = new Stage();
-            stage.setTitle("Play Songs");
+            stage.setTitle("플레이리스트 재생");
             stage.setScene(new Scene(parent));
-            Image icon = new Image(getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png"));
+            Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+			stage.getIcons().add(icon);
             stage.show();
 
         } catch (IOException e) {

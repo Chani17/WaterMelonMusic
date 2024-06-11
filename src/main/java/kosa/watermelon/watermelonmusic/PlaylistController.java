@@ -199,10 +199,12 @@ public class PlaylistController implements Initializable {
             Queue<Long> songQueue = new ArrayDeque<>();
             songQueue.add(selectedSong.getSongId()); // Assuming PlaylistSong has getSongId method
             controller.setSongQueue(songQueue, "SONG");
-
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Playing Song");
+            stage.setTitle(selectedSong.getSongName() + " - " + selectedSong.getArtistName());
+            Image icon = new Image(
+	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+			stage.getIcons().add(icon);
             stage.setScene(new Scene(parent, 357, 432));
             stage.show();
 
