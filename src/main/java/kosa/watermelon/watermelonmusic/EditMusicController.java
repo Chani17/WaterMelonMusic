@@ -15,6 +15,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -51,7 +52,10 @@ public class EditMusicController implements Initializable {
     private Song song;
     private Member currentMember;
     private boolean isSliderChanging = false;
-    private boolean isPlaying = true;
+    private boolean isPlayingStart = false;
+    private boolean isPlayingEnd = false;
+    private double lastStartPosition = 0;
+    private double lastEndPosition = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -59,12 +63,14 @@ public class EditMusicController implements Initializable {
         startPointSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (!isSliderChanging) {
                 updateStartTime(newValue.doubleValue());
+                lastStartPosition = newValue.doubleValue();
             }
         });
 
         endPointSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (!isSliderChanging) {
                 updateEndTime(newValue.doubleValue());
+                lastEndPosition = newValue.doubleValue();
             }
         });
 
@@ -73,12 +79,20 @@ public class EditMusicController implements Initializable {
         startPointSlider.setOnMouseReleased(event -> {
             isSliderChanging = false;
             updateStartTime(startPointSlider.getValue());
+            lastStartPosition = startPointSlider.getValue();
+            if (isPlayingStart) {
+                playFromStart();
+            }
         });
 
         endPointSlider.setOnMousePressed(event -> isSliderChanging = true);
         endPointSlider.setOnMouseReleased(event -> {
             isSliderChanging = false;
             updateEndTime(endPointSlider.getValue());
+            lastEndPosition = endPointSlider.getValue();
+            if (isPlayingEnd) {
+                playFromEnd();
+            }
         });
 
         // 플레이어 제어 버튼에 대한 이벤트 핸들러 설정
@@ -169,42 +183,51 @@ public class EditMusicController implements Initializable {
 
     private void stopStart() {
         if (startMediaPlayer != null) {
+            lastStartPosition = startPointSlider.getValue();
+            System.out.println("stop = " + lastStartPosition);
             startMediaPlayer.stop();
+            isPlayingStart = false;
         }
     }
 
     private void pauseStart() {
         if (startMediaPlayer != null) {
             startMediaPlayer.pause();
+            isPlayingStart = false;
         }
     }
 
     private void stopEnd() {
         if (endMediaPlayer != null) {
+            lastEndPosition = endPointSlider.getValue();
             endMediaPlayer.stop();
+            isPlayingEnd = false;
         }
     }
 
     private void pauseEnd() {
         if (endMediaPlayer != null) {
             endMediaPlayer.pause();
+            isPlayingEnd = false;
         }
     }
 
     private void playFromEnd() {
         if (endMediaPlayer != null) {
-//            stopStart();
-            endMediaPlayer.seek(endMediaPlayer.getTotalDuration().multiply(endPointSlider.getValue() / 100.0));
+            System.out.println("lastEndPosition = " + lastEndPosition);
+            endMediaPlayer.seek(Duration.seconds(lastEndPosition));
             endMediaPlayer.play();
+            isPlayingEnd = true;
             endMediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updateEndPlayTime());
         }
     }
 
     private void playFromStart() {
         if (startMediaPlayer != null) {
-//            stopEnd();
-            startMediaPlayer.seek(startMediaPlayer.getTotalDuration().multiply(startPointSlider.getValue() / 100.0));
+            System.out.println("lastStartPosition = " + lastStartPosition);
+            startMediaPlayer.seek(Duration.seconds(lastStartPosition));
             startMediaPlayer.play();
+            isPlayingStart = true;
             startMediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updateStartPlayTime());
         }
     }
