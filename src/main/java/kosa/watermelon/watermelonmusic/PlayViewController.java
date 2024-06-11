@@ -10,6 +10,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.BFILE;
 
@@ -58,6 +60,18 @@ public class PlayViewController implements Initializable {
         playButton.setOnAction(event -> togglePlayPause());
         stopButton.setOnAction(event -> stopSong());
         pauseButton.setOnAction(event -> pauseSong());
+
+        // 창 닫힘 이벤트 핸들러 추가
+        Platform.runLater(() -> {
+            Stage stage = (Stage) playButton.getScene().getWindow();
+            stage.setOnCloseRequest(this::handleWindowClose);
+        });
+    }
+
+    private void handleWindowClose(WindowEvent event) {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
     }
 
     public void setSongQueue(Queue<Long> songIds) {
