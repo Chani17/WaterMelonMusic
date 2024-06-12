@@ -155,7 +155,7 @@ public class PostingPageController {
             mppStmt = conn.prepareStatement(mppSql);
             mppStmt.setLong(1, playlist.getPlaylistId());
             System.out.println("after newPostId = " + newPostId);
-            mppStmt.setLong(2, newPostId+1);
+            mppStmt.setLong(2, newPostId);
             mppStmt.setString(3, memberId);
             mppStmt.executeUpdate();
 
