@@ -77,7 +77,7 @@
 					<Image url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/postingPage_icon.png" />
 				</image>
 			</ImageView>
-			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0" text="게시판">
+			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0" text="포스팅">
 				<font>
 					<Font name="D2Coding" size="14.0" />
 				</font>

@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,6 +28,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -87,35 +89,68 @@ public class PlaylistDetailController {
         });
 
         playBTNColumn.setCellFactory(new Callback<>() {
-            @Override
-            public TableCell<Song, Void> call(final TableColumn<Song, Void> param) {
-                return new TableCell<>() {
-                    private final Button playButton = new Button();
+			@Override
+			public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
+				return new TableCell<>() {
+					private final Button playButton = new Button("▶");
+					{
+						// 버튼 클릭 시 이벤트 처리
+						playButton.setOnAction(event -> {
+							Song selectedSong = getTableView().getItems().get(getIndex());
+							selectedSong.setClickCnt();
 
-                    {
-                        Image btnImg = new Image(getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/playButton.png"));
-                        ImageView imageView = new ImageView(btnImg);
-                        imageView.setFitHeight(20);
-                        imageView.setFitWidth(20);
-                        playButton.setGraphic(imageView);
-                        playButton.setOnAction(event -> {
-                            Song selectedSong = getTableView().getItems().get(getIndex());
-                            System.out.println(selectedSong.getName() + "를 재생합니다.");
-                        });
-                    }
+							try {
+								Connection conn = DBUtil.getConnection();
+								PreparedStatement pstmt = conn.prepareStatement("SELECT click_count FROM Song WHERE song_id=?");
+								pstmt.setLong(1, selectedSong.getId());
+								ResultSet rs = pstmt.executeQuery();
 
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            setGraphic(playButton);
-                        }
-                    }
-                };
-            }
-        });
+								if(rs.next()) {
+									PreparedStatement updatePstmt = conn.prepareStatement("UPDATE Song SET click_count=? WHERE song_id=?");
+									updatePstmt.setInt(1, rs.getInt("click_count")+1);
+									updatePstmt.setLong(2, selectedSong.getId());
+									updatePstmt.executeUpdate();
+								}
+
+								Stage newStage = new Stage();
+								// Stage currentStage = (Stage) playButton.getScene().getWindow();
+
+								FXMLLoader loader = new FXMLLoader(getClass().getResource("playview.fxml"));
+								Parent playView = loader.load();
+								PlayViewController controller = loader.getController();
+								controller.setSongId(selectedSong.getId());
+								Scene scene = new Scene(playView);
+
+								newStage.setTitle(selectedSong.getName() + " - " + selectedSong.getArtist());
+								Image icon = new Image(
+						        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+								newStage.getIcons().add(icon);
+								newStage.setScene(scene);
+								newStage.showAndWait();
+								// stage.hide();
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						});
+						Font font = Font.font("D2Coding Bold", 18);
+						playButton.setFont(font);
+					}
+
+					// 셸 Rendering
+					@Override
+					protected void updateItem(Void item, boolean empty) {
+						super.updateItem(item, empty);
+						if (empty)
+							setGraphic(null);
+						else {
+							setGraphic(playButton);
+							setAlignment(Pos.CENTER);
+						}
+					}
+				};
+			}
+		});
     }
     
     public void setPlaylistId(long playlistId) {
@@ -219,37 +254,6 @@ public class PlaylistDetailController {
         } finally {
             DBUtil.close(pstmt, rs, conn);
         }
-
-        playBTNColumn.setCellFactory(new Callback<>() {
-            @Override
-            public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
-                return new TableCell<>() {
-                    private final Button playButton = new Button();
-
-                    {
-                        Image btnImg = new Image(getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/playButton.png"));
-                        ImageView imageView = new ImageView(btnImg);
-                        imageView.setFitHeight(20);
-                        imageView.setFitWidth(20);
-                        playButton.setGraphic(imageView);
-                        playButton.setOnAction(event -> {
-                            Song selectedSong = getTableView().getItems().get(getIndex());
-                            System.out.println(selectedSong.getName() + "를 재생합니다.");
-                        });
-                    }
-
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            setGraphic(playButton);
-                        }
-                    }
-                };
-            }
-        });
 
         songTableView.setItems(FXCollections.observableArrayList(playlistSongs));
     }
