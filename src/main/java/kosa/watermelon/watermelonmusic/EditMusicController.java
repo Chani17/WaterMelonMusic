@@ -260,13 +260,13 @@ public class EditMusicController implements Initializable {
 
                 slice(sourceFilePath, destinationFilePath, start, end);
                 Connection conn = DBUtil.getConnection();
-                PreparedStatement countPstmt = conn.prepareStatement("SELECT COUNT(*) FROM EDITSONG WHERE MEMBER_ID=?");
-                countPstmt.setString(1, currentMember.getId());
+                PreparedStatement countPstmt = conn.prepareStatement("SELECT COUNT(*) FROM EDITSONG");
+//                countPstmt.setString(1, currentMember.getId());
                 ResultSet rsCount = countPstmt.executeQuery();
 
                 long editSongId = 0L;
                 if (rsCount.next()) {
-                    editSongId = rsCount.getLong(1) + 1;  // Assuming you want to use the next ID
+                    editSongId = rsCount.getLong(1);  // Assuming you want to use the next ID
                     System.out.println("editSongId = " + editSongId);
                 }
 
