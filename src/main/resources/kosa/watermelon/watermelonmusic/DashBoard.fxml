@@ -10,116 +10,153 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosa.watermelon.watermelonmusic.DashboardController">
-	<Label fx:id="focusLabel" layoutX="19.0" layoutY="1.0" prefHeight="0.0" prefWidth="0.0" />
-	<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d8ffd5" height="164.0" stroke="#d8ffd5" strokeType="INSIDE" width="800.0" />
-	<ImageView fx:id="logo_ImageView" fitHeight="127.0" fitWidth="129.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+<AnchorPane prefHeight="600.0" prefWidth="800.0"
+	style="-fx-background-color: #FFFFFF;"
+	xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="kosa.watermelon.watermelonmusic.DashboardController">
+	<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d8ffd5"
+		height="164.0" stroke="#d8ffd5" strokeType="INSIDE" width="800.0" />
+	<ImageView fx:id="logo_ImageView" fitHeight="127.0"
+		fitWidth="129.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true"
+		preserveRatio="true">
 		<image>
-			<Image url="@kosa/watermelon/watermelonmusic/watermelon_logo_only.png" />
+			<Image
+				url="@kosa/watermelon/watermelonmusic/watermelon_logo_only.png" />
 		</image>
 	</ImageView>
-	<ImageView fx:id="logoText_ImageView" fitHeight="46.0" fitWidth="390.0" layoutX="230.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+	<ImageView fx:id="logoText_ImageView" fitHeight="46.0"
+		fitWidth="390.0" layoutX="230.0" layoutY="30.0" pickOnBounds="true"
+		preserveRatio="true">
 		<image>
 			<Image
 				url="@kosa/watermelon/watermelonmusic/watermelon_logo_text.png" />
 		</image>
 	</ImageView>
 	<Label fx:id="username" alignment="CENTER_RIGHT" layoutX="236.0"
-	layoutY="119.0" prefHeight="22.0" prefWidth="118.0"
-	text="nickname_Text">
+		layoutY="119.0" prefHeight="22.0" prefWidth="118.0"
+		text="nickname_Text">
 		<font>
 			<Font name="D2Coding" size="13.0" />
 		</font>
 	</Label>
-	<Text layoutX="364.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="님 로그인해 주셔서 감사합니다." wrappingWidth="201.89373779296875">
+	<Text layoutX="364.0" layoutY="134.0" strokeType="OUTSIDE"
+		strokeWidth="0.0" text="님 로그인해 주셔서 감사합니다."
+		wrappingWidth="201.89373779296875">
 		<font>
 			<Font name="D2Coding" size="13.0" />
 		</font>
 	</Text>
 
-	<Button fx:id="logout_BTN" layoutX="686.0" layoutY="38.0" mnemonicParsing="false" onAction="#logout_Action" prefHeight="30.0" prefWidth="99.0" text="로그아웃">
+	<Button fx:id="logout_BTN" layoutX="686.0" layoutY="38.0"
+		mnemonicParsing="false" onAction="#logout_Action" prefHeight="30.0"
+		prefWidth="99.0" text="로그아웃">
 		<font>
 			<Font name="D2Coding" size="12.0" />
 		</font>
 	</Button>
-	<VBox layoutX="106.0" layoutY="222.0" prefHeight="127.0" prefWidth="82.0">
+	<VBox layoutX="106.0" layoutY="222.0" prefHeight="127.0"
+		prefWidth="82.0">
 		<children>
-			<ImageView fx:id="SongChart_ImageView" fitHeight="94.0" fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
+			<ImageView fx:id="SongChart_ImageView" fitHeight="94.0"
+				fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
 				<image>
-					<Image url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/songChart_icon.png" />
+					<Image
+						url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/songChart_icon.png" />
 				</image>
 			</ImageView>
-			<Label alignment="CENTER" contentDisplay="CENTER" prefHeight="32.0" prefWidth="95.0" text="인기 차트">
+			<Label alignment="CENTER" contentDisplay="CENTER"
+				prefHeight="32.0" prefWidth="95.0" text="인기 차트">
 				<font>
 					<Font name="D2Coding" size="14.0" />
 				</font>
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="350.0" layoutY="222.0" prefHeight="127.0" prefWidth="82.0">
+	<VBox layoutX="350.0" layoutY="222.0" prefHeight="127.0"
+		prefWidth="82.0">
 		<children>
-			<ImageView fx:id="Search_ImageView" fitHeight="94.0" fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
+			<ImageView fx:id="Search_ImageView" fitHeight="94.0"
+				fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
 				<image>
-					<Image url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/search_icon.png" />
+					<Image
+						url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/search_icon.png" />
 				</image>
 			</ImageView>
-			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0" text="검색">
+			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0"
+				text="검색">
 				<font>
 					<Font name="D2Coding" size="14.0" />
 				</font>
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="596.0" layoutY="411.0" prefHeight="127.0" prefWidth="82.0">
+	<VBox layoutX="596.0" layoutY="222.0" prefHeight="127.0"
+		prefWidth="82.0">
 		<children>
-			<ImageView fx:id="PostingPage_ImageView" fitHeight="94.0" fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
+			<ImageView fx:id="EditSongPlaylist_ImageView"
+				fitHeight="94.0" fitWidth="99.0" pickOnBounds="true"
+				preserveRatio="true">
 				<image>
-					<Image url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/postingPage_icon.png" />
+					<Image
+						url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/editSong_icon.png" />
 				</image>
 			</ImageView>
-			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0" text="포스팅">
+			<Label alignment="CENTER" prefHeight="32.0" prefWidth="119.0"
+				text="편집 리스트">
 				<font>
 					<Font name="D2Coding" size="14.0" />
 				</font>
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="596.0" layoutY="222.0" prefHeight="127.0" prefWidth="82.0">
+	<VBox layoutX="106.0" layoutY="411.0" prefHeight="127.0"
+		prefWidth="82.0">
 		<children>
-			<ImageView fx:id="EditSongPlaylist_ImageView" fitHeight="94.0" fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
+			<ImageView fx:id="MyPage_ImageView" fitHeight="94.0"
+				fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
 				<image>
-					<Image url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/editSong_icon.png" />
+					<Image
+						url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/myPage_icon.png" />
 				</image>
 			</ImageView>
-			<Label alignment="CENTER" prefHeight="32.0" prefWidth="119.0" text="편집 리스트">
+			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0"
+				text="마이페이지">
 				<font>
 					<Font name="D2Coding" size="14.0" />
 				</font>
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="106.0" layoutY="411.0" prefHeight="127.0" prefWidth="82.0">
+	<VBox layoutX="350.0" layoutY="411.0" prefHeight="127.0"
+		prefWidth="82.0">
 		<children>
-			<ImageView fx:id="MyPage_ImageView" fitHeight="94.0" fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
+			<ImageView fx:id="Playlist_ImageView" fitHeight="94.0"
+				fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
 				<image>
-					<Image url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/myPage_icon.png" />
+					<Image
+						url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/playlist_icon.png" />
 				</image>
 			</ImageView>
-			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0" text="마이페이지">
+			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0"
+				text="플레이리스트">
 				<font>
 					<Font name="D2Coding" size="14.0" />
 				</font>
 			</Label>
 		</children>
 	</VBox>
-	<VBox layoutX="350.0" layoutY="411.0" prefHeight="127.0" prefWidth="82.0">
+	<VBox layoutX="596.0" layoutY="411.0" prefHeight="127.0"
+		prefWidth="82.0">
 		<children>
-			<ImageView fx:id="Playlist_ImageView" fitHeight="94.0" fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
+			<ImageView fx:id="PostingPage_ImageView" fitHeight="94.0"
+				fitWidth="99.0" pickOnBounds="true" preserveRatio="true">
 				<image>
-					<Image url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/playlist_icon.png" />
+					<Image
+						url="@kosa/watermelon/watermelonmusic/image/dashBoardIcon/postingPage_icon.png" />
 				</image>
 			</ImageView>
-			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0" text="플레이리스트">
+			<Label alignment="CENTER" prefHeight="32.0" prefWidth="95.0"
+				text="포스팅">
 				<font>
 					<Font name="D2Coding" size="14.0" />
 				</font>
