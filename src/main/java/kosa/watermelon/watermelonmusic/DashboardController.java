@@ -23,6 +23,7 @@ import javafx.stage.Stage;
  * 로그인 후 이동되는 페이지로, 다양한 기능으로의 접근을 제공함
  */
 public class DashboardController implements Initializable {
+	
 	@FXML private TableView<Song> tableView; // tableView 변수 정의
 	@FXML private ImageView logo_ImageView;
 	@FXML private ImageView logoText_ImageView;
@@ -38,10 +39,11 @@ public class DashboardController implements Initializable {
 	private Member currentMember;
 
 	/**
-     * 초기화 메서드 : FXML 파일이 로드된 후 호출됨
-     * @param url 초기화 URL
-     * @param resourceBundle 초기화 ResourceBundle
-     */
+	 * 초기화 메서드 : FXML 파일이 로드된 후 호출됨
+	 * 
+	 * @param url            초기화 URL
+	 * @param resourceBundle 초기화 ResourceBundle
+	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		this.currentMember = SessionManager.getInstance().getCurrentMember();
@@ -57,8 +59,8 @@ public class DashboardController implements Initializable {
 	}
 
 	/**
-     * 대시보드의 이미지를 로드하는 메서드
-     */
+	 * 대시보드의 이미지를 로드하는 메서드
+	 */
 	private void loadImages() {
 		Image logo_Icon = new Image(
 				getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png"));
@@ -88,8 +90,8 @@ public class DashboardController implements Initializable {
 	}
 
 	/**
-     * 각 이미지에 클릭 이벤트를 설정하는 메서드
-     */
+	 * 각 이미지에 클릭 이벤트를 설정하는 메서드
+	 */
 	private void setOnMouseClickEvents() {
 		SongChart_ImageView.setOnMouseClicked(event -> goToPage("songChart.fxml", SongChart_ImageView));
 		Search_ImageView.setOnMouseClicked(event -> goToPage("songChartwithSearch.fxml", Search_ImageView));
@@ -101,10 +103,11 @@ public class DashboardController implements Initializable {
 	}
 
 	/**
-     * 페이지 전환을 처리하는 메서드
-     * @param fxmlFile 이동할 FXML 파일의 이름
-     * @param sourceImageView 이벤트가 발생한 ImageView
-     */
+	 * 페이지 전환을 처리하는 메서드
+	 * 
+	 * @param fxmlFile        이동할 FXML 파일의 이름
+	 * @param sourceImageView 이벤트가 발생한 ImageView
+	 */
 	private void goToPage(String fxmlFile, ImageView sourceImageView) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
@@ -143,9 +146,10 @@ public class DashboardController implements Initializable {
 	}
 
 	/**
-     * 로그아웃 이벤트를 처리하는 메서드
-     * @param event 로그아웃 액션 이벤트
-     */
+	 * 로그아웃 이벤트를 처리하는 메서드
+	 * 
+	 * @param event 로그아웃 액션 이벤트
+	 */
 	@FXML
 	private void logout_Action(ActionEvent event) {
 		// 세션 초기화
@@ -169,11 +173,12 @@ public class DashboardController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
-     * 현재 로그인된 회원 정보를 설정하는 메서드
-     * @param member 현재 로그인된 회원 객체
-     */
+	 * 현재 로그인된 회원 정보를 설정하는 메서드
+	 * 
+	 * @param member 현재 로그인된 회원 객체
+	 */
 	public void setMember(Member member) {
 		this.currentMember = member;
 		if (this.currentMember == null) {
@@ -185,8 +190,8 @@ public class DashboardController implements Initializable {
 	}
 
 	/**
-     * 현재 로그인된 회원 정보를 로드하여 표시하는 메서드
-     */
+	 * 현재 로그인된 회원 정보를 로드하여 표시하는 메서드
+	 */
 	private void loadMemberInfo() {
 		if (currentMember != null) {
 			username.setText(currentMember.getNickname());
