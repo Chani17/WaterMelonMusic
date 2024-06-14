@@ -11,13 +11,22 @@ import java.sql.SQLException;
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.BFILE;
 
+/**
+ * MemberController 클래스 : 회원 정보를 관리하는 기능을 제공
+ */
 public class MemberController {
 
 	private static MemberController instance;
 
+	// MemberController의 기본 생성자
 	private MemberController() {
 	}
 
+	/**
+	 * MemberController의 인스턴스를 반환하는 메서드 (싱글톤 패턴)
+	 * 
+	 * @return MemberController 인스턴스
+	 */
 	public static MemberController getInstance() {
 		if (instance == null) {
 			instance = new MemberController();
@@ -25,10 +34,23 @@ public class MemberController {
 		return instance;
 	}
 
+	/**
+	 * 데이터베이스 연결을 반환하는 메서드
+	 * 
+	 * @return Connection 객체
+	 * @throws SQLException
+	 */
 	public static Connection getConnection() throws SQLException {
 		return DBUtil.getConnection();
 	}
 
+	/**
+	 * 회원 ID로 회원 정보를 가져오는 메서드
+	 * 
+	 * @param memberId 회원 ID
+	 * @return Member 객체
+	 * @throws IOException
+	 */
 	public Member getMemberById(String memberId) throws IOException {
 		String query = "SELECT MEMBER_ID, MEMBER_PW, EMAIL, NICKNAME, PROFILE_IMAGE, GENDER, BIRTH FROM MEMBER WHERE MEMBER_ID = ?";
 		Connection connection = null; // 변수를 선언하고 null로 초기화
@@ -56,6 +78,14 @@ public class MemberController {
 		return null;
 	}
 
+	/**
+	 * ResultSet에서 프로필 이미지를 BFILE로 읽어오는 메서드
+	 * 
+	 * @param resultSet ResultSet 객체
+	 * @return 프로필 이미지 바이트 배열
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private byte[] getProfileImage(ResultSet resultSet) throws SQLException, IOException {
 		BFILE bfile = ((OracleResultSet) resultSet).getBFILE("PROFILE_IMAGE");
 		if (bfile == null) {
@@ -69,6 +99,11 @@ public class MemberController {
 		}
 	}
 
+	/**
+	 * 회원 정보를 업데이트하는 메서드
+	 * 
+	 * @param updatedMember 업데이트할 회원 정보
+	 */
 	public void updateMember(Member updatedMember) {
 		String query = "UPDATE MEMBER SET MEMBER_PW=?, NICKNAME=? WHERE MEMBER_ID=?";
 		Connection connection = null; // 변수를 선언하고 null로 초기화
@@ -77,14 +112,7 @@ public class MemberController {
 			connection = getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, updatedMember.getPw());
-			// preparedStatement.setString(2, updatedMember.getEmail());
 			preparedStatement.setString(2, updatedMember.getNickname());
-			// preparedStatement.setString(4, updatedMember.getProfileImagePath()); //
-			// BFILE에 대한 파일 경로
-			// preparedStatement.setBytes(4, updatedMember.getProfileImage());
-			// preparedStatement.setString(4, updatedMember.getGender());
-			// preparedStatement.setDate(5,
-			// java.sql.Date.valueOf(updatedMember.getBirth()));
 			preparedStatement.setString(3, updatedMember.getId());
 
 			int rowsAffected = preparedStatement.executeUpdate();

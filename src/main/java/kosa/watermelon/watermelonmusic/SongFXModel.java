@@ -2,89 +2,96 @@ package kosa.watermelon.watermelonmusic;
 
 import javafx.beans.property.*;
 
+/**
+ * SongFXModel 클래스 : JavaFX와 함께 사용되는 곡 정보를 담는 모델 클래스
+ */
 public class SongFXModel {
-    private final LongProperty id;
-    private final StringProperty artist;
-    private final StringProperty albumName;
-    private final StringProperty songName;
-    private final LongProperty clickCnt;
-    private final StringProperty mediaSource;
 
-    public SongFXModel(long id,  String artist, String albumName, String songName, String mediaSource, long clickCnt) {
-        this.id = new SimpleLongProperty(id);
-        this.artist = new SimpleStringProperty(artist);
-        this.albumName = new SimpleStringProperty(albumName);
-        this.songName = new SimpleStringProperty(songName);
-        this.clickCnt = new SimpleLongProperty(clickCnt);
-        this.mediaSource = new SimpleStringProperty(mediaSource);
-    }
+	private final LongProperty id;
+	private final StringProperty artist;
+	private final StringProperty albumName;
+	private final StringProperty songName;
+	private final LongProperty clickCnt;
+	private final StringProperty mediaSource;
 
-    // Add getter and property method for albumName
-    public String getAlbumName() {
-        return albumName.get();
-    }
+	/**
+	 * 생성자: SongFXModel 객체 생성
+	 */
+	public SongFXModel(long id, String artist, String albumName, String songName, String mediaSource, long clickCnt) {
+		this.id = new SimpleLongProperty(id);
+		this.artist = new SimpleStringProperty(artist);
+		this.albumName = new SimpleStringProperty(albumName);
+		this.songName = new SimpleStringProperty(songName);
+		this.clickCnt = new SimpleLongProperty(clickCnt);
+		this.mediaSource = new SimpleStringProperty(mediaSource);
+	}
 
-    public StringProperty albumNameProperty() {
-        return albumName;
-    }
+	// Getter와 Setter 메서드들
+	public String getAlbumName() {
+		return albumName.get();
+	}
 
-    public long getId() {
-        return id.get();
-    }
+	public StringProperty albumNameProperty() {
+		return albumName;
+	}
 
-    public LongProperty idProperty() {
-        return id;
-    }
+	public long getId() {
+		return id.get();
+	}
 
-    public String getArtist() {
-        return artist.get();
-    }
+	public LongProperty idProperty() {
+		return id;
+	}
 
-    public StringProperty artistProperty() {
-        return artist;
-    }
+	public String getArtist() {
+		return artist.get();
+	}
 
-    public long getClickCnt() {
-        return clickCnt.get();
-    }
+	public StringProperty artistProperty() {
+		return artist;
+	}
 
-    public LongProperty clickCntProperty() {
-        return clickCnt;
-    }
+	public long getClickCnt() {
+		return clickCnt.get();
+	}
 
-    public String getMediaSource() {
-        return mediaSource.get();
-    }
+	public LongProperty clickCntProperty() {
+		return clickCnt;
+	}
 
-    public StringProperty mediaSourceProperty() {
-        return mediaSource;
-    }
+	public String getMediaSource() {
+		return mediaSource.get();
+	}
 
-    public void setClickCnt(long clickCnt) {
-        this.clickCnt.set(clickCnt);
-    }
+	public StringProperty mediaSourceProperty() {
+		return mediaSource;
+	}
 
-    public void setId(long id) {
-        this.id.set(id);
-    }
+	public void setClickCnt(long clickCnt) {
+		this.clickCnt.set(clickCnt);
+	}
 
-    public String getSongName() {
-        return songName.get();
-    }
+	public void setId(long id) {
+		this.id.set(id);
+	}
 
-    public StringProperty songNameProperty() {
-        return songName;
-    }
+	public String getSongName() {
+		return songName.get();
+	}
 
-    public void setArtist(String artist) {
-        this.artist.set(artist);
-    }
+	public StringProperty songNameProperty() {
+		return songName;
+	}
 
-    public void setMediaSource(String mediaSource) {
-        this.mediaSource.set(mediaSource);
-    }
+	public void setArtist(String artist) {
+		this.artist.set(artist);
+	}
 
-    public void setAlbumName(String albumName) {
-        this.albumName.set(albumName);
-    }
+	public void setMediaSource(String mediaSource) {
+		this.mediaSource.set(mediaSource);
+	}
+
+	public void setAlbumName(String albumName) {
+		this.albumName.set(albumName);
+	}
 }

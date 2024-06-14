@@ -15,7 +15,8 @@
 	<children>
 		<VBox alignment="CENTER" layoutX="17.0" layoutY="11.0"
 			prefHeight="128.0" prefWidth="265.0" spacing="10.0">
-			<Label prefHeight="25.0" prefWidth="265.0" text="편집된 곡을 저장할 이름을 작성하세요">
+			<Label prefHeight="25.0" prefWidth="265.0"
+				text="편집된 곡을 저장할 이름을 작성하세요">
 				<font>
 					<Font name="D2Coding" size="14.0" />
 				</font>
