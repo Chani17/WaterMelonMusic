@@ -157,11 +157,7 @@ public class LoginController implements Initializable {
 			newStage.setTitle("관리자 로그인");
 			newStage.setScene(new Scene(root));
 			Image icon = new Image(
-					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고
-																													// 이미지
-																													// 파일
-																													// 경로
-																													// 지정
+					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png"));
 			newStage.getIcons().add(icon);
 			newStage.showAndWait();
 		} catch (Exception e) {
