@@ -65,7 +65,8 @@ public class MyPageController implements Initializable {
 	private Member currentMember;
 
 	/**
-	 * 초기화 메서드 마이페이지 컨트롤러를 초기화하고 회원 정보를 로드
+	 * 초기화 메서드
+	 * 마이페이지 컨트롤러를 초기화하고 회원 정보를 로드
 	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -104,7 +105,8 @@ public class MyPageController implements Initializable {
 	}
 
 	/**
-	 * TableView 초기화 메서드 좋아요 버튼과 재생 버튼의 셀 팩토리 설정
+	 * TableView 초기화 메서드
+	 * 좋아요 버튼과 재생 버튼의 셀 팩토리 설정
 	 */
 	private void initializeTableView() {
 		songName.setCellValueFactory(new PropertyValueFactory<Song, String>("name"));
@@ -209,7 +211,8 @@ public class MyPageController implements Initializable {
 	}
 
 	/**
-	 * 좋아하는 노래 목록 로드 메서드 현재 회원의 좋아하는 노래 목록을 DB에서 불러와 TableView에 설정
+	 * 좋아하는 노래 목록 로드 메서드
+	 * 현재 회원의 좋아하는 노래 목록을 DB에서 불러와 TableView에 설정
 	 */
 	private void loadLikedSongs() {
 		List<Song> likedSongs = new ArrayList<>(); // 좋아하는 노래 목록을 저장할 리스트 생성

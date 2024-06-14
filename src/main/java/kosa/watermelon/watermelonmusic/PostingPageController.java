@@ -127,11 +127,7 @@ public class PostingPageController {
 			stage.setTitle("업로드할 플레이리스트 선택");
 			stage.setScene(new Scene(parent, 400, 300));
 			Image icon = new Image(
-					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고
-																													// 이미지
-																													// 파일
-																													// 경로
-																													// 지정
+					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png"));
 			stage.getIcons().add(icon);
 			stage.showAndWait();
 

@@ -60,8 +60,6 @@ public class AdminLoginController {
 				Stage stage = new Stage();
 				stage.setTitle("관리자 페이지");
 				stage.setScene(new Scene(root));
-
-				// 로고 이미지 파일 경로 지정
 				Image icon = new Image(
 						getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png"));
 				stage.getIcons().add(icon);
