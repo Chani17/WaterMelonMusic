@@ -5,19 +5,24 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="200" prefWidth="300" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosa.watermelon.watermelonmusic.AddArtistController">
-    <children>
-        <Label text="Artist Name">
-         <font>
-            <Font name="D2Coding" size="14.0" />
-         </font>
-         <VBox.margin>
-            <Insets bottom="10.0" left="5.0" top="20.0" />
-         </VBox.margin></Label>
-        <TextField fx:id="artistNameField" />
-        <Button onAction="#handleSaveArtist" text="Save Artist">
-         <VBox.margin>
-            <Insets left="110.0" top="70.0" />
-         </VBox.margin></Button>
-    </children>
+<VBox prefHeight="200" prefWidth="300"
+	xmlns="http://javafx.com/javafx/17.0.2-ea"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="kosa.watermelon.watermelonmusic.AddArtistController">
+	<children>
+		<Label text="Artist Name">
+			<font>
+				<Font name="D2Coding" size="14.0" />
+			</font>
+			<VBox.margin>
+				<Insets bottom="10.0" left="5.0" top="20.0" />
+			</VBox.margin>
+		</Label>
+		<TextField fx:id="artistNameField" />
+		<Button onAction="#handleSaveArtist" text="Save Artist">
+			<VBox.margin>
+				<Insets left="110.0" top="70.0" />
+			</VBox.margin>
+		</Button>
+	</children>
 </VBox>

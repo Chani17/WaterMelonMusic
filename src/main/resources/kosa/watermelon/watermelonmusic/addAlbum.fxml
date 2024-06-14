@@ -5,38 +5,46 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="200" prefWidth="300" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosa.watermelon.watermelonmusic.AddAlbumController">
-    <children>
-        <Label text="Album Name">
-         <font>
-            <Font name="D2Coding" size="14.0" />
-         </font>
-         <VBox.margin>
-            <Insets bottom="5.0" left="5.0" top="10.0" />
-         </VBox.margin></Label>
-        <TextField fx:id="albumNameField" />
-        <Label text="Select Artist">
-         <font>
-            <Font name="D2Coding" size="14.0" />
-         </font>
-         <VBox.margin>
-            <Insets bottom="5.0" left="5.0" top="10.0" />
-         </VBox.margin></Label>
-        <ComboBox fx:id="artistComboBox">
-         <VBox.margin>
-            <Insets />
-         </VBox.margin></ComboBox>
-        <Label text="Album Cover File Path">
-         <font>
-            <Font name="D2Coding" size="14.0" />
-         </font>
-         <VBox.margin>
-            <Insets bottom="5.0" left="5.0" top="10.0" />
-         </VBox.margin></Label>
-        <TextField fx:id="albumCoverPathField" />
-        <Button onAction="#handleSaveAlbum" text="Save Album">
-         <VBox.margin>
-            <Insets left="110.0" top="10.0" />
-         </VBox.margin></Button>
-    </children>
+<VBox prefHeight="200" prefWidth="300"
+	xmlns="http://javafx.com/javafx/17.0.2-ea"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="kosa.watermelon.watermelonmusic.AddAlbumController">
+	<children>
+		<Label text="Album Name">
+			<font>
+				<Font name="D2Coding" size="14.0" />
+			</font>
+			<VBox.margin>
+				<Insets bottom="5.0" left="5.0" top="10.0" />
+			</VBox.margin>
+		</Label>
+		<TextField fx:id="albumNameField" />
+		<Label text="Select Artist">
+			<font>
+				<Font name="D2Coding" size="14.0" />
+			</font>
+			<VBox.margin>
+				<Insets bottom="5.0" left="5.0" top="10.0" />
+			</VBox.margin>
+		</Label>
+		<ComboBox fx:id="artistComboBox">
+			<VBox.margin>
+				<Insets />
+			</VBox.margin>
+		</ComboBox>
+		<Label text="Album Cover File Path">
+			<font>
+				<Font name="D2Coding" size="14.0" />
+			</font>
+			<VBox.margin>
+				<Insets bottom="5.0" left="5.0" top="10.0" />
+			</VBox.margin>
+		</Label>
+		<TextField fx:id="albumCoverPathField" />
+		<Button onAction="#handleSaveAlbum" text="Save Album">
+			<VBox.margin>
+				<Insets left="110.0" top="10.0" />
+			</VBox.margin>
+		</Button>
+	</children>
 </VBox>

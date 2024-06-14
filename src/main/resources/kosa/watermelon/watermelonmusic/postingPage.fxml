@@ -18,7 +18,8 @@
 		</font>
 	</Label>
 	<Button fx:id="addPlaylist_BTN" layoutX="581.0" layoutY="38.0"
-		prefHeight="30.0" prefWidth="99.0" text="업로드" onAction="#handleAddPlaylist">
+		prefHeight="30.0" prefWidth="99.0" text="업로드"
+		onAction="#handleAddPlaylist">
 		<font>
 			<Font name="D2Coding Bold" size="14.0" />
 		</font>
