@@ -4,7 +4,7 @@ package kosa.watermelon.watermelonmusic;
  * SessionManager 클래스 : 현재 세션 정보를 관리
  */
 public class SessionManager {
-	
+
 	private static SessionManager instance;
 	private Member currentMember;
 
