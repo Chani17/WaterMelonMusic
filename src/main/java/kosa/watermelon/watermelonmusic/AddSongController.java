@@ -15,7 +15,8 @@ import java.util.stream.Collectors;
  * AddSongController : 노래 추가 화면의 컨트롤러
  */
 public class AddSongController {
-
+	
+	// FXML 필드
 	@FXML private ComboBox<String> artistComboBox;
 	@FXML private ComboBox<String> albumComboBox;
 	@FXML private TextField songNameField;

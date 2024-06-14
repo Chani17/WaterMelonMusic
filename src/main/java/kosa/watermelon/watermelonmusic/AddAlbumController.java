@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  */
 public class AddAlbumController implements Initializable {
 
+	// FXML 필드
 	@FXML private TextField albumNameField;
 	@FXML private TextField albumCoverPathField;
 	@FXML private ComboBox<String> artistComboBox;

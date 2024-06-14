@@ -24,6 +24,7 @@ import javafx.stage.Stage;
  */
 public class DashboardController implements Initializable {
 	
+	// FXML 필드
 	@FXML private TableView<Song> tableView; // tableView 변수 정의
 	@FXML private ImageView logo_ImageView;
 	@FXML private ImageView logoText_ImageView;

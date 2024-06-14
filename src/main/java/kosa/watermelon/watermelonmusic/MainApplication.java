@@ -6,23 +6,36 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+/**
+ * MainApplication 클래스 : 애플리케이션의 메인 진입점을 정의
+ */
 public class MainApplication extends Application {
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-        stage.setTitle("WaterMelon Music!");
-        Image icon = new Image(
-        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
-        stage.getIcons().add(icon);
-        
-        stage.setScene(scene);
-        //stage.setResizable(false); // 창 크기 조절 비활성화
-        stage.show();
-    }
+	/**
+	 * 애플리케이션의 시작 메서드
+	 * 
+	 * @param stage 메인 스테이지
+	 * @throws Exception
+	 */
+	@Override
+	public void start(Stage stage) throws Exception {
+		FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("login.fxml"));
+		Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+		stage.setTitle("WaterMelon Music!");
+		Image icon = new Image(
+				getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png"));
+		stage.getIcons().add(icon);
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+		stage.setScene(scene);
+		stage.show();
+	}
+
+	/**
+	 * 메인 메서드
+	 * 
+	 * @param args 프로그램 실행 시 전달되는 인자들
+	 */
+	public static void main(String[] args) {
+		launch(args);
+	}
 }

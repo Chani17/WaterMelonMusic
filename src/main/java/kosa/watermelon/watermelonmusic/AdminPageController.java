@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
  */
 public class AdminPageController implements Initializable {
 
+	// FXML 필드
 	@FXML private TableView<Artist> artistTableView;
 	@FXML private TableColumn<Artist, String> artistNameColumn;
 	@FXML private TableView<Album> albumTableView;

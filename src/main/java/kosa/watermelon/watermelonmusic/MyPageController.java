@@ -36,10 +36,15 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.util.ArrayList;
-import java.util.List; // 필요 시 추가
+import java.util.List;
 
+/**
+ * MyPageController 클래스 : 마이페이지 컨트롤러
+ * 회원 정보 및 좋아하는 노래 목록을 관리
+ */
 public class MyPageController implements Initializable {
-
+	
+	// FXML 필드
 	@FXML private ImageView profile_Image;
 	@FXML private Button profileEdit_BTN;
 	@FXML private Button goToDashboard_BTN;
@@ -56,10 +61,12 @@ public class MyPageController implements Initializable {
 	@FXML private TableColumn<Song, Void> likebtn;
 	@FXML private TableColumn<Song, Void> playBtn;
 
-	//private List<Song> likedSongs; // Change the type to Song
-
+	// 현재 로그인한 회원 정보
 	private Member currentMember;
 
+	/**
+	 * 초기화 메서드 마이페이지 컨트롤러를 초기화하고 회원 정보를 로드
+	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		this.currentMember = SessionManager.getInstance().getCurrentMember();
@@ -92,10 +99,13 @@ public class MyPageController implements Initializable {
 			row.setStyle("-fx-font-family: 'D2Coding'; -fx-font-size: 10pt;");
 			return row;
 		});
-		
+
 		initializeTableView();
 	}
 
+	/**
+	 * TableView 초기화 메서드 좋아요 버튼과 재생 버튼의 셀 팩토리 설정
+	 */
 	private void initializeTableView() {
 		songName.setCellValueFactory(new PropertyValueFactory<Song, String>("name"));
 		artistName.setCellValueFactory(new PropertyValueFactory<Song, String>("artist"));
@@ -126,7 +136,7 @@ public class MyPageController implements Initializable {
 						likeButton.setFont(font);
 					}
 
-					// 셸 Rendering
+					// 셀 렌더링
 					@Override
 					protected void updateItem(Void item, boolean empty) {
 						super.updateItem(item, empty);
@@ -160,8 +170,6 @@ public class MyPageController implements Initializable {
 
 							try {
 								Stage newStage = new Stage();
-								// Stage currentStage = (Stage) playButton.getScene().getWindow();
-
 								FXMLLoader loader = new FXMLLoader(getClass().getResource("playview.fxml"));
 								Parent playView = loader.load();
 								PlayViewController controller = loader.getController();
@@ -170,13 +178,12 @@ public class MyPageController implements Initializable {
 								Scene scene = new Scene(playView);
 
 								newStage.setTitle(selectedSong.getName() + " - " + selectedSong.getArtist());
-								Image icon = new Image(
-						        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+								Image icon = new Image(getClass().getResourceAsStream(
+										"/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로
+																										// 지정
 								newStage.getIcons().add(icon);
 								newStage.setScene(scene);
 								newStage.showAndWait();
-								// stage.hide();
-
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -185,7 +192,7 @@ public class MyPageController implements Initializable {
 						playButton.setFont(font);
 					}
 
-					// 셸 Rendering
+					// 셸 렌더링
 					@Override
 					protected void updateItem(Void item, boolean empty) {
 						super.updateItem(item, empty);
@@ -201,49 +208,54 @@ public class MyPageController implements Initializable {
 		});
 	}
 
+	/**
+	 * 좋아하는 노래 목록 로드 메서드 현재 회원의 좋아하는 노래 목록을 DB에서 불러와 TableView에 설정
+	 */
 	private void loadLikedSongs() {
-	    List<Song> likedSongs = new ArrayList<>(); // 좋아하는 노래 목록을 저장할 리스트 생성
+		List<Song> likedSongs = new ArrayList<>(); // 좋아하는 노래 목록을 저장할 리스트 생성
 
-	    try {
-	        // DB 연결
-	        Connection conn = DBUtil.getConnection();
-	        
-	        // 쿼리 준비
-	        String sql = "SELECT s.SONG_ID, s.SONG_NAME, a.ARTIST_NAME " +
-	                     "FROM SONG s " +
-	                     "JOIN LIKES l ON s.SONG_ID = l.SONG_ID " +
-	                     "JOIN MEMBER m ON l.MEMBER_ID = m.MEMBER_ID " +
-	                     "JOIN ARTIST a ON s.ARTIST_ID = a.ARTIST_ID " +
-	                     "WHERE m.MEMBER_ID = ?" +
-	                     "ORDER BY l.SONG_ID DESC, l.MEMBER_ID DESC";
-	        PreparedStatement pstmt = conn.prepareStatement(sql);
-	        
-	        // 파라미터 설정
-	        pstmt.setString(1, currentMember.getId());
-	        
-	        // 쿼리 실행 및 결과 가져오기
-	        ResultSet rs = pstmt.executeQuery();
-	        
-	        // 결과를 Song 객체로 변환하여 likedSongs 리스트에 추가
-	        while (rs.next()) {
-	            Song song = new Song(0, rs.getLong("SONG_ID"), rs.getString("SONG_NAME"), rs.getString("ARTIST_NAME"), 0);
-	            likedSongs.add(song);
-	        }
-	        
-	        // DB 연결 해제
-	        rs.close();
-	        pstmt.close();
-	        conn.close();
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		try {
+			// DB 연결
+			Connection conn = DBUtil.getConnection();
 
-	    // 가져온 좋아하는 노래 목록을 TableView에 설정
-	    ObservableList<Song> observableLikedSongs = FXCollections.observableArrayList(likedSongs);
-	    likedSongsTableView.setItems(observableLikedSongs);
+			// 쿼리 준비
+			String sql = "SELECT s.SONG_ID, s.SONG_NAME, a.ARTIST_NAME " + "FROM SONG s "
+					+ "JOIN LIKES l ON s.SONG_ID = l.SONG_ID " + "JOIN MEMBER m ON l.MEMBER_ID = m.MEMBER_ID "
+					+ "JOIN ARTIST a ON s.ARTIST_ID = a.ARTIST_ID " + "WHERE m.MEMBER_ID = ?"
+					+ "ORDER BY l.SONG_ID DESC, l.MEMBER_ID DESC";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+
+			// 파라미터 설정
+			pstmt.setString(1, currentMember.getId());
+
+			// 쿼리 실행 및 결과 가져오기
+			ResultSet rs = pstmt.executeQuery();
+
+			// 결과를 Song 객체로 변환하여 likedSongs 리스트에 추가
+			while (rs.next()) {
+				Song song = new Song(0, rs.getLong("SONG_ID"), rs.getString("SONG_NAME"), rs.getString("ARTIST_NAME"),
+						0);
+				likedSongs.add(song);
+			}
+
+			// DB 연결 해제
+			rs.close();
+			pstmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		// 가져온 좋아하는 노래 목록을 TableView에 설정
+		ObservableList<Song> observableLikedSongs = FXCollections.observableArrayList(likedSongs);
+		likedSongsTableView.setItems(observableLikedSongs);
 	}
 
-
+	/**
+	 * 현재 회원의 좋아하는 노래 목록 반환 메서드
+	 * 
+	 * @return 현재 회원의 좋아하는 노래 목록
+	 */
 	private List<Song> getLikedSongsFromCurrentMember() {
 		if (currentMember != null) {
 			return currentMember.getLikedSongs();
@@ -253,6 +265,11 @@ public class MyPageController implements Initializable {
 		}
 	}
 
+	/**
+	 * 회원 설정 메서드
+	 * 
+	 * @param member 설정할 회원 객체
+	 */
 	public void setMember(Member member) {
 		this.currentMember = member;
 		if (this.currentMember == null) {
@@ -264,6 +281,9 @@ public class MyPageController implements Initializable {
 		}
 	}
 
+	/**
+	 * 회원 정보 로드 메서드 현재 회원의 정보를 화면에 설정
+	 */
 	private void loadMemberInfo() {
 		if (currentMember != null) {
 			userNAME_TextField.setText(currentMember.getNickname());
@@ -279,7 +299,12 @@ public class MyPageController implements Initializable {
 		}
 	}
 
-	@FXML // 마이페이지 → 프로필 편집 페이지 생성 이벤트 처리
+	/**
+	 * 프로필 편집 페이지 이동 이벤트 처리 메서드
+	 * 
+	 * @param event 액션 이벤트
+	 */
+	@FXML
 	private void profileEdit_Action(ActionEvent event) {
 		try {
 			// FXML 파일 로드
@@ -291,11 +316,11 @@ public class MyPageController implements Initializable {
 
 			Stage newStage = new Stage();
 
-			newStage.initModality(Modality.APPLICATION_MODAL); // 새로운 Stage를 모달로 설정
+			newStage.initModality(Modality.APPLICATION_MODAL);
 			newStage.setTitle("프로필 편집");
 			newStage.setScene(new Scene(parent, 300, 200));
 			Image icon = new Image(
-	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png"));
 			newStage.getIcons().add(icon);
 			newStage.showAndWait();
 
@@ -306,7 +331,12 @@ public class MyPageController implements Initializable {
 		}
 	}
 
-	@FXML // 마이페이지 → DashBoard 페이지 이동 이벤트 처리
+	/**
+	 * DashBoard 페이지 이동 이벤트 처리 메서드
+	 * 
+	 * @param event 액션 이벤트
+	 */
+	@FXML
 	private void goToDashboard_Action(ActionEvent event) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("DashBoard.fxml"));
@@ -323,7 +353,11 @@ public class MyPageController implements Initializable {
 			newStage.setScene(new Scene(parent, 800, 600));
 			newStage.show();
 			Image icon = new Image(
-	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고
+																													// 이미지
+																													// 파일
+																													// 경로
+																													// 지정
 			newStage.getIcons().add(icon);
 			currentStage.close();
 		} catch (IOException e) {
@@ -331,7 +365,12 @@ public class MyPageController implements Initializable {
 		}
 	}
 
-	// 좋아요 취소 로직 추가
+	/**
+	 * 좋아요 취소 메서드
+	 * 
+	 * @param songId   취소할 노래의 ID
+	 * @param memberId 현재 회원의 ID
+	 */
 	private void cancelLike(long songId, String memberId) {
 		try {
 			Connection conn = DBUtil.getConnection();
@@ -352,6 +391,12 @@ public class MyPageController implements Initializable {
 		}
 	}
 
+	/**
+	 * 좋아요 추가 메서드
+	 * 
+	 * @param songId   좋아요할 노래의 ID
+	 * @param memberId 현재 회원의 ID
+	 */
 	private void likeSong(long songId, String memberId) {
 		try {
 			Connection conn = DBUtil.getConnection();
@@ -387,7 +432,13 @@ public class MyPageController implements Initializable {
 		}
 	}
 
-	// 좋아요 상태 확인 메서드 추가
+	/**
+	 * 좋아요 상태 확인 메서드
+	 * 
+	 * @param songId   노래의 ID
+	 * @param memberId 회원의 ID
+	 * @return 좋아요 상태 (true: 좋아요 누름, false: 좋아요 누르지 않음)
+	 */
 	private boolean isSongLikedByUser(long songId, String memberId) {
 		try (Connection conn = DBUtil.getConnection();
 				PreparedStatement pstmt = conn

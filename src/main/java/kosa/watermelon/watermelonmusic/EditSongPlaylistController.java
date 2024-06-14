@@ -28,7 +28,8 @@ import java.util.*;
  * EditSongPlaylistController 클래스 : 편집된 곡의 플레이리스트를 관리하고 관련된 UI 이벤트를 처리함
  */
 public class EditSongPlaylistController implements Initializable {
-
+	
+	// FXML 필드
     @FXML private TableView<EditSongPlaylist> editSongPlaylistTableView;
     @FXML private TableColumn<EditSongPlaylist, Boolean> check;
     @FXML private TableColumn<EditSongPlaylist, String> songName;
@@ -38,6 +39,7 @@ public class EditSongPlaylistController implements Initializable {
     @FXML private Button deleteAll;
     @FXML private Button goToDashboard;
     @FXML private Button playAllButton;
+    
     private SessionManager sessionManager;
     private Member currentMember;
     private EditSongPlaylist editSongPlaylist;

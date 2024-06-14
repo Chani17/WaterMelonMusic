@@ -27,8 +27,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ResourceBundle;
 
+/**
+ * EditMusicController 클래스 : 음악 편집 화면을 제어
+ */
 public class EditMusicController implements Initializable {
-
+	
+	// FXML 필드
     @FXML private ImageView albumCover;
     @FXML private Label songTitle;
     @FXML private Label artistName;
@@ -46,6 +50,7 @@ public class EditMusicController implements Initializable {
     @FXML private Button stopButtonEnd;
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
+    
     private MediaPlayer mediaPlayer;
     private MediaPlayer startMediaPlayer;
     private MediaPlayer endMediaPlayer;
@@ -57,296 +62,377 @@ public class EditMusicController implements Initializable {
     private double lastStartPosition = 0;
     private double lastEndPosition = 0;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        // 슬라이더 리스너를 추가하여 시작 시간과 끝 시간을 업데이트
-        startPointSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (!isSliderChanging) {
-                updateStartTime(newValue.doubleValue());
-                lastStartPosition = newValue.doubleValue();
-            }
-        });
+	/**
+	 * 초기화 메서드
+	 * 
+	 * @param url            URL 객체
+	 * @param resourceBundle ResourceBundle 객체
+	 */
+	@Override
+	public void initialize(URL url, ResourceBundle resourceBundle) {
+		// 슬라이더 리스너를 추가하여 시작 시간과 끝 시간을 업데이트
+		startPointSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+			if (!isSliderChanging) {
+				updateStartTime(newValue.doubleValue());
+				lastStartPosition = newValue.doubleValue();
+			}
+		});
 
-        endPointSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (!isSliderChanging) {
-                updateEndTime(newValue.doubleValue());
-                lastEndPosition = newValue.doubleValue();
-            }
-        });
+		endPointSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+			if (!isSliderChanging) {
+				updateEndTime(newValue.doubleValue());
+				lastEndPosition = newValue.doubleValue();
+			}
+		});
 
-        // 슬라이더 조작 이벤트 핸들러 설정
-        startPointSlider.setOnMousePressed(event -> isSliderChanging = true);
-        startPointSlider.setOnMouseReleased(event -> {
-            isSliderChanging = false;
-            updateStartTime(startPointSlider.getValue());
-            lastStartPosition = startPointSlider.getValue();
-            if (isPlayingStart) {
-                playFromStart();
-            }
-        });
+		// 슬라이더 조작 이벤트 핸들러 설정
+		startPointSlider.setOnMousePressed(event -> isSliderChanging = true);
+		startPointSlider.setOnMouseReleased(event -> {
+			isSliderChanging = false;
+			updateStartTime(startPointSlider.getValue());
+			lastStartPosition = startPointSlider.getValue();
+			if (isPlayingStart) {
+				playFromStart();
+			}
+		});
 
-        endPointSlider.setOnMousePressed(event -> isSliderChanging = true);
-        endPointSlider.setOnMouseReleased(event -> {
-            isSliderChanging = false;
-            updateEndTime(endPointSlider.getValue());
-            lastEndPosition = endPointSlider.getValue();
-            if (isPlayingEnd) {
-                playFromEnd();
-            }
-        });
+		endPointSlider.setOnMousePressed(event -> isSliderChanging = true);
+		endPointSlider.setOnMouseReleased(event -> {
+			isSliderChanging = false;
+			updateEndTime(endPointSlider.getValue());
+			lastEndPosition = endPointSlider.getValue();
+			if (isPlayingEnd) {
+				playFromEnd();
+			}
+		});
 
-        // 플레이어 제어 버튼에 대한 이벤트 핸들러 설정
-        playButtonStart.setOnAction(e -> playFromStart());
-        pauseButtonStart.setOnAction(e -> pauseStart());
-        stopButtonStart.setOnAction(e -> stopStart());
+		// 플레이어 제어 버튼에 대한 이벤트 핸들러 설정
+		playButtonStart.setOnAction(e -> playFromStart());
+		pauseButtonStart.setOnAction(e -> pauseStart());
+		stopButtonStart.setOnAction(e -> stopStart());
 
-        playButtonEnd.setOnAction(e -> playFromEnd());
-        pauseButtonEnd.setOnAction(e -> pauseEnd());
-        stopButtonEnd.setOnAction(e -> stopEnd());
+		playButtonEnd.setOnAction(e -> playFromEnd());
+		pauseButtonEnd.setOnAction(e -> pauseEnd());
+		stopButtonEnd.setOnAction(e -> stopEnd());
 
-        saveButton.setOnAction(e -> saveMusic());
-    }
+		saveButton.setOnAction(e -> saveMusic());
+	}
 
-    @FXML
-    private void backToPage(ActionEvent event) {
-        Stage currentStage = (Stage) cancelButton.getScene().getWindow();
-        currentStage.close();
-    }
+	/**
+	 * 이전 페이지로 돌아가는 메서드
+	 * 
+	 * @param event ActionEvent 객체
+	 */
+	@FXML
+	private void backToPage(ActionEvent event) {
+		Stage currentStage = (Stage) cancelButton.getScene().getWindow();
+		currentStage.close();
+	}
 
-    public void setSong(Song song) {
-        this.song = song;
-        System.out.println("editmusic : " + song.getName());
-        setMember(currentMember);
-        initializeMediaPlayer();
-        setEditView();
-    }
+	/**
+	 * 노래 정보를 설정하는 메서드
+	 * 
+	 * @param song Song 객체
+	 */
+	public void setSong(Song song) {
+		this.song = song;
+		System.out.println("editmusic : " + song.getName());
+		setMember(currentMember);
+		initializeMediaPlayer();
+		setEditView();
+	}
 
-    private void initializeMediaPlayer() {
-        File file = new File(song.getMediaSource());
-        String uriString = file.toURI().toString();
-        Media media = new Media(uriString);
-        mediaPlayer = new MediaPlayer(media);
+	/**
+	 * MediaPlayer를 초기화하는 메서드
+	 */
+	private void initializeMediaPlayer() {
+		File file = new File(song.getMediaSource());
+		String uriString = file.toURI().toString();
+		Media media = new Media(uriString);
+		mediaPlayer = new MediaPlayer(media);
 
-        mediaPlayer.setOnReady(() -> {
-            initializeSliders();
-        });
+		mediaPlayer.setOnReady(() -> {
+			initializeSliders();
+		});
 
-        // Separate media players for start and end
-        startMediaPlayer = new MediaPlayer(media);
-        endMediaPlayer = new MediaPlayer(media);
-    }
+		// 시작과 끝을 위한 별도의 MediaPlayer
+		startMediaPlayer = new MediaPlayer(media);
+		endMediaPlayer = new MediaPlayer(media);
+	}
 
-    private void initializeSliders() {
-        // 슬라이더 초기값 설정 및 시간 업데이트
-        double durationInSeconds = mediaPlayer.getTotalDuration().toSeconds();
-        startPointSlider.setMax(durationInSeconds);
-        endPointSlider.setMax(durationInSeconds);
+	/**
+	 * 슬라이더를 초기화하는 메서드
+	 */
+	private void initializeSliders() {
+		// 슬라이더 초기값 설정 및 시간 업데이트
+		double durationInSeconds = mediaPlayer.getTotalDuration().toSeconds();
+		startPointSlider.setMax(durationInSeconds);
+		endPointSlider.setMax(durationInSeconds);
 
-        startPointSlider.setValueChanging(true);
-        endPointSlider.setValueChanging(true);
+		startPointSlider.setValueChanging(true);
+		endPointSlider.setValueChanging(true);
 
-        startPointSlider.setValue(0);
-        endPointSlider.setValue(0); // Assuming you want the end slider to start at the end of the song
-    }
+		startPointSlider.setValue(0);
+		endPointSlider.setValue(0); // 곡의 끝으로 설정
+	}
 
-    private void setEditView() {
-        ByteArrayInputStream bis = new ByteArrayInputStream(song.getAlbumCover());
-        Image image = new Image(bis);
-        albumCover.setImage(image);
-        songTitle.setText(song.getName());
-        artistName.setText(song.getArtist());
+	/**
+	 * 편집 화면을 설정하는 메서드
+	 */
+	private void setEditView() {
+		ByteArrayInputStream bis = new ByteArrayInputStream(song.getAlbumCover());
+		Image image = new Image(bis);
+		albumCover.setImage(image);
+		songTitle.setText(song.getName());
+		artistName.setText(song.getArtist());
 
 //        mediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updateStartPlayTime());
-    }
+	}
 
-    private void updateEndTime(double point) {
-        if (mediaPlayer != null) {
-            int minutes = (int)point / 60;
-            int seconds = (int) point % 60;
+	/**
+	 * 끝 시간을 업데이트하는 메서드
+	 * 
+	 * @param point 끝 시간 값
+	 */
+	private void updateEndTime(double point) {
+		if (mediaPlayer != null) {
+			int minutes = (int) point / 60;
+			int seconds = (int) point % 60;
 
-            endPointSlider.setValue(point);
-            endTimeMinute.setText(String.format("%02d", minutes));
-            endTimeSecond.setText(String.format("%02d", seconds));
-        }
-    }
+			endPointSlider.setValue(point);
+			endTimeMinute.setText(String.format("%02d", minutes));
+			endTimeSecond.setText(String.format("%02d", seconds));
+		}
+	}
 
-    private void updateStartTime(double point) {
-        if (mediaPlayer != null) {
-            int minutes = (int) point / 60;
-            int seconds = (int) point % 60;
+	/**
+	 * 시작 시간을 업데이트하는 메서드
+	 * 
+	 * @param point 시작 시간 값
+	 */
+	private void updateStartTime(double point) {
+		if (mediaPlayer != null) {
+			int minutes = (int) point / 60;
+			int seconds = (int) point % 60;
 
-            startPointSlider.setValue(point);
-            startTimeMinute.setText(String.format("%02d", minutes));
-            startTimeSecond.setText(String.format("%02d", seconds));
-        }
-    }
+			startPointSlider.setValue(point);
+			startTimeMinute.setText(String.format("%02d", minutes));
+			startTimeSecond.setText(String.format("%02d", seconds));
+		}
+	}
 
-    private void stopStart() {
-        if (startMediaPlayer != null) {
-            lastStartPosition = startPointSlider.getValue();
-            System.out.println("stop = " + lastStartPosition);
-            startMediaPlayer.stop();
-            isPlayingStart = false;
-        }
-    }
+	/**
+	 * 시작 부분의 재생을 멈추는 메서드
+	 */
+	private void stopStart() {
+		if (startMediaPlayer != null) {
+			lastStartPosition = startPointSlider.getValue();
+			System.out.println("stop = " + lastStartPosition);
+			startMediaPlayer.stop();
+			isPlayingStart = false;
+		}
+	}
 
-    private void pauseStart() {
-        if (startMediaPlayer != null) {
-            startMediaPlayer.pause();
-            isPlayingStart = false;
-        }
-    }
+	/**
+	 * 시작 부분의 재생을 일시정지하는 메서드
+	 */
+	private void pauseStart() {
+		if (startMediaPlayer != null) {
+			startMediaPlayer.pause();
+			isPlayingStart = false;
+		}
+	}
 
-    private void stopEnd() {
-        if (endMediaPlayer != null) {
-            lastEndPosition = endPointSlider.getValue();
-            endMediaPlayer.stop();
-            isPlayingEnd = false;
-        }
-    }
+	/**
+	 * 끝 부분의 재생을 멈추는 메서드
+	 */
+	private void stopEnd() {
+		if (endMediaPlayer != null) {
+			lastEndPosition = endPointSlider.getValue();
+			endMediaPlayer.stop();
+			isPlayingEnd = false;
+		}
+	}
 
-    private void pauseEnd() {
-        if (endMediaPlayer != null) {
-            endMediaPlayer.pause();
-            isPlayingEnd = false;
-        }
-    }
+	/**
+	 * 끝 부분의 재생을 일시정지하는 메서드
+	 */
+	private void pauseEnd() {
+		if (endMediaPlayer != null) {
+			endMediaPlayer.pause();
+			isPlayingEnd = false;
+		}
+	}
 
-    private void playFromEnd() {
-        if (endMediaPlayer != null) {
-            System.out.println("lastEndPosition = " + lastEndPosition);
-            endMediaPlayer.seek(Duration.seconds(lastEndPosition));
-            endMediaPlayer.play();
-            isPlayingEnd = true;
-            endMediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updateEndPlayTime());
-        }
-    }
+	/**
+	 * 끝 부분부터 재생을 시작하는 메서드
+	 */
+	private void playFromEnd() {
+		if (endMediaPlayer != null) {
+			System.out.println("lastEndPosition = " + lastEndPosition);
+			endMediaPlayer.seek(Duration.seconds(lastEndPosition));
+			endMediaPlayer.play();
+			isPlayingEnd = true;
+			endMediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updateEndPlayTime());
+		}
+	}
 
-    private void playFromStart() {
-        if (startMediaPlayer != null) {
-            System.out.println("lastStartPosition = " + lastStartPosition);
-            startMediaPlayer.seek(Duration.seconds(lastStartPosition));
-            startMediaPlayer.play();
-            isPlayingStart = true;
-            startMediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updateStartPlayTime());
-        }
-    }
+	/**
+	 * 시작 부분부터 재생을 시작하는 메서드
+	 */
+	private void playFromStart() {
+		if (startMediaPlayer != null) {
+			System.out.println("lastStartPosition = " + lastStartPosition);
+			startMediaPlayer.seek(Duration.seconds(lastStartPosition));
+			startMediaPlayer.play();
+			isPlayingStart = true;
+			startMediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updateStartPlayTime());
+		}
+	}
 
-    private void saveMusic() {
-        // Open the popup to get the song name from the user
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("saveEditSong.fxml"));
-            Parent root = loader.load();
-            SaveEditSongController controller = loader.getController();
-            Stage popupStage = new Stage();
-            popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.setTitle("Enter Song Name");
-            Image icon = new Image(
-	        		getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로 지정
+	/**
+	 * 음악을 저장하는 메서드
+	 */
+	private void saveMusic() {
+		// 팝업을 열어 사용자로부터 곡 이름을 입력받음
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("saveEditSong.fxml"));
+			Parent root = loader.load();
+			SaveEditSongController controller = loader.getController();
+			Stage popupStage = new Stage();
+			popupStage.initModality(Modality.APPLICATION_MODAL);
+			popupStage.setTitle("Enter Song Name");
+			Image icon = new Image(
+					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고
+																													// 이미지
+																													// 파일
+																													// 경로
+																													// 지정
 			popupStage.getIcons().add(icon);
-            popupStage.setScene(new Scene(root));
-            popupStage.showAndWait();
+			popupStage.setScene(new Scene(root));
+			popupStage.showAndWait();
 
-            // Get the entered song name from the controller
-            String songName = controller.getSongName();
-            if (songName != null && !songName.isEmpty()) {
-                // Continue with saving the music
-                double start = startPointSlider.getValue();
-                double end = endPointSlider.getValue();
-                String sourceFilePath = song.getMediaSource();
-                String destinationFilePath = "C:\\dev\\resources\\music\\" + songName + ".mp3";
+			// 컨트롤러로부터 입력된 곡 이름을 가져옴
+			String songName = controller.getSongName();
+			if (songName != null && !songName.isEmpty()) {
+				// 음악 저장 작업 진행
+				double start = startPointSlider.getValue();
+				double end = endPointSlider.getValue();
+				String sourceFilePath = song.getMediaSource();
+				String destinationFilePath = "C:\\dev\\resources\\music\\" + songName + ".mp3";
 
-                System.out.println("start = " + start + " end = " + end);
+				System.out.println("start = " + start + " end = " + end);
 
-                slice(sourceFilePath, destinationFilePath, start, end);
-                Connection conn = DBUtil.getConnection();
-                PreparedStatement countPstmt = conn.prepareStatement("SELECT COUNT(*) FROM EDITSONG");
+				slice(sourceFilePath, destinationFilePath, start, end);
+				Connection conn = DBUtil.getConnection();
+				PreparedStatement countPstmt = conn.prepareStatement("SELECT COUNT(*) FROM EDITSONG");
 //                countPstmt.setString(1, currentMember.getId());
-                ResultSet rsCount = countPstmt.executeQuery();
+				ResultSet rsCount = countPstmt.executeQuery();
 
-                long editSongId = 0L;
-                if (rsCount.next()) {
-                    editSongId = rsCount.getLong(1);  // Assuming you want to use the next ID
-                    System.out.println("editSongId = " + editSongId);
-                }
+				long editSongId = 0L;
+				if (rsCount.next()) {
+					editSongId = rsCount.getLong(1); // Assuming you want to use the next ID
+					System.out.println("editSongId = " + editSongId);
+				}
 
-                PreparedStatement savePstmt = conn.prepareStatement("INSERT INTO EDITSONG (EDITSONG_ID, SONG_NAME, SONG_FILE, SONG_ID, MEMBER_ID) VALUES (?,?,?,?,?)");
+				PreparedStatement savePstmt = conn.prepareStatement(
+						"INSERT INTO EDITSONG (EDITSONG_ID, SONG_NAME, SONG_FILE, SONG_ID, MEMBER_ID) VALUES (?,?,?,?,?)");
 
-                savePstmt.setLong(1, editSongId + 1);
-                savePstmt.setString(2, songName);
-                savePstmt.setString(3, destinationFilePath);
-                savePstmt.setLong(4, song.getId());
-                savePstmt.setString(5, currentMember.getId());
+				savePstmt.setLong(1, editSongId + 1);
+				savePstmt.setString(2, songName);
+				savePstmt.setString(3, destinationFilePath);
+				savePstmt.setLong(4, song.getId());
+				savePstmt.setString(5, currentMember.getId());
 
-                savePstmt.executeUpdate();
-                System.out.println("음악이 성공적으로 저장되었습니다.");
+				savePstmt.executeUpdate();
+				System.out.println("음악이 성공적으로 저장되었습니다.");
 
-                savePstmt.close();
-                DBUtil.close(conn, countPstmt, rsCount);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+				savePstmt.close();
+				DBUtil.close(conn, countPstmt, rsCount);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    private void slice(String sourceFilePath, String destinationFilePath, double startPoint, double endPoint) {
-        try {
-            File sourceFile = new File(sourceFilePath);
-            FileInputStream fis = new FileInputStream(sourceFile);
-            FileOutputStream fos = new FileOutputStream(destinationFilePath);
+	/**
+	 * 음악 파일을 잘라내는 메서드
+	 * 
+	 * @param sourceFilePath      원본 파일 경로
+	 * @param destinationFilePath 목적지 파일 경로
+	 * @param startPoint          시작 지점
+	 * @param endPoint            끝 지점
+	 */
+	private void slice(String sourceFilePath, String destinationFilePath, double startPoint, double endPoint) {
+		try {
+			File sourceFile = new File(sourceFilePath);
+			FileInputStream fis = new FileInputStream(sourceFile);
+			FileOutputStream fos = new FileOutputStream(destinationFilePath);
 
-            long fileLength = sourceFile.length();
-            long startByte = (long) (startPoint / 100.0 * fileLength);
-            long endByte = (long) (endPoint / 100.0 * fileLength);
+			long fileLength = sourceFile.length();
+			long startByte = (long) (startPoint / 100.0 * fileLength);
+			long endByte = (long) (endPoint / 100.0 * fileLength);
 
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            long totalBytesRead = 0;
+			byte[] buffer = new byte[1024];
+			int bytesRead;
+			long totalBytesRead = 0;
 
-            fis.skip(startByte);
-            while ((bytesRead = fis.read(buffer)) != -1 && totalBytesRead < (endByte - startByte)) {
-                if (totalBytesRead + bytesRead > (endByte - startByte)) {
-                    bytesRead = (int) ((endByte - startByte) - totalBytesRead);
-                }
-                fos.write(buffer, 0, bytesRead);
-                totalBytesRead += bytesRead;
-            }
+			fis.skip(startByte);
+			while ((bytesRead = fis.read(buffer)) != -1 && totalBytesRead < (endByte - startByte)) {
+				if (totalBytesRead + bytesRead > (endByte - startByte)) {
+					bytesRead = (int) ((endByte - startByte) - totalBytesRead);
+				}
+				fos.write(buffer, 0, bytesRead);
+				totalBytesRead += bytesRead;
+			}
 
-            fis.close();
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+			fis.close();
+			fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
+	/**
+	 * 시작 부분의 재생 시간을 업데이트하는 메서드
+	 */
+	private void updateStartPlayTime() {
+		if (startMediaPlayer == null || isSliderChanging)
+			return;
 
-    private void updateStartPlayTime() {
-        if (startMediaPlayer == null || isSliderChanging) return;
+		long totalTime = (long) startMediaPlayer.getTotalDuration().toSeconds();
+		long currentTime = (long) startMediaPlayer.getCurrentTime().toSeconds();
+		long currentTimeMinute = currentTime / 60;
+		long currentTimeSecond = currentTime % 60;
 
-        long totalTime = (long) startMediaPlayer.getTotalDuration().toSeconds();
-        long currentTime = (long) startMediaPlayer.getCurrentTime().toSeconds();
-        long currentTimeMinute = currentTime / 60;
-        long currentTimeSecond = currentTime % 60;
+		startPointSlider.setValue((double) currentTime / totalTime * 100);
+		startTimeMinute.setText(String.format("%02d", currentTimeMinute));
+		startTimeSecond.setText(String.format("%02d", currentTimeSecond));
+	}
 
-        startPointSlider.setValue((double) currentTime / totalTime * 100);
-        startTimeMinute.setText(String.format("%02d", currentTimeMinute));
-        startTimeSecond.setText(String.format("%02d", currentTimeSecond));
-    }
+	/**
+	 * 끝 부분의 재생 시간을 업데이트하는 메서드
+	 */
+	private void updateEndPlayTime() {
+		if (endMediaPlayer == null || isSliderChanging)
+			return;
 
-    private void updateEndPlayTime() {
-        if (endMediaPlayer == null || isSliderChanging) return;
+		long totalTime = (long) endMediaPlayer.getTotalDuration().toSeconds();
+		long currentTime = (long) endMediaPlayer.getCurrentTime().toSeconds();
+		long currentTimeMinute = currentTime / 60;
+		long currentTimeSecond = currentTime % 60;
 
-        long totalTime = (long) endMediaPlayer.getTotalDuration().toSeconds();
-        long currentTime = (long) endMediaPlayer.getCurrentTime().toSeconds();
-        long currentTimeMinute = currentTime / 60;
-        long currentTimeSecond = currentTime % 60;
+		endPointSlider.setValue((double) currentTime / totalTime * 100);
+		endTimeMinute.setText(String.format("%02d", currentTimeMinute));
+		endTimeSecond.setText(String.format("%02d", currentTimeSecond));
+	}
 
-        endPointSlider.setValue((double) currentTime / totalTime * 100);
-        endTimeMinute.setText(String.format("%02d", currentTimeMinute));
-        endTimeSecond.setText(String.format("%02d", currentTimeSecond));
-    }
-
-    public void setMember(Member member) {
-        this.currentMember = member;
-    }
+	/**
+	 * 현재 사용자를 설정하는 메서드
+	 * 
+	 * @param member Member 객체
+	 */
+	public void setMember(Member member) {
+		this.currentMember = member;
+	}
 }

@@ -23,6 +23,7 @@ import javafx.fxml.FXMLLoader;
  */
 public class AdminLoginController {
 	
+	// FXML 필드
 	@FXML private TextField adminID;
 	@FXML private PasswordField adminPW;
 	@FXML private TextField adminEmail;

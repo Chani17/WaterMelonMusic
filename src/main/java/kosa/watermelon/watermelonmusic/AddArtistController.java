@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
  */
 public class AddArtistController implements Initializable {
 
+	// FXML 필드
 	@FXML private TextField artistNameField;
 
 	/**
