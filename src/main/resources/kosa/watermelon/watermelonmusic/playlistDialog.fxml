@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+작성자: 김효정
+설명: 포스팅 화면에서 플레이리스트를 추가할 때 사용되는 다이얼로그의 FXML 파일
+-->
+
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>

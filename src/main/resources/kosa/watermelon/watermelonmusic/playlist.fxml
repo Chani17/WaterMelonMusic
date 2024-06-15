@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+작성자: 김찬희, 김효정
+설명: 내가 만든 플레이리스트를 선택해서 들어간 화면의 FXML 파일
+-->
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
