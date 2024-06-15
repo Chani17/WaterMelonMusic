@@ -12,6 +12,8 @@ import java.util.ResourceBundle;
 
 /**
  * AddArtistController : 아티스트 추가 화면의 컨트롤러
+ * 
+ * 작성자 : 김찬희
  */
 public class AddArtistController implements Initializable {
 

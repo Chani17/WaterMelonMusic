@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 
 /**
  * PlaylistDialogController 클래스 : 플레이리스트 다이얼로그의 컨트롤러 클래스
+ * 
+ * 작성자 : 김효정
  */
 public class PlaylistDialogController {
 

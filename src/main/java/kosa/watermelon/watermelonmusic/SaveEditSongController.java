@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 
 /**
  * SaveEditSongController 클래스 : 곡 이름을 저장 및 수정하는 컨트롤러 클래스
+ * 
+ * 작성자 : 김찬희
  */
 public class SaveEditSongController {
 

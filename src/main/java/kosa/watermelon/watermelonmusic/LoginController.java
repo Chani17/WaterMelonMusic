@@ -31,6 +31,8 @@ import java.util.ResourceBundle;
 
 /**
  * LoginController 클래스 : 로그인 화면을 제어
+ * 
+ * 작성자 : 김찬희, 김효정
  */
 public class LoginController implements Initializable {
 	

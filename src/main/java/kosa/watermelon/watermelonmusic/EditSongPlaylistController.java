@@ -26,6 +26,8 @@ import java.util.*;
 
 /**
  * EditSongPlaylistController 클래스 : 편집된 곡의 플레이리스트를 관리하고 관련된 UI 이벤트를 처리함
+ * 
+ * 작성자 : 김찬희
  */
 public class EditSongPlaylistController implements Initializable {
 	

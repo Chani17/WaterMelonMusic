@@ -9,6 +9,8 @@ import java.sql.Statement;
 
 /**
  * DBUtil 클래스 : 데이터베이스 연결 및 자원 관리를 담당
+ * 
+ * 작성자 : 김효정
  */
 public class DBUtil {
 	

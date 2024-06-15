@@ -13,6 +13,8 @@ import oracle.sql.BFILE;
 
 /**
  * MemberController 클래스 : 회원 정보를 관리하는 기능을 제공
+ * 
+ * 작성자 : 김효정
  */
 public class MemberController {
 

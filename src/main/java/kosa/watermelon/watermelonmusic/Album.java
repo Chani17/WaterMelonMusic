@@ -5,6 +5,8 @@ import javafx.beans.property.StringProperty;
 
 /**
  * Album 클래스 : 앨범 데이터를 저장
+ * 
+ * 작성자 : 김찬희
  */
 public class Album {
 	

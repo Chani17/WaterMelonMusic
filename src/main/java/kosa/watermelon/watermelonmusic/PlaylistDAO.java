@@ -11,6 +11,8 @@ import java.util.List;
 
 /**
  * PlaylistDAO 클래스 : 데이터베이스에서 플레이리스트 데이터를 가져옴
+ * 
+ * 작성자 : 김효정
  */
 public class PlaylistDAO {
 	// 데이터베이스에서 플레이리스트 데이터를 가져오는 DAO 클래스

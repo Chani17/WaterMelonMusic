@@ -5,6 +5,8 @@ import javafx.scene.media.Media;
 
 /**
  * Song 클래스 : 곡 정보를 담는 클래스
+ * 
+ * 작성자 : 김찬희
  */
 public class Song {
 	

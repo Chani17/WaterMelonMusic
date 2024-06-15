@@ -5,6 +5,8 @@ import javafx.beans.property.StringProperty;
 
 /**
  * Artist 클래스 : 아티스트 데이터를 저장
+ * 
+ * 작성자 : 김찬희
  */
 public class Artist {
 	
