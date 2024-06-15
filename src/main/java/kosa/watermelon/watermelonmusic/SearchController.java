@@ -117,6 +117,7 @@ public class SearchController {
 						rs.getString("artist_name"), imageData, rs.getLong("click_count"));
 				result.add(song);
 			}
+			DBUtil.close(conn, pstmt, rs);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

@@ -10,6 +10,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -73,37 +74,64 @@ public class AddAlbumController implements Initializable {
 			return;
 		}
 
-		try (Connection conn = DBUtil.getConnection()) {
-			// 새로운 ALBUM_ID 생성
-			PreparedStatement pstmt = conn.prepareStatement("SELECT COUNT(*) FROM ALBUM");
-			ResultSet rs = pstmt.executeQuery();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
 
-			long albumId = 0L;
-			if (rs.next())
-				albumId = rs.getInt(1) + 1;
+		try {
+			conn = DBUtil.getConnection();
+
+			long albumId = generateNewId(conn);		// 새로운 ALBUM_ID 생성
 
 			// 앨범을 추가하는 쿼리 실행
-			PreparedStatement stmt = conn
+			pstmt = conn
 					.prepareStatement("INSERT INTO ALBUM (ALBUM_ID, ALBUM_NAME, ARTIST_ID) VALUES (?, ?, ?)");
-			stmt.setLong(1, albumId + 1);
-			stmt.setString(2, albumName);
-			stmt.setInt(3, selectedArtist.getArtistId());
-			stmt.executeUpdate();
+			pstmt.setLong(1, albumId);
+			pstmt.setString(2, albumName);
+			pstmt.setInt(3, selectedArtist.getArtistId());
+			pstmt.executeUpdate();
 
 			// BFILE을 설정하는 쿼리 실행
 			String sql = "DECLARE " + "  lobloc BFILE := BFILENAME('IMAGE_DIR_ALBUMCOVER', ?); " + "BEGIN "
 					+ "  UPDATE ALBUM SET ALBUM_COVER = lobloc WHERE ALBUM_ID = ?; " + "END;";
 			try (PreparedStatement bfileStmt = conn.prepareStatement(sql)) {
 				bfileStmt.setString(1, albumCoverPath);
-				bfileStmt.setLong(2, albumId + 1);
+				bfileStmt.setLong(2, albumId);
 				bfileStmt.executeUpdate();
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn, pstmt);
 		}
 
 		Stage stage = (Stage) albumNameField.getScene().getWindow();
 		stage.close();
 	}
+
+	/**
+	 * 새로운 ID를 생성하는 메서드
+	 *
+	 * @param conn 데이터베이스 연결 객체
+	 * @return 생성된 ID
+	 */
+	private Long generateNewId(Connection conn) {
+		Long newId = null;
+		String nextValSql = "SELECT ALBUM_SEQ.NEXTVAL FROM DUAL";
+
+		try (PreparedStatement nextValStmt = conn.prepareStatement(nextValSql);
+			 ResultSet nextValRs = nextValStmt.executeQuery()) {
+
+			if (nextValRs.next()) {
+				newId = nextValRs.getLong(1);
+				System.out.println("newId = " + newId);
+			}
+			DBUtil.close(null, nextValStmt, nextValRs);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return newId;
+	}
+
 }

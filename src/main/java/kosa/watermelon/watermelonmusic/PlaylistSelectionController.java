@@ -167,9 +167,13 @@ public class PlaylistSelectionController {
 	 * @param playlistName 추가할 플레이리스트 이름
 	 */
 	private void addSongToExistingPlaylist(String playlistName) {
-		try (Connection conn = DBUtil.getConnection();
-				PreparedStatement pstmt = conn
-						.prepareStatement("UPDATE Playlist SET Song = ? WHERE playlist_name = ? AND member_id = ?")) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try  {
+			conn = DBUtil.getConnection();
+			pstmt = conn
+					.prepareStatement("UPDATE Playlist SET Song = ? WHERE playlist_name = ? AND member_id = ?");
 
 			// 기존 플레이리스트에 곡 추가
 			Playlist playlist = getPlaylistByName(playlistName, conn);
@@ -187,6 +191,8 @@ public class PlaylistSelectionController {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn, pstmt);
 		}
 	}
 
@@ -196,13 +202,18 @@ public class PlaylistSelectionController {
 	 * @param playlistName 생성할 플레이리스트 이름
 	 */
 	private void createNewPlaylistAndAddSong(String playlistName) {
-		try (Connection conn = DBUtil.getConnection()) {
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try  {
+			conn = DBUtil.getConnection();
 			long newPlaylistId = generateNewPlaylistId(conn);
 
 			// 새로운 플레이리스트 생성
-			try (PreparedStatement pstmt = conn.prepareStatement(
-					"INSERT INTO Playlist (playlist_id, playlist_name, member_id, Song) VALUES (?, ?, ?, ?)")) {
-				List<Long> songList = new ArrayList<>();
+			pstmt = conn.prepareStatement(
+					"INSERT INTO Playlist (playlist_id, playlist_name, member_id, Song) VALUES (?, ?, ?, ?)");
+			List<Long> songList = new ArrayList<>();
 				songList.add(selectedSongId);
 				Long[] newSongs = songList.toArray(new Long[0]);
 
@@ -214,9 +225,10 @@ public class PlaylistSelectionController {
 				pstmt.setString(3, currentMember.getId());
 				pstmt.setArray(4, newSongArray);
 				pstmt.executeUpdate();
-			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn, pstmt);
 		}
 	}
 

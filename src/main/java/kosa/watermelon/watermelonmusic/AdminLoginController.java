@@ -118,33 +118,40 @@ public class AdminLoginController {
 	 */
 	private Member getAdminMember(String id) {
 		Member member = null;
-
 		String query = "SELECT MEMBER_ID, MEMBER_PW, EMAIL, NICKNAME, PROFILE_IMAGE, GENDER, BIRTH FROM MEMBER WHERE MEMBER_ID = ?";
-		try (Connection connection = DBUtil.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setString(1, id);
-			ResultSet resultSet = preparedStatement.executeQuery();
 
-			if (resultSet.next()) {
-				String memberId = resultSet.getString("MEMBER_ID");
-				String memberPw = resultSet.getString("MEMBER_PW");
-				String email = resultSet.getString("EMAIL");
-				String nickname = resultSet.getString("NICKNAME");
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				String memberId = rs.getString("MEMBER_ID");
+				String memberPw = rs.getString("MEMBER_PW");
+				String email = rs.getString("EMAIL");
+				String nickname = rs.getString("NICKNAME");
 				byte[] profileImage = null;
 
-				BFILE bfile = ((OracleResultSet) resultSet).getBFILE("PROFILE_IMAGE");
+				BFILE bfile = ((OracleResultSet) rs).getBFILE("PROFILE_IMAGE");
 				if (bfile != null) {
 					bfile.open();
 					profileImage = bfile.getBytes();
 					bfile.close();
 				}
 
-				String gender = resultSet.getString("GENDER");
-				java.sql.Date birth = resultSet.getDate("BIRTH");
+				String gender = rs.getString("GENDER");
+				java.sql.Date birth = rs.getDate("BIRTH");
 				member = new Member(memberId, memberPw, email, nickname, profileImage, gender, birth.toLocalDate());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn, pstmt, rs);
 		}
 
 		return member;

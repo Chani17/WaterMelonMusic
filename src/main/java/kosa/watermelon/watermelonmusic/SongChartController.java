@@ -192,9 +192,7 @@ public class SongChartController implements Initializable {
 		songName.setCellValueFactory(new PropertyValueFactory<Song, String>("name"));
 		artistName.setCellValueFactory(new PropertyValueFactory<Song, String>("artist"));
 
-		/**
-		 * 재생 버튼 설정
-		 */
+		// 재생 버튼 설정
 		playBtn.setCellFactory(new Callback<>() {
 			@Override
 			public TableCell<Song, Void> call(TableColumn<Song, Void> param) {
@@ -235,6 +233,8 @@ public class SongChartController implements Initializable {
 								newStage.getIcons().add(icon);
 								newStage.setScene(scene);
 								newStage.showAndWait();
+
+								DBUtil.close(conn, pstmt, rs);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -378,7 +378,6 @@ public class SongChartController implements Initializable {
 										"'" + selectedSong.getName() + " - " + selectedSong.getArtist() + "' 편집");
 								Image icon = new Image(getClass().getResourceAsStream(
 										"/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고 이미지 파일 경로
-																										// 지정
 								newStage.getIcons().add(icon);
 								newStage.setScene(scene);
 								newStage.showAndWait();
@@ -499,6 +498,7 @@ public class SongChartController implements Initializable {
 		pstmt.setString(2, playlist.getPlaylistName());
 		pstmt.setString(3, playlist.getMemberId());
 		pstmt.executeQuery();
+		pstmt.close();
 	}
 
 	/**
@@ -522,6 +522,8 @@ public class SongChartController implements Initializable {
 				// DB에서 좋아요 정보 삭제 실패
 				System.out.println("좋아요 취소 실패");
 			}
+
+			DBUtil.close(conn, pstmt);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -563,6 +565,8 @@ public class SongChartController implements Initializable {
 					System.out.println("좋아요 추가 실패");
 				}
 			}
+
+			DBUtil.close(conn, pstmt, rs);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

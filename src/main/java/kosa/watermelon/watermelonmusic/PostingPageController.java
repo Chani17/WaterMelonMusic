@@ -214,6 +214,7 @@ public class PostingPageController {
 				System.out.println("newId = " + newId);
 			}
 
+			DBUtil.close(null, nextValStmt, nextValRs);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -241,6 +242,7 @@ public class PostingPageController {
 				Playlist playlist = new Playlist(playlistId, playlistName, new ArrayList<>(), memberId, 0, postDate);
 				playlists.add(playlist);
 			}
+			DBUtil.close(conn, stmt, rs);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

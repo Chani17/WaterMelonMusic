@@ -69,8 +69,6 @@ public class EditSongPlaylistController implements Initializable {
 	 */
 	public void setMember(Member member) {
 		this.currentMember = member;
-		System.out.println("PlaylistController: Member set with ID - " + currentMember.getId());
-
 		setListView();
 	}
 
@@ -89,11 +87,8 @@ public class EditSongPlaylistController implements Initializable {
 	 */
 	private void setListView() {
 		if (currentMember == null) {
-			System.out.println("Current member is null. Cannot load playlist.");
 			return;
 		}
-
-		System.out.println("Loading playlist for member ID - " + currentMember.getId());
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -128,6 +123,7 @@ public class EditSongPlaylistController implements Initializable {
 			DBUtil.close(pstmt, rs, conn);
 		}
 
+		// 체크 박스 표시
 		check.setCellValueFactory(data -> {
 			EditSongPlaylist song = data.getValue();
 			SimpleBooleanProperty property = new SimpleBooleanProperty(selectedSongs.getOrDefault(song, false));
@@ -135,6 +131,7 @@ public class EditSongPlaylistController implements Initializable {
 			return property;
 		});
 
+		// 삭제하고 싶은 노래 selectedSongs에 추가
 		check.setCellFactory(new Callback<>() {
 			@Override
 			public TableCell<EditSongPlaylist, Boolean> call(TableColumn<EditSongPlaylist, Boolean> param) {
@@ -163,6 +160,8 @@ public class EditSongPlaylistController implements Initializable {
 			}
 		});
 
+
+		// 노래 재생 버튼 클릭 시 노래 재생하기
 		playBtn.setCellFactory(new Callback<>() {
 			@Override
 			public TableCell<EditSongPlaylist, Void> call(TableColumn<EditSongPlaylist, Void> param) {
@@ -194,9 +193,6 @@ public class EditSongPlaylistController implements Initializable {
 				};
 			}
 		});
-
-		// Remove loadPlaylists() if it's not implemented
-		// loadPlaylists();
 	}
 
 	/**
@@ -283,12 +279,12 @@ public class EditSongPlaylistController implements Initializable {
 			pstmt.setString(1, currentMember.getId());
 			pstmt.executeUpdate();
 
-			conn.commit(); // Commit transaction
-			setListView(); // Refresh the list view after deletion
+			conn.commit(); 		// Commit
+			setListView(); 		// 새로 고침
 		} catch (Exception e) {
 			if (conn != null) {
 				try {
-					conn.rollback(); // Rollback transaction on error
+					conn.rollback(); 		// Rollback
 				} catch (Exception rollbackEx) {
 					rollbackEx.printStackTrace();
 				}
@@ -322,10 +318,7 @@ public class EditSongPlaylistController implements Initializable {
 			newStage.show();
 			Image icon = new Image(
 					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고
-																													// 이미지
-																													// 파일
-																													// 경로
-																													// 지정
+
 			newStage.getIcons().add(icon);
 			currentStage.close();
 		} catch (IOException e) {

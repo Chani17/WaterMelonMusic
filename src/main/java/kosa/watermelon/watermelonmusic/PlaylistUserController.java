@@ -226,23 +226,6 @@ public class PlaylistUserController implements Initializable {
 			e.printStackTrace();
 		}
 
-//        String query = "SELECT song_file FROM SONG WHERE SONG_ID = ?";
-//        try (Connection connection = DBUtil.getConnection();
-//             PreparedStatement statement = connection.prepareStatement(query)) {
-//
-//            for (Long songId : songIds) {
-//                statement.setLong(1, songId);
-//                try (ResultSet resultSet = statement.executeQuery()) {
-//                    if (resultSet.next()) {
-//                        String songPath = resultSet.getString("song_file");
-//                        System.out.println("Playing song from: " + songPath);
-//                        // Here you can add the code to actually play the song using a media player.
-//                    }
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
 	}
 
 	/**
@@ -346,10 +329,6 @@ public class PlaylistUserController implements Initializable {
 			newStage.setScene(new Scene(parent, 800, 600));
 			Image icon = new Image(
 					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고
-																													// 이미지
-																													// 파일
-																													// 경로
-																													// 지정
 			newStage.getIcons().add(icon);
 			newStage.show();
 			currentStage.close();
