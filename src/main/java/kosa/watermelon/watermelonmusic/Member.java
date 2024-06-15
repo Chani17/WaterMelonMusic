@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * Member 클래스 : 회원 정보를 나타냄
+ * 
+ * 작성자 : 김찬희, 김효정
  */
 public class Member {
 

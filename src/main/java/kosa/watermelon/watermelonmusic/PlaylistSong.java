@@ -2,6 +2,8 @@ package kosa.watermelon.watermelonmusic;
 
 /**
  * PlaylistSong 클래스 : 플레이리스트에 포함된 곡을 나타내는 클래스
+ * 
+ * 작성자 : 김찬희, 김효정
  */
 public class PlaylistSong {
 

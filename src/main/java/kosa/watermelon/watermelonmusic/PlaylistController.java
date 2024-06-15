@@ -25,6 +25,8 @@ import java.util.*;
 
 /**
  * PlaylistController 클래스 : 플레이리스트를 관리하는 컨트롤러 클래스
+ * 
+ * 작성자 : 김찬희
  */
 public class PlaylistController implements Initializable {
 

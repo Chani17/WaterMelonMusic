@@ -2,6 +2,8 @@ package kosa.watermelon.watermelonmusic;
 
 /**
  * PlaylistView 클래스 : 플레이리스트 뷰를 나타내는 클래스
+ * 
+ * 작성자 : 김찬희
  */
 public class PlaylistView {
 	

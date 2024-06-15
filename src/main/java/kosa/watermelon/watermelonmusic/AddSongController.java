@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 /**
  * AddSongController : 노래 추가 화면의 컨트롤러
+ * 
+ * 작성자 : 김찬희
  */
 public class AddSongController {
 	

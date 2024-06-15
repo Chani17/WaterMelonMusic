@@ -27,6 +27,8 @@ import javafx.stage.Stage;
 
 /**
  * PostingPageController 클래스 : 포스팅 페이지를 관리하는 컨트롤러 클래스
+ * 
+ * 작성자 : 김효정
  */
 public class PostingPageController {
 

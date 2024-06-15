@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 
 /**
  * AddAlbumController : 앨범 추가 컨트롤러
+ * 
+ * 작성자 : 김찬희
  */
 public class AddAlbumController implements Initializable {
 

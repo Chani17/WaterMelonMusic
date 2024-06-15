@@ -41,6 +41,8 @@ import java.util.List;
 /**
  * MyPageController 클래스 : 마이페이지 컨트롤러
  * 회원 정보 및 좋아하는 노래 목록을 관리
+ * 
+ * 작성자 : 김효정
  */
 public class MyPageController implements Initializable {
 	

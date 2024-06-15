@@ -4,6 +4,8 @@ import javafx.beans.property.*;
 
 /**
  * SongFXModel 클래스 : JavaFX와 함께 사용되는 곡 정보를 담는 모델 클래스
+ * 
+ * 작성자 : 김찬희
  */
 public class SongFXModel {
 

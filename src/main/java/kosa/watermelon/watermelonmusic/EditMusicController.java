@@ -29,6 +29,8 @@ import java.util.ResourceBundle;
 
 /**
  * EditMusicController 클래스 : 음악 편집 화면을 제어
+ * 
+ * 작성자 : 김찬희
  */
 public class EditMusicController implements Initializable {
 	

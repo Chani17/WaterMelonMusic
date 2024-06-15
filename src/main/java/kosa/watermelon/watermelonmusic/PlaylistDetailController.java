@@ -36,7 +36,9 @@ import javafx.util.Callback;
 import javax.xml.transform.Result;
 
 /**
- * PlaylistDetailController 클래스 : 플레이리스트 세부 정보를 보여주는 컨트롤러 클래스
+ * PlatlistDetailController 클래스 : 플레이리스트 세부 정보를 보여주는 컨트롤러 클래스
+ * 
+ * 작성자 : 김효정
  */
 public class PlaylistDetailController {
 

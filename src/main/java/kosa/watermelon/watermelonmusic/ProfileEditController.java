@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 
 /**
  * ProfileEditController 클래스 : 프로필 수정 페이지를 관리하는 컨트롤러 클래스
+ * 
+ * 작성자 : 김효정
  */
 public class ProfileEditController {
 

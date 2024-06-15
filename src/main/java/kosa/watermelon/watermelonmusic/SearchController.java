@@ -24,6 +24,8 @@ import oracle.sql.BFILE;
 
 /**
  * SearchController 클래스 : 곡 검색을 처리하는 컨트롤러 클래스
+ * 
+ * 작성자 : 김효정
  */
 public class SearchController {
 

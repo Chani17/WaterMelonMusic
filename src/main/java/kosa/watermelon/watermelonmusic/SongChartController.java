@@ -48,6 +48,8 @@ import oracle.sql.BFILE;
 
 /**
  * SongChartController 클래스 : 인기 차트를 관리하고 보여주는 컨트롤러
+ * 
+ * 작성자 : 김찬희, 김효정
  */
 public class SongChartController implements Initializable {
 

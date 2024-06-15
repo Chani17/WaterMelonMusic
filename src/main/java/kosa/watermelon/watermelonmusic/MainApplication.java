@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 
 /**
  * MainApplication 클래스 : 애플리케이션의 메인 진입점을 정의
+ * 
+ * 작성자 : 김찬희
  */
 public class MainApplication extends Application {
 

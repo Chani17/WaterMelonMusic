@@ -24,6 +24,8 @@ import java.util.ResourceBundle;
 
 /**
  * PlayViewController 클래스 : 음악 재생 화면의 컨트롤러 클래스
+ * 
+ * 작성자 : 김찬희
  */
 public class PlayViewController implements Initializable {
 

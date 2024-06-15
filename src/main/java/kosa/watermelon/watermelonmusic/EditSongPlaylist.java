@@ -2,6 +2,8 @@ package kosa.watermelon.watermelonmusic;
 
 /**
  * EditSongPlaylist 클래스 : 편집된 곡의 플레이리스트 정보를 담고 있음
+ * 
+ * 작성자 : 김찬희
  */
 public class EditSongPlaylist {
 

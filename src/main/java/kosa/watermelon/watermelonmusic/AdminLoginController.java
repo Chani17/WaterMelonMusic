@@ -20,6 +20,8 @@ import javafx.fxml.FXMLLoader;
 
 /**
  * AdminLoginController : 관리자 로그인 처리
+ * 
+ * 작성자 : 김효정
  */
 public class AdminLoginController {
 	

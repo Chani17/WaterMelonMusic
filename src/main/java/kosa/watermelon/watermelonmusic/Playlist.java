@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * Playlist 클래스 : 플레이리스트를 나타냄
+ * 
+ * 작성자 : 김찬희, 김효정
  */
 public class Playlist {
 	

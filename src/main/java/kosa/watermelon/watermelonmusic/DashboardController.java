@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 /**
  * DashboardController : 대시보드 페이지 컨트롤러
  * 로그인 후 이동되는 페이지로, 다양한 기능으로의 접근을 제공함
+ * 
+ * 작성자 : 김효정
  */
 public class DashboardController implements Initializable {
 	

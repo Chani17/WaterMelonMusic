@@ -2,6 +2,8 @@ package kosa.watermelon.watermelonmusic;
 
 /**
  * SessionManager 클래스 : 현재 세션 정보를 관리
+ * 
+ * 작성자 : 김효정
  */
 public class SessionManager {
 

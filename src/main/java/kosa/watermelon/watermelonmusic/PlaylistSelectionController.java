@@ -26,6 +26,8 @@ import java.util.List;
 
 /**
  * PlaylistSelectionController 클래스 : 플레이리스트 선택 화면을 제어하는 컨트롤러 클래스
+ * 
+ * 작성자 : 김효정
  */
 public class PlaylistSelectionController {
 

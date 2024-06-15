@@ -22,6 +22,8 @@ import java.util.ResourceBundle;
 
 /**
  * AdminPageController : 관리자 페이지 화면의 컨트롤러
+ * 
+ * 작성자 : 김찬희, 김효정
  */
 public class AdminPageController implements Initializable {
 
