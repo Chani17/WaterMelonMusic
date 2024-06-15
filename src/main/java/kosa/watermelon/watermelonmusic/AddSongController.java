@@ -7,7 +7,6 @@ import javafx.stage.Stage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,26 +66,23 @@ public class AddSongController {
 		Album selectedAlbum = albumList.stream().filter(album -> album.getAlbumName().equals(selectedAlbumName))
 				.findFirst().orElse(null);
 
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
 		try {
-			Connection conn = DBUtil.getConnection();
+			conn = DBUtil.getConnection();
 
-			PreparedStatement pstmt = conn.prepareStatement("SELECT COUNT(*) FROM SONG");
-			ResultSet rs = pstmt.executeQuery();
-
-			long newSongId = 0L;
-			if (rs.next())
-				newSongId = rs.getInt(1) + 1;
-
-			PreparedStatement stmt = conn.prepareStatement(
-					"INSERT INTO SONG (SONG_ID, ARTIST_ID, SONG_NAME, CLICK_COUNT, SONG_FILE, ALBUM_ID) VALUES (?, ?, ?, 0, ?, ?)");
-			stmt.setLong(1, newSongId + 1);
-			stmt.setInt(2, selectedArtist.getArtistId());
-			stmt.setString(3, songName);
-			stmt.setString(4, songFile);
-			stmt.setInt(5, selectedAlbum.getAlbumId());
-			stmt.executeUpdate();
+			pstmt = conn.prepareStatement(
+					"INSERT INTO SONG (SONG_ID, ARTIST_ID, SONG_NAME, CLICK_COUNT, SONG_FILE, ALBUM_ID) VALUES (SONG_SEQ.NEXTVAL, ?, ?, 0, ?, ?)");
+            pstmt.setInt(1, selectedArtist.getArtistId());
+			pstmt.setString(2, songName);
+			pstmt.setString(3, songFile);
+			pstmt.setInt(4, selectedAlbum.getAlbumId());
+			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn, pstmt);
 		}
 
 		Stage stage = (Stage) songNameField.getScene().getWindow();

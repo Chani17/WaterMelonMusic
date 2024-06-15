@@ -106,23 +106,24 @@ public class MemberController {
 	 */
 	public void updateMember(Member updatedMember) {
 		String query = "UPDATE MEMBER SET MEMBER_PW=?, NICKNAME=? WHERE MEMBER_ID=?";
-		Connection connection = null; // 변수를 선언하고 null로 초기화
+		Connection conn = null;
+		PreparedStatement pstmt = null;
 
 		try {
-			connection = getConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, updatedMember.getPw());
-			preparedStatement.setString(2, updatedMember.getNickname());
-			preparedStatement.setString(3, updatedMember.getId());
+			conn = getConnection();
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, updatedMember.getPw());
+			pstmt.setString(2, updatedMember.getNickname());
+			pstmt.setString(3, updatedMember.getId());
 
-			int rowsAffected = preparedStatement.executeUpdate();
+			int rowsAffected = pstmt.executeUpdate();
 			if (rowsAffected == 0) {
 				throw new IllegalArgumentException("Member not found");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(connection); // 연결 닫기
+			DBUtil.close(conn, pstmt); // 연결 닫기
 		}
 	}
 }

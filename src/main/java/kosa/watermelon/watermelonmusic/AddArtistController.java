@@ -42,13 +42,19 @@ public class AddArtistController implements Initializable {
 			return;
 		}
 
-		try (Connection conn = DBUtil.getConnection();
-				PreparedStatement stmt = conn.prepareStatement(
-						"INSERT INTO ARTIST (ARTIST_ID, ARTIST_NAME) VALUES (ARTIST_SEQ.NEXTVAL, ?)")) {
-			stmt.setString(1, artistName);
-			stmt.executeUpdate();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(
+						"INSERT INTO ARTIST (ARTIST_ID, ARTIST_NAME) VALUES (ARTIST_SEQ.NEXTVAL, ?)");
+			pstmt.setString(1, artistName);
+			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn, pstmt);
 		}
 
 		Stage stage = (Stage) artistNameField.getScene().getWindow();

@@ -139,6 +139,7 @@ public class PlaylistController implements Initializable {
 			DBUtil.close(pstmt, rs, conn);
 		}
 
+		// 삭제하기 위한 체크박스 표시
 		check.setCellValueFactory(data -> {
 			PlaylistSong song = data.getValue();
 			SimpleBooleanProperty property = new SimpleBooleanProperty(selectedSongs.get(song));
@@ -146,6 +147,7 @@ public class PlaylistController implements Initializable {
 			return property;
 		});
 
+		// 체크박스 체크 시 삭제
 		check.setCellFactory(new Callback<>() {
 			@Override
 			public TableCell<PlaylistSong, Boolean> call(TableColumn<PlaylistSong, Boolean> param) {
@@ -174,6 +176,7 @@ public class PlaylistController implements Initializable {
 			}
 		});
 
+		// 재생 버튼 클릭 시 음악 재생
 		playBtn.setCellFactory(new Callback<>() {
 			@Override
 			public TableCell<PlaylistSong, Void> call(TableColumn<PlaylistSong, Void> param) {
@@ -344,10 +347,6 @@ public class PlaylistController implements Initializable {
 			newStage.setScene(new Scene(parent, 800, 600));
 			Image icon = new Image(
 					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고
-																													// 이미지
-																													// 파일
-																													// 경로
-																													// 지정
 			newStage.getIcons().add(icon);
 			newStage.show();
 			currentStage.close();

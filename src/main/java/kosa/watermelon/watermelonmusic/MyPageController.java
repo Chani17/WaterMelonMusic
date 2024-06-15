@@ -429,6 +429,8 @@ public class MyPageController implements Initializable {
 					// DB에 좋아요 정보 추가 실패
 					System.out.println("좋아요 추가 실패");
 				}
+
+				DBUtil.close(conn, pstmt, rs);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -443,16 +445,23 @@ public class MyPageController implements Initializable {
 	 * @return 좋아요 상태 (true: 좋아요 누름, false: 좋아요 누르지 않음)
 	 */
 	private boolean isSongLikedByUser(long songId, String memberId) {
-		try (Connection conn = DBUtil.getConnection();
-				PreparedStatement pstmt = conn
-						.prepareStatement("SELECT * FROM LIKES WHERE SONG_ID = ? AND MEMBER_ID = ?")) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn
+					.prepareStatement("SELECT * FROM LIKES WHERE SONG_ID = ? AND MEMBER_ID = ?");
 			pstmt.setLong(1, songId);
 			pstmt.setString(2, memberId);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			return rs.next(); // 좋아요가 존재하면 true를 반환
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			DBUtil.close(conn, pstmt, rs);
 		}
 	}
 }

@@ -70,7 +70,7 @@ public class EditMusicController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		// 슬라이더 리스너를 추가하여 시작 시간과 끝 시간을 업데이트
+		// 슬라이더 리스너를 추가하여 시작 시간 업데이트
 		startPointSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
 			if (!isSliderChanging) {
 				updateStartTime(newValue.doubleValue());
@@ -78,6 +78,7 @@ public class EditMusicController implements Initializable {
 			}
 		});
 
+		// 슬라이더 리스너를 추가하여 끝 시간 업데이트
 		endPointSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
 			if (!isSliderChanging) {
 				updateEndTime(newValue.doubleValue());
@@ -85,7 +86,8 @@ public class EditMusicController implements Initializable {
 			}
 		});
 
-		// 슬라이더 조작 이벤트 핸들러 설정
+
+		// 시작 시간 슬라이더 조작 시 해당 시간 정보 업데이트하여 표기
 		startPointSlider.setOnMousePressed(event -> isSliderChanging = true);
 		startPointSlider.setOnMouseReleased(event -> {
 			isSliderChanging = false;
@@ -96,6 +98,7 @@ public class EditMusicController implements Initializable {
 			}
 		});
 
+		// 끝 시간 슬라이더 조작 시 해당 시간 정보 업데이트하여 표기
 		endPointSlider.setOnMousePressed(event -> isSliderChanging = true);
 		endPointSlider.setOnMouseReleased(event -> {
 			isSliderChanging = false;
@@ -136,7 +139,6 @@ public class EditMusicController implements Initializable {
 	 */
 	public void setSong(Song song) {
 		this.song = song;
-		System.out.println("editmusic : " + song.getName());
 		setMember(currentMember);
 		initializeMediaPlayer();
 		setEditView();
@@ -185,8 +187,6 @@ public class EditMusicController implements Initializable {
 		albumCover.setImage(image);
 		songTitle.setText(song.getName());
 		artistName.setText(song.getArtist());
-
-//        mediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> updateStartPlayTime());
 	}
 
 	/**
@@ -222,19 +222,18 @@ public class EditMusicController implements Initializable {
 	}
 
 	/**
-	 * 시작 부분의 재생을 멈추는 메서드
+	 * 시작 슬라이더의 재생을 멈추는 메서드
 	 */
 	private void stopStart() {
 		if (startMediaPlayer != null) {
 			lastStartPosition = startPointSlider.getValue();
-			System.out.println("stop = " + lastStartPosition);
 			startMediaPlayer.stop();
 			isPlayingStart = false;
 		}
 	}
 
 	/**
-	 * 시작 부분의 재생을 일시정지하는 메서드
+	 * 시작 슬라이더의 재생을 일시정지하는 메서드
 	 */
 	private void pauseStart() {
 		if (startMediaPlayer != null) {
@@ -244,7 +243,7 @@ public class EditMusicController implements Initializable {
 	}
 
 	/**
-	 * 끝 부분의 재생을 멈추는 메서드
+	 * 끝 슬라이더의 재생을 멈추는 메서드
 	 */
 	private void stopEnd() {
 		if (endMediaPlayer != null) {
@@ -265,11 +264,10 @@ public class EditMusicController implements Initializable {
 	}
 
 	/**
-	 * 끝 부분부터 재생을 시작하는 메서드
+	 * 설정해 둔 끝 시간부터 재생을 시작하는 메서드
 	 */
 	private void playFromEnd() {
 		if (endMediaPlayer != null) {
-			System.out.println("lastEndPosition = " + lastEndPosition);
 			endMediaPlayer.seek(Duration.seconds(lastEndPosition));
 			endMediaPlayer.play();
 			isPlayingEnd = true;
@@ -278,11 +276,10 @@ public class EditMusicController implements Initializable {
 	}
 
 	/**
-	 * 시작 부분부터 재생을 시작하는 메서드
+	 * 설정해 둔 시작 시간부터 재생을 시작하는 메서드
 	 */
 	private void playFromStart() {
 		if (startMediaPlayer != null) {
-			System.out.println("lastStartPosition = " + lastStartPosition);
 			startMediaPlayer.seek(Duration.seconds(lastStartPosition));
 			startMediaPlayer.play();
 			isPlayingStart = true;
@@ -303,11 +300,8 @@ public class EditMusicController implements Initializable {
 			popupStage.initModality(Modality.APPLICATION_MODAL);
 			popupStage.setTitle("Enter Song Name");
 			Image icon = new Image(
-					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); // 로고
-																													// 이미지
-																													// 파일
-																													// 경로
-																													// 지정
+					getClass().getResourceAsStream("/kosa/watermelon/watermelonmusic/watermelon_logo_only.png")); 	// 로고
+
 			popupStage.getIcons().add(icon);
 			popupStage.setScene(new Scene(root));
 			popupStage.showAndWait();
@@ -321,18 +315,14 @@ public class EditMusicController implements Initializable {
 				String sourceFilePath = song.getMediaSource();
 				String destinationFilePath = "C:\\dev\\resources\\music\\" + songName + ".mp3";
 
-				System.out.println("start = " + start + " end = " + end);
-
 				slice(sourceFilePath, destinationFilePath, start, end);
 				Connection conn = DBUtil.getConnection();
 				PreparedStatement countPstmt = conn.prepareStatement("SELECT COUNT(*) FROM EDITSONG");
-//                countPstmt.setString(1, currentMember.getId());
 				ResultSet rsCount = countPstmt.executeQuery();
 
 				long editSongId = 0L;
 				if (rsCount.next()) {
-					editSongId = rsCount.getLong(1); // Assuming you want to use the next ID
-					System.out.println("editSongId = " + editSongId);
+					editSongId = rsCount.getLong(1);
 				}
 
 				PreparedStatement savePstmt = conn.prepareStatement(
